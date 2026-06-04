@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProposalPro Lite — Free Offline Proposal &amp; Contract Maker (no signup)</title>
+<style>
+  :root{
+    --accent:#059669;
+    --accent-dark:#047857;
+    --accent-soft:#d1fae5;
+    --bg:#f1f5f9;
+    --panel:#ffffff;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --danger:#dc2626;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+      "PingFang TC","Microsoft JhengHei",Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:13px;color:var(--ink)}
+  input[type="number"]{font-variant-numeric:tabular-nums}
+  button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{
+    outline:3px solid rgba(5,150,105,.2);outline-offset:2px;
+  }
+
+  /* ---------- Suite toolbar ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    min-height:58px;padding:9px 14px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:5px;font-size:16px}
+  .brand .dot{width:26px;height:26px;border-radius:7px;background:var(--accent);display:inline-flex;
+    align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1}
+  .toolbar .spacer{flex:1}
+  .lite-tag{font-size:11px;font-weight:800;color:#047857;background:#d1fae5;border:1px solid #a7f3d0;
+    border-radius:999px;padding:1px 7px;margin-left:2px}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-size:12.5px;
+    font-weight:650;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+  .btn:hover{border-color:#cbd5e1;background:#f8fafc}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
+  .btn.danger{color:var(--danger);border-color:#fecaca}
+  .btn.danger:hover{background:#fef2f2;border-color:#fca5a5}
+  .btn.small{padding:6px 9px;font-size:11.5px;border-radius:8px}
+  .btn.icon{width:30px;height:30px;padding:0}
+  select.mini{border:1px solid var(--line);border-radius:10px;padding:7px 9px;background:#fff;font-weight:650}
+  .save-status{font-size:11.5px;color:var(--muted);min-width:68px;text-align:right}
+  .save-status.error{color:var(--danger)}
+  .promo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:8px 14px;
+    background:linear-gradient(90deg,#ecfdf5,#d1fae5);border-bottom:1px solid #a7f3d0;
+    font-size:12.5px;color:#065f46;font-weight:650}
+  .promo a{color:#047857;font-weight:800;text-decoration:none;border-bottom:2px solid #6ee7b7}
+  .promo a:hover{border-color:#059669}
+
+  /* ---------- Main shell ---------- */
+  .app-shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:calc(100vh - 95px)}
+  .sidebar{height:calc(100vh - 95px);position:sticky;top:58px;overflow:auto;background:#fff;
+    border-right:1px solid var(--line);padding:15px 12px}
+  .sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 4px 10px}
+  .sidebar-head h2{font-size:12px;text-transform:uppercase;letter-spacing:.055em;color:var(--muted);margin:0}
+  .doc-list{display:flex;flex-direction:column;gap:7px}
+  .doc-item{width:100%;border:1px solid transparent;border-radius:11px;background:transparent;text-align:left;
+    padding:10px 10px;color:var(--ink)}
+  .doc-item:hover{background:#f8fafc;border-color:var(--line)}
+  .doc-item.active{background:#ecfdf5;border-color:#a7f3d0}
+  .doc-item .title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .doc-item .client{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .doc-item .meta{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:7px;
+    color:var(--muted);font-size:10.5px}
+  .doc-item .amount{font-weight:750;color:var(--accent);font-variant-numeric:tabular-nums}
+  .sidebar-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .sidebar-note{font-size:10.5px;color:var(--muted);margin:12px 4px 0}
+
+  .workspace{min-width:0;display:grid;grid-template-columns:minmax(400px,.9fr) minmax(480px,1.1fr);
+    height:calc(100vh - 95px)}
+  .editor-pane,.preview-pane{min-width:0;overflow:auto}
+  .editor-pane{padding:16px;border-right:1px solid var(--line)}
+  .preview-pane{background:#dfe7ed}
+  .preview-toolbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:9px 14px;
+    background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid #cbd5e1}
+  .preview-toolbar strong{font-size:12.5px}
+  .preview-toolbar span{font-size:11.5px;color:var(--muted)}
+  .preview-canvas{padding:20px 18px 50px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .mobile-tabs{display:none}
+
+  /* ---------- Stat cards ---------- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 13px;box-shadow:var(--shadow)}
+  .card .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:750}
+  .card .val{font-size:18px;font-weight:800;margin-top:3px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .card.accent .val{color:var(--accent)}
+
+  /* ---------- Editor panels ---------- */
+  .editor-stack{display:flex;flex-direction:column;gap:10px}
+  details.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  details.panel summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;font-size:13px;font-weight:750}
+  details.panel summary::-webkit-details-marker{display:none}
+  details.panel summary:after{content:"+";margin-left:auto;color:var(--muted);font-size:17px;font-weight:400}
+  details.panel[open] summary:after{content:"-"}
+  details.panel[open] summary{border-bottom:1px solid var(--line)}
+  .panel-body{padding:14px 15px}
+  .panel-sub{font-size:11.5px;color:var(--muted);margin:-4px 0 13px}
+  .field{margin-bottom:12px}
+  .field:last-child{margin-bottom:0}
+  .field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px;font-weight:650}
+  .field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff}
+  .field textarea{resize:vertical;min-height:70px;line-height:1.45}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:#6ee7b7}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;flex-wrap:wrap}
+  .seg button{border:0;border-right:1px solid var(--line);background:#fff;padding:7px 11px;font-size:11.5px;font-weight:650;color:var(--muted)}
+  .seg button:last-child{border-right:0}
+  .seg button.active{background:var(--accent);color:#fff}
+  .section-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .repeat-list{display:flex;flex-direction:column;gap:8px}
+  .repeat-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) 30px;gap:7px;align-items:start;
+    background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px}
+  .repeat-row.two{grid-template-columns:minmax(0,1fr) 120px 30px}
+  .repeat-row.three{grid-template-columns:minmax(0,1fr) 110px 130px 30px}
+  .repeat-row input,.repeat-row textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px;background:#fff;font-size:12px}
+  .repeat-row textarea{resize:vertical;min-height:48px}
+  .remove-row{border:0;background:transparent;color:#94a3b8;border-radius:7px;height:29px;font-size:16px}
+  .remove-row:hover{background:#fee2e2;color:var(--danger)}
+  .helper{font-size:10.5px;color:var(--muted);margin-top:4px}
+  .legal-note{font-size:11.5px;color:#475569;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:9px 10px;margin-bottom:11px}
+  .token-list{font-size:10.5px;color:var(--muted);line-height:1.7;margin:8px 0 12px}
+  .token-list code{background:#ecfdf5;color:#047857;border-radius:5px;padding:1px 4px}
+  .clause-list{display:flex;flex-direction:column;gap:9px}
+  .clause-card{border:1px solid var(--line);border-radius:11px;background:#fff;overflow:hidden}
+  .clause-card.off{opacity:.62;background:#f8fafc}
+  .clause-head{display:flex;align-items:center;gap:8px;padding:9px 10px;background:#f8fafc;border-bottom:1px solid var(--line)}
+  .clause-head input[type="checkbox"]{accent-color:var(--accent)}
+  .clause-title{flex:1;min-width:0;font-size:12px;font-weight:750}
+  .clause-order{display:flex;gap:4px}
+  .clause-order button{border:1px solid var(--line);background:#fff;border-radius:6px;width:25px;height:25px;color:var(--muted)}
+  .clause-order button:disabled{opacity:.3;cursor:default}
+  .clause-card textarea{width:100%;border:0;resize:vertical;padding:10px;min-height:105px;line-height:1.45;font-size:11.5px}
+  .accept-line{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#334155;margin:4px 0 13px}
+  .accept-line input{margin-top:3px;accent-color:var(--accent)}
+  .editor-footer{text-align:center;font-size:11px;color:var(--muted);padding:13px 8px 4px}
+  .editor-footer b{color:var(--ink)}
+
+  /* ---------- A4 live document ---------- */
+  .paper{width:min(210mm,calc(100% - 4px));min-height:297mm;aspect-ratio:210/297;background:#fff;color:#172033;
+    box-shadow:0 2px 5px rgba(15,23,42,.14),0 18px 50px rgba(15,23,42,.12);padding:18mm 17mm;position:relative;
+    overflow:hidden;font-size:11px;line-height:1.58}
+  .paper:after{content:attr(data-page);position:absolute;right:17mm;bottom:10mm;color:#94a3b8;font-size:9px}
+  .doc-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:13px;border-bottom:2px solid var(--ink)}
+  .doc-identity{display:flex;align-items:center;gap:10px}
+  .doc-mark{width:34px;height:34px;background:var(--accent);border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:17px;font-weight:800}
+  .doc-business{font-size:14px;font-weight:800;letter-spacing:-.01em}
+  .doc-contact{font-size:9px;color:#64748b;max-width:260px;margin-top:1px}
+  .doc-no{text-align:right;color:#64748b;font-size:9px;line-height:1.6}
+  .doc-no b{display:block;color:#172033;font-size:10px}
+  .cover-main{padding-top:28mm}
+  .eyebrow{font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:var(--accent);font-weight:800}
+  .paper h1{font-size:35px;line-height:1.12;letter-spacing:-.035em;margin:9px 0 12px;max-width:580px}
+  .cover-summary{font-size:12px;color:#475569;max-width:560px;margin:0}
+  .cover-parties{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:30mm;padding-top:16px;border-top:1px solid #cbd5e1}
+  .mini-label{font-size:8.5px;letter-spacing:.11em;text-transform:uppercase;color:#64748b;font-weight:800;margin-bottom:5px}
+  .party-name{font-size:13px;font-weight:800}
+  .party-detail{font-size:9.5px;color:#64748b;white-space:pre-line;margin-top:3px}
+  .cover-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;padding:12px 0;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0}
+  .fact b{display:block;font-size:10px;margin-top:2px;font-variant-numeric:tabular-nums}
+  .cover-accent{position:absolute;left:0;bottom:0;width:100%;height:7mm;background:var(--accent)}
+  .paper-header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding-bottom:10px;border-bottom:1px solid #cbd5e1;margin-bottom:19px}
+  .paper-header .left{font-size:10px;font-weight:800}
+  .paper-header .right{font-size:8.5px;color:#64748b}
+  .section-kicker{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:3px}
+  .paper h2{font-size:20px;line-height:1.2;letter-spacing:-.02em;margin:0 0 10px}
+  .paper h3{font-size:12px;margin:17px 0 6px}
+  .paper p{margin:0 0 9px}
+  .lead-copy{font-size:11.5px;color:#334155;white-space:pre-line}
+  .doc-section{margin-bottom:20px}
+  .scope-list{display:flex;flex-direction:column;gap:8px}
+  .scope-item{display:grid;grid-template-columns:25px 1fr;gap:8px}
+  .scope-num{width:21px;height:21px;background:#ecfdf5;color:#047857;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:9px;font-weight:800}
+  .scope-title{font-size:10.5px;font-weight:800}
+  .scope-desc{font-size:9.5px;color:#64748b;white-space:pre-line;margin-top:1px}
+  .plain-list{margin:4px 0 0;padding-left:16px;color:#475569}
+  .plain-list li{margin-bottom:3px}
+  .price-table{width:100%;border-collapse:collapse;margin-top:7px}
+  .price-table th{font-size:8px;text-transform:uppercase;letter-spacing:.08em;text-align:left;color:#64748b;padding:7px 6px;border-bottom:1px solid #cbd5e1}
+  .price-table th:last-child,.price-table td:last-child{text-align:right}
+  .price-table td{padding:7px 6px;border-bottom:1px solid #e2e8f0;font-size:9.5px;vertical-align:top}
+  .price-table td:last-child{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .totals{margin:9px 0 0 auto;width:54%;font-size:9.5px}
+  .total-row{display:flex;justify-content:space-between;gap:10px;padding:3px 0;font-variant-numeric:tabular-nums}
+  .total-row.grand{font-size:12px;font-weight:850;border-top:2px solid #172033;margin-top:4px;padding-top:7px}
+  .total-row.deposit{color:var(--accent-dark);font-weight:800}
+  .timeline-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:7px}
+  .timeline-card{border:1px solid #e2e8f0;border-radius:8px;padding:8px 9px}
+  .timeline-card b{display:block;font-size:10px;margin-top:2px}
+  .milestone-line{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #e2e8f0;padding:5px 0;font-size:9.5px}
+  .next-step{background:#ecfdf5;border-left:3px solid var(--accent);padding:10px 11px;color:#065f46;border-radius:0 7px 7px 0}
+  .agreement-intro{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:10px 11px;margin-bottom:15px}
+  .agreement-intro b{display:block;font-size:10px;margin-top:2px}
+  .clauses{counter-reset:clause}
+  .clause{counter-increment:clause;margin-bottom:11px;break-inside:avoid}
+  .clause h3{font-size:10.5px;margin:0 0 3px;display:flex;gap:7px}
+  .clause h3:before{content:counter(clause) ".";color:var(--accent);min-width:16px}
+  .clause p{font-size:9.25px;line-height:1.53;color:#334155;white-space:pre-line;margin:0 0 0 23px}
+  .acceptance-box{margin-top:17mm;border:1px solid #cbd5e1;border-radius:10px;padding:14px}
+  .acceptance-check{display:flex;align-items:flex-start;gap:8px;font-size:10px;font-weight:700}
+  .check-box{width:14px;height:14px;flex:0 0 14px;border:1.5px solid #64748b;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;color:var(--accent-dark);font-size:11px}
+  .signature-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24mm}
+  .signature-card{break-inside:avoid}
+  .signature-role-label{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:#64748b;font-weight:800}
+  .typed-signature{height:42px;display:flex;align-items:end;font-family:Georgia,"Times New Roman",serif;font-style:italic;
+    font-size:20px;color:#172033;padding:0 3px 4px}
+  .signature-line{border-top:1px solid #172033;padding-top:5px;font-size:8.5px;color:#64748b}
+  .signature-meta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
+  .signature-meta div{border-bottom:1px solid #cbd5e1;padding-bottom:4px;min-height:24px;font-size:9px}
+  .signature-meta span{display:block;color:#94a3b8;font-size:7.5px;text-transform:uppercase;letter-spacing:.06em}
+  .doc-disclaimer{position:absolute;left:17mm;right:17mm;bottom:17mm;font-size:8.5px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:6px}
+  .empty-preview{color:#94a3b8;font-style:italic}
+
+  /* ---------- Modal, toast, footer ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:16px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:92vh;overflow:auto}
+  .modal h2{margin:0;padding:18px 20px;font-size:17px;border-bottom:1px solid var(--line)}
+  .modal .body{padding:18px 20px;font-size:13px;color:#475569}
+  .modal .foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+  .toast{position:fixed;right:16px;bottom:16px;z-index:110;background:#0f172a;color:#fff;border-radius:10px;padding:10px 13px;
+    font-size:12px;box-shadow:0 10px 30px rgba(15,23,42,.22);opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}
+  .toast.show{opacity:1;transform:translateY(0)}
+  .footnote{text-align:center;font-size:11.5px;color:var(--muted);padding:16px;background:#fff;border-top:1px solid var(--line)}
+  .footnote b{color:var(--ink)}
+  .footnote a{color:var(--accent-dark);font-weight:700;text-decoration:none}
+  .footnote a:hover{text-decoration:underline}
+  .cross-sell{margin-top:5px}
+  .cross-sell strong{color:var(--accent-dark)}
+
+  @media (max-width:1240px){
+    .app-shell{grid-template-columns:220px minmax(0,1fr)}
+    .workspace{grid-template-columns:minmax(370px,.9fr) minmax(430px,1.1fr)}
+    .toolbar .save-status{display:none}
+  }
+  @media (max-width:1020px){
+    .toolbar{position:relative}
+    .app-shell{display:block}
+    .sidebar{height:auto;position:relative;top:auto;max-height:250px;border-right:0;border-bottom:1px solid var(--line)}
+    .doc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+    .workspace{height:auto;display:block}
+    .mobile-tabs{display:flex;position:sticky;top:0;z-index:12;background:#fff;border-bottom:1px solid var(--line);padding:8px 12px}
+    .mobile-tabs .seg{width:100%}
+    .mobile-tabs button{flex:1}
+    .editor-pane,.preview-pane{height:auto;min-height:65vh;overflow:visible}
+    .editor-pane{border-right:0}
+    .preview-pane{display:none}
+    .workspace.show-preview .editor-pane{display:none}
+    .workspace.show-preview .preview-pane{display:block}
+  }
+  @media (max-width:620px){
+    .toolbar{gap:6px;padding:8px}
+    .brand{width:100%;margin-bottom:2px}
+    .toolbar .spacer{display:none}
+    .toolbar .btn{flex:1}
+    .toolbar select.mini{flex:1;min-width:90px}
+    .editor-pane{padding:10px}
+    .stats{grid-template-columns:1fr 1fr}
+    .stats .card:last-child{grid-column:1/-1}
+    .row2,.row3{grid-template-columns:1fr}
+    .repeat-row,.repeat-row.two,.repeat-row.three{grid-template-columns:1fr 30px}
+    .repeat-row input,.repeat-row textarea{grid-column:1}
+    .repeat-row .remove-row{grid-column:2;grid-row:1}
+    .preview-canvas{padding:10px 6px 30px}
+    .paper{padding:11mm 9mm;font-size:9px}
+    .paper:after{right:9mm;bottom:6mm}
+    .paper h1{font-size:26px}
+    .cover-main{padding-top:16mm}
+    .cover-parties{margin-top:15mm;gap:14px}
+    .signature-grid{gap:13px}
+  }
+
+  @page{size:A4;margin:14mm}
+  @media print{
+    html,body{background:#fff}
+    body:after{content:"Made with ProposalPro Lite — upgrade for the clean version";position:fixed;left:0;right:0;bottom:1mm;
+      text-align:center;color:#94a3b8;font-size:7.5pt;line-height:1}
+    .toolbar,.promo,.sidebar,.editor-pane,.mobile-tabs,.preview-toolbar,.footnote,.overlay,.toast{display:none!important}
+    .app-shell,.workspace,.preview-pane,.preview-canvas{display:block!important;height:auto!important;min-height:0!important;overflow:visible!important;background:#fff!important;padding:0!important;margin:0!important}
+    .paper{display:block;width:auto!important;min-height:0!important;aspect-ratio:auto!important;box-shadow:none!important;padding:0!important;margin:0!important;
+      overflow:visible!important;page-break-after:always;break-after:page;font-size:10pt}
+    .paper:last-child{page-break-after:auto;break-after:auto}
+    .paper:after{display:none}
+    .doc-disclaimer{position:static;margin-top:20mm}
+    .clause,.signature-card,.price-table,.scope-item{break-inside:avoid;page-break-inside:avoid}
+    .cover-main{padding-top:24mm}
+    .cover-parties{margin-top:26mm}
+    .paper.cover{min-height:269mm!important}
+    .cover-accent{position:absolute}
+    .paper h1{font-size:30pt}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand"><span class="dot">▤</span><span>ProposalPro</span><span class="lite-tag">LITE</span></div>
+  <button class="btn" id="newBtn" data-i18n="newDoc">+ New</button>
+  <button class="btn" id="sampleBtn" data-i18n="sample">Sample data</button>
+  <button class="btn" id="exportBtn" data-i18n="exportJson">Export JSON</button>
+  <button class="btn" id="importBtn" data-i18n="importJson">Import JSON</button>
+  <div class="spacer"></div>
+  <span class="save-status" id="saveStatus"></span>
+  <select class="mini" id="currencySel" title="Currency"></select>
+  <select class="mini" id="langSel" title="Language">
+    <option value="en">EN</option>
+    <option value="zh">繁體中文</option>
+  </select>
+  <button class="btn primary" id="printBtn" data-i18n="printPdf">Print / Save as PDF</button>
+</div>
+
+<div class="promo">
+  <span id="promoText"></span>
+  <a id="promoLink" href="#" target="_blank" rel="noopener"></a>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h2 data-i18n="savedDocs">Saved documents</h2>
+      <span class="pill-count" id="docCount"></span>
+    </div>
+    <div class="doc-list" id="docList"></div>
+    <div class="sidebar-actions">
+      <button class="btn small" id="duplicateBtn" data-i18n="duplicate">Duplicate</button>
+      <button class="btn small danger" id="deleteBtn" data-i18n="delete">Delete</button>
+    </div>
+    <div class="sidebar-note" data-i18n="sidebarNote">Documents auto-save in this browser. Export JSON for a portable backup.</div>
+  </aside>
+
+  <main class="workspace" id="workspace">
+    <div class="mobile-tabs">
+      <div class="seg">
+        <button class="active" data-surface="edit" data-i18n="edit">Edit</button>
+        <button data-surface="preview" data-i18n="preview">Preview</button>
+      </div>
+    </div>
+    <section class="editor-pane" id="editorPane">
+      <div class="stats">
+        <div class="card accent"><div class="lbl" data-i18n="total">Total</div><div class="val" id="statTotal"></div></div>
+        <div class="card"><div class="lbl" data-i18n="depositDue">Deposit due</div><div class="val" id="statDeposit"></div></div>
+        <div class="card"><div class="lbl" data-i18n="activeClauses">Active clauses</div><div class="val" id="statClauses"></div></div>
+      </div>
+      <div class="editor-stack" id="editor"></div>
+      <div class="editor-footer">
+        <div data-i18n="legalNote"><b>Template note:</b> ProposalPro provides editable professional templates, not legal advice. For high-value or high-risk work, have a lawyer review your contract.</div>
+      </div>
+    </section>
+    <section class="preview-pane" id="previewPane">
+      <div class="preview-toolbar">
+        <strong data-i18n="livePreview">Live document preview</strong>
+        <span id="pageCount"></span>
+      </div>
+      <div class="preview-canvas" id="previewCanvas"></div>
+    </section>
+  </main>
+</div>
+
+<footer class="footnote">
+  <div data-i18n="legalNote">ProposalPro provides editable professional templates, not legal advice. For high-value or high-risk work, have a lawyer review your contract.</div>
+  <div style="margin-top:5px" data-i18n="privacy">100% offline. Your proposals, contracts, client details, and signatures stay only in this browser.</div>
+  <div class="cross-sell" id="crossSell"></div>
+</footer>
+
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+
+<div class="overlay" id="confirmOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle"></h2>
+    <div class="body" id="confirmMessage"></div>
+    <div class="foot">
+      <button class="btn" id="confirmCancel" data-i18n="cancel">Cancel</button>
+      <button class="btn danger" id="confirmOk"></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORE_KEY="proposalpro_lite_v1";
+  var LITE_CAP=1;
+  var PRO_URL="https://bitsonic1.gumroad.com/l/proposalpro";
+  var PRO_LEADTRACK_URL="https://bitsonic1.gumroad.com/l/leadtrack";
+  var PRO_INVOICE_URL="https://bitsonic1.gumroad.com/l/invoicepro";
+  var PRO_TIMETRACK_URL="https://bitsonic1.gumroad.com/l/timetrack";
+  var PRO_CASHFLOW_URL="https://bitsonic1.gumroad.com/l/cashflow";
+  var CURRENCIES=[
+    {code:"USD",sym:"$"},{code:"EUR",sym:"€"},{code:"GBP",sym:"£"},
+    {code:"TWD",sym:"NT$"},{code:"CNY",sym:"¥"},{code:"JPY",sym:"¥"},
+    {code:"HKD",sym:"HK$"},{code:"SGD",sym:"S$"},{code:"AUD",sym:"A$"},
+    {code:"CAD",sym:"C$"},{code:"INR",sym:"₹"},{code:"KRW",sym:"₩"}
+  ];
+  var I18N={
+    en:{
+      newDoc:"+ New",sample:"Sample data",exportJson:"Export JSON",importJson:"Import JSON",printPdf:"Print / Save as PDF",
+      savedDocs:"Saved documents",duplicate:"Duplicate",delete:"Delete",sidebarNote:"Documents auto-save in this browser. JSON backup is available in ProposalPro Pro.",
+      edit:"Edit",preview:"Preview",total:"Total",depositDue:"Deposit due",activeClauses:"Active clauses",livePreview:"Live document preview",
+      pages:"{n} pages",page:"Page {n}",privacy:"100% offline. Your proposals, contracts, client details, and signatures stay only in this browser.",
+      crossSell:"You're using <b>ProposalPro Lite</b> (free). <a href='"+PRO_URL+"' target='_blank' rel='noopener'>Upgrade to Pro</a> for unlimited documents, JSON backup, and a clean watermark-free PDF. Also for freelancers: <a href='"+PRO_LEADTRACK_URL+"' target='_blank' rel='noopener'>LeadTrack</a> · <a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>InvoicePro</a> · <a href='"+PRO_TIMETRACK_URL+"' target='_blank' rel='noopener'>TimeTrack</a> · <a href='"+PRO_CASHFLOW_URL+"' target='_blank' rel='noopener'>CashFlow</a>.",
+      promoText:"You're using ProposalPro Lite (free). Upgrade to Pro for unlimited documents, JSON backup, and a clean watermark-free PDF.",
+      promoCta:"Get ProposalPro Pro →",
+      capMsg:"ProposalPro Lite is limited to "+LITE_CAP+" saved document.\n\nUpgrade to Pro for unlimited documents, JSON backup, and clean watermark-free PDFs — one-time purchase. Opening the upgrade page…",
+      exportPro:"JSON export is a Pro feature.\n\nUpgrade to ProposalPro Pro (one-time purchase) for portable JSON backups and clean watermark-free PDFs. Opening the upgrade page…",
+      importPro:"JSON import is a Pro feature.\n\nUpgrade to ProposalPro Pro (one-time purchase) to restore portable JSON backups and create unlimited documents. Opening the upgrade page…",
+      legalNote:"ProposalPro provides editable professional templates, not legal advice. For high-value or high-risk work, have a lawyer review your contract.",
+      legalNoteShort:"Editable professional template, not legal advice. Consider legal review for high-value or high-risk work.",
+      docSetup:"Document setup",docSetupSub:"Choose what to send and identify this document.",docType:"Document type",
+      proposal:"Proposal",agreement:"Service Agreement",both:"Proposal + Agreement",docNumber:"Document number",
+      yourBusiness:"Your business",businessSub:"Saved as your reusable profile for future documents.",businessName:"Business name",
+      yourName:"Your name",email:"Email",phone:"Phone",address:"Address",website:"Website",
+      client:"Client",clientSub:"Who will receive and accept this document.",company:"Company",contactName:"Contact name",
+      project:"Project",projectSub:"Set the document title, overview, and validity dates.",projectTitle:"Project title",
+      projectSummary:"Project summary / overview",preparedDate:"Prepared date",validUntil:"Valid until / expiry",
+      scope:"Scope of work",scopeSub:"Describe exactly what the client receives.",deliverables:"Deliverables",
+      deliverableTitle:"Deliverable title",descriptionOptional:"Optional description",addDeliverable:"+ Add deliverable",
+      outOfScope:"Out of scope",outOfScopePh:"Item not included",addOutOfScope:"+ Add out-of-scope item",
+      pricing:"Pricing",pricingSub:"Build the fee and payment schedule.",currency:"Currency",pricingMode:"Pricing mode",
+      fixedFee:"Fixed fee",hourly:"Hourly",milestone:"Milestone",lineDescription:"Description",amount:"Amount",
+      addLine:"+ Add line item",hourlyRate:"Hourly rate",estimatedHours:"Estimated hours",milestoneName:"Milestone name",
+      milestoneDate:"Target date",addMilestone:"+ Add milestone",discount:"Discount",none:"None",percent:"Percent",fixed:"Fixed",
+      deposit:"Deposit",subtotal:"Subtotal",balanceDue:"Balance due",
+      timeline:"Timeline",timelineSub:"Set expected start, delivery, and milestone dates.",startDate:"Start date",endDate:"Estimated delivery / end date",
+      terms:"Terms & clauses",termsSub:"Toggle and edit plain-English protections. Merge tokens update automatically.",
+      termsSettings:"Terms settings",revisions:"Included revision rounds",netDays:"Invoice due in days",lateFee:"Late fee % per month",
+      jurisdiction:"Governing jurisdiction",killFee:"Cancellation / kill-fee text",tokens:"Available merge tokens",
+      resetClauses:"Reset default clauses",signatures:"Signatures",signaturesSub:"Typed names print as clean signature marks.",
+      acceptanceCheck:"By signing, both parties agree to the terms set out in this document.",freelancer:"Freelancer",
+      fullName:"Typed full name",roleTitle:"Role / title",date:"Date",clientSigner:"Client signer",
+      remove:"Remove",moveUp:"Move up",moveDown:"Move down",saved:"Saved",saving:"Saving…",saveError:"Save failed",
+      untitled:"Untitled document",noClient:"No client yet",copySuffix:" (Copy)",confirmDeleteTitle:"Delete document?",
+      confirmDelete:"This removes the current document from this browser. JSON backup is available in ProposalPro Pro.",
+      confirmSampleTitle:"Load sample document?",confirmSample:"This replaces the current Lite document with the full ProposalPro sample.",
+      confirmImportTitle:"Restore backup?",confirmImport:"Importing this backup will replace all current ProposalPro documents and your saved business profile.",
+      confirmResetTitle:"Reset clauses?",confirmReset:"This replaces all clause titles, text, and enabled settings in the current document with ProposalPro defaults.",
+      cancel:"Cancel",restore:"Restore",reset:"Reset",deleted:"Document deleted",duplicated:"Document duplicated",
+      sampleLoaded:"Sample document loaded",imported:"Backup restored",invalidBackup:"That file is not a valid ProposalPro backup.",exported:"Backup downloaded",
+      preparedFor:"Prepared for",preparedBy:"Prepared by",document:"Document",projectOverview:"Project overview",
+      investment:"Investment",item:"Item",details:"Details",estimated:"Estimated",discountLabel:"Discount",
+      depositLabel:"Deposit due to begin",nextSteps:"Next steps",nextStepsBody:"To proceed, review the scope, pricing, timeline, and terms. Complete the acceptance block in the Service Agreement and return a signed copy.",
+      termsConditions:"Terms and Conditions",agreementIntro:"This Service Agreement records the project scope, fees, timeline, and working terms agreed between the parties below.",
+      acceptanceSignatures:"Acceptance and Signatures",signatureIntro:"The parties confirm that they have authority to enter into this agreement and accept the scope, pricing, timeline, and terms in this document.",
+      signature:"Signature",titleRole:"Title / role",proposalValid:"Proposal valid until",notSet:"Not set",priceMode:"Pricing model",
+      fixedFeeLabel:"Fixed project fee",hourlyLabel:"Hourly estimate",milestoneLabel:"Milestone schedule",estimatedTotal:"Estimated total",
+      noDeliverables:"Add deliverables in the editor to define the scope.",noPricing:"Add pricing details in the editor.",notIncluded:"Not included",
+      businessProfile:"Business profile",clientDetails:"Client details",agreementParties:"Agreement parties"
+    },
+    zh:{
+      newDoc:"+ 新增",sample:"範例資料",exportJson:"匯出 JSON",importJson:"匯入 JSON",printPdf:"列印 / 儲存為 PDF",
+      savedDocs:"已儲存文件",duplicate:"複製",delete:"刪除",sidebarNote:"文件會自動儲存在此瀏覽器。JSON 備份功能包含於 ProposalPro Pro。",
+      edit:"編輯",preview:"預覽",total:"總額",depositDue:"訂金",activeClauses:"啟用條款",livePreview:"即時文件預覽",
+      pages:"{n} 頁",page:"第 {n} 頁",privacy:"100% 離線。提案、合約、客戶資料與簽名只會保存在此瀏覽器。",
+      crossSell:"您正在使用 <b>ProposalPro Lite</b>（免費版）。<a href='"+PRO_URL+"' target='_blank' rel='noopener'>升級 Pro</a> 即可建立無限文件、使用 JSON 備份，並輸出無浮水印的乾淨 PDF。同系列：<a href='"+PRO_LEADTRACK_URL+"' target='_blank' rel='noopener'>LeadTrack</a> · <a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>InvoicePro</a> · <a href='"+PRO_TIMETRACK_URL+"' target='_blank' rel='noopener'>TimeTrack</a> · <a href='"+PRO_CASHFLOW_URL+"' target='_blank' rel='noopener'>CashFlow</a>。",
+      promoText:"您正在使用 ProposalPro Lite（免費版）。升級 Pro 即可建立無限文件、使用 JSON 備份，並輸出無浮水印的乾淨 PDF。",
+      promoCta:"取得 ProposalPro Pro →",
+      capMsg:"ProposalPro Lite 免費版最多儲存 "+LITE_CAP+" 份文件。\n\n升級 Pro 即可建立無限文件、使用 JSON 備份，並輸出無浮水印的乾淨 PDF — 一次買斷。即將開啟升級頁面…",
+      exportPro:"JSON 匯出是 Pro 功能。\n\n升級 ProposalPro Pro（一次買斷）即可建立可攜式 JSON 備份，並輸出無浮水印的乾淨 PDF。即將開啟升級頁面…",
+      importPro:"JSON 匯入是 Pro 功能。\n\n升級 ProposalPro Pro（一次買斷）即可還原可攜式 JSON 備份並建立無限文件。即將開啟升級頁面…",
+      legalNote:"ProposalPro 提供可編輯的專業範本，不構成法律建議。高金額或高風險專案，請由律師審閱合約。",
+      legalNoteShort:"可編輯的專業範本，不構成法律建議。高金額或高風險工作請考慮法律審閱。",
+      docSetup:"文件設定",docSetupSub:"選擇要寄送的文件類型並設定識別資訊。",docType:"文件類型",
+      proposal:"提案書",agreement:"服務合約",both:"提案書 + 合約",docNumber:"文件編號",
+      yourBusiness:"你的工作室",businessSub:"另存為可重複使用的工作室資料，供新文件自動帶入。",businessName:"工作室名稱",
+      yourName:"你的姓名",email:"電子郵件",phone:"電話",address:"地址",website:"網站",
+      client:"客戶",clientSub:"接收並簽署此文件的客戶資料。",company:"公司",contactName:"聯絡人姓名",
+      project:"專案",projectSub:"設定文件標題、概述與有效期限。",projectTitle:"專案名稱",
+      projectSummary:"專案摘要 / 概述",preparedDate:"製作日期",validUntil:"有效期限 / 到期日",
+      scope:"工作範圍",scopeSub:"明確說明客戶會收到的成果。",deliverables:"交付項目",
+      deliverableTitle:"交付項目名稱",descriptionOptional:"選填說明",addDeliverable:"+ 新增交付項目",
+      outOfScope:"不包含項目",outOfScopePh:"不包含的項目",addOutOfScope:"+ 新增不包含項目",
+      pricing:"費用",pricingSub:"建立費用與付款安排。",currency:"幣別",pricingMode:"計價方式",
+      fixedFee:"固定費用",hourly:"按時計費",milestone:"里程碑",lineDescription:"說明",amount:"金額",
+      addLine:"+ 新增費用項目",hourlyRate:"時薪",estimatedHours:"預估時數",milestoneName:"里程碑名稱",
+      milestoneDate:"目標日期",addMilestone:"+ 新增里程碑",discount:"折扣",none:"無",percent:"百分比",fixed:"固定金額",
+      deposit:"訂金",subtotal:"小計",balanceDue:"尾款",
+      timeline:"時程",timelineSub:"設定預計開始、交付與里程碑日期。",startDate:"開始日期",endDate:"預計交付 / 結束日期",
+      terms:"條款",termsSub:"啟用並編輯白話條款。合併欄位會自動更新。",termsSettings:"條款設定",
+      revisions:"包含的修改輪次",netDays:"發票付款天數",lateFee:"每月逾期費 %",jurisdiction:"準據法管轄地",
+      killFee:"取消 / 終止費文字",tokens:"可用的合併欄位",resetClauses:"重設預設條款",
+      signatures:"簽署",signaturesSub:"輸入姓名，列印時會呈現為清楚的簽名標記。",acceptanceCheck:"簽署即表示雙方同意本文件所列條款。",
+      freelancer:"自由工作者",fullName:"輸入全名",roleTitle:"職稱 / 角色",date:"日期",clientSigner:"客戶簽署人",
+      remove:"移除",moveUp:"上移",moveDown:"下移",saved:"已儲存",saving:"儲存中…",saveError:"儲存失敗",
+      untitled:"未命名文件",noClient:"尚未設定客戶",copySuffix:"（副本）",confirmDeleteTitle:"刪除文件？",
+      confirmDelete:"這會從此瀏覽器移除目前文件。JSON 備份功能包含於 ProposalPro Pro。",
+      confirmSampleTitle:"載入範例文件？",confirmSample:"這會以完整的 ProposalPro 範例取代目前的 Lite 文件。",
+      confirmImportTitle:"還原備份？",confirmImport:"匯入此備份會取代目前所有 ProposalPro 文件與已儲存的工作室資料。",
+      confirmResetTitle:"重設條款？",confirmReset:"這會以 ProposalPro 預設內容取代目前文件中的所有條款標題、文字與啟用狀態。",
+      cancel:"取消",restore:"還原",reset:"重設",deleted:"文件已刪除",duplicated:"文件已複製",
+      sampleLoaded:"已載入範例文件",imported:"備份已還原",invalidBackup:"此檔案不是有效的 ProposalPro 備份。",exported:"已下載備份",
+      preparedFor:"提供給",preparedBy:"提案人",document:"文件",projectOverview:"專案概述",investment:"專案費用",
+      item:"項目",details:"說明",estimated:"預估",discountLabel:"折扣",depositLabel:"開始工作前應付訂金",
+      nextSteps:"下一步",nextStepsBody:"請檢視工作範圍、費用、時程與條款。完成服務合約的接受簽署區塊，並回傳已簽署副本。",
+      termsConditions:"條款與條件",agreementIntro:"本服務合約記錄雙方同意的專案範圍、費用、時程與合作條款。",
+      acceptanceSignatures:"接受與簽署",signatureIntro:"雙方確認具備簽訂本合約的權限，並接受本文件中的工作範圍、費用、時程與條款。",
+      signature:"簽名",titleRole:"職稱 / 角色",proposalValid:"提案有效期限",notSet:"未設定",priceMode:"計價方式",
+      fixedFeeLabel:"固定專案費用",hourlyLabel:"按時計費預估",milestoneLabel:"里程碑付款安排",estimatedTotal:"預估總額",
+      noDeliverables:"請在編輯區新增交付項目以定義工作範圍。",noPricing:"請在編輯區新增費用資料。",notIncluded:"不包含",
+      businessProfile:"工作室資料",clientDetails:"客戶資料",agreementParties:"合約雙方"
+    }
+  };
+
+  var DEFAULT_CLAUSES=[
+    {id:"scope",title:"Scope of Work",enabled:true,body:"{{business}} will provide the services and deliverables described in this document. Any service, deliverable, revision, or request not expressly included in the Scope of Work is out of scope. Out-of-scope work requires written approval and may be quoted and billed separately."},
+    {id:"payment",title:"Payment Terms",enabled:true,body:"A deposit of {{deposit}} is due before work begins. Unless a milestone schedule states otherwise, the remaining balance is due within {{netDays}} calendar days of invoice. The client is responsible for bank, transfer, or platform fees that reduce the amount received by {{business}}."},
+    {id:"late",title:"Late Payment",enabled:true,body:"Overdue balances may accrue a late charge of {{lateFee}}% per month, or the maximum amount permitted by law if lower. {{business}} may pause work, delay delivery, or withhold final files while an invoice remains overdue. Pausing for late payment may change the project schedule."},
+    {id:"revisions",title:"Revisions",enabled:true,body:"The project includes {{revisions}} rounds of revisions to the agreed deliverables. Each round should be submitted as one consolidated set of feedback. Additional revisions, changes after approval, or new directions may be billed at the freelancer's current hourly rate and may extend the timeline."},
+    {id:"changes",title:"Additional Work / Change Requests",enabled:true,body:"A request that changes the approved scope, assumptions, deliverables, or timeline is a change request. {{business}} will explain any effect on fees and timing before starting that work. Change requests are not included until both parties approve them in writing."},
+    {id:"ip",title:"Intellectual Property",enabled:true,body:"Upon final full payment, the client receives ownership of the final deliverables created specifically for this project. Pre-existing tools, templates, methods, fonts, stock assets, and third-party materials remain subject to their existing ownership or licenses. Unless the client opts out in writing before launch, {{business}} may display the completed work in a portfolio, case study, or award submission."},
+    {id:"confidentiality",title:"Confidentiality",enabled:true,body:"Each party will use reasonable care to protect the other party's non-public business, technical, and personal information and will use it only for this project. This obligation does not apply to information that is public, independently developed, or lawfully received from another source."},
+    {id:"contractor",title:"Independent Contractor",enabled:true,body:"{{freelancer}} is an independent contractor, not an employee, partner, or agent of the client. {{freelancer}} controls how the services are performed and is responsible for their own taxes, insurance, equipment, and business expenses."},
+    {id:"cancel",title:"Cancellation / Kill Fee",enabled:true,body:"The deposit is non-refundable once work is scheduled or begins. If the client cancels or pauses the project for more than 30 days, the client will pay for work completed and approved expenses through the cancellation date, plus {{kill}}. {{business}} will provide completed paid-for work in its then-current state."},
+    {id:"liability",title:"Limitation of Liability",enabled:true,body:"To the fullest extent permitted by law, each party's total liability arising from this project is limited to the fees actually paid under this agreement. Neither party is liable for indirect, incidental, special, or consequential losses, including lost profits or lost data."},
+    {id:"warranty",title:"Warranty / Acceptance",enabled:true,body:"The client will review deliverables promptly and report material issues within 10 business days of delivery. {{business}} will correct verified issues that materially fail to match the agreed scope. After that acceptance window, deliverables are accepted and provided as-is, except for any separate written warranty."},
+    {id:"law",title:"Governing Law",enabled:true,body:"This agreement is governed by the laws of {{jurisdiction}}, without regard to conflict-of-law rules. The parties will first try in good faith to resolve any dispute through direct discussion before starting formal proceedings."},
+    {id:"acceptance",title:"Acceptance",enabled:true,body:"Signing below, approving this document in writing, or paying the deposit confirms that both parties accept the scope, pricing, timeline, and terms in this document. Any change to this agreement must be recorded in writing and accepted by both parties."}
+  ];
+
+  var openPanels={setup:true,business:false,client:true,project:true,scope:true,pricing:true,timeline:false,terms:false,signatures:false};
+  var saveTimer=null,saveWarned=false,toastTimer=null,confirmAction=null,pendingImport=null;
+
+  function $(id){return document.getElementById(id);}
+  function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+  function deepCopy(x){return JSON.parse(JSON.stringify(x));}
+  function today(){var d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+  function pad(n){return ("0"+n).slice(-2);}
+  function addDays(dateStr,n){var p=(dateStr||today()).split("-"),d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));d.setDate(d.getDate()+n);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+  function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+  function attr(s){return esc(s);}
+  function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.en[k]||k;}
+  function replaceAll(s,a,b){return String(s).split(a).join(b);}
+  function blankProfile(){return {businessName:"",yourName:"",email:"",phone:"",address:"",website:""};}
+  function documentNumber(n){return "PRP-"+("0000"+n).slice(-4);}
+  function defaultClauses(){return deepCopy(DEFAULT_CLAUSES);}
+
+  function newDocObject(number,profile){
+    var now=Date.now();
+    return {
+      id:uid(),type:"both",number:number||"PRP-0001",
+      business:deepCopy(profile||blankProfile()),
+      client:{company:"",contactName:"",email:"",address:""},
+      project:{title:"",summary:"",preparedDate:today(),validUntil:addDays(today(),14)},
+      deliverables:[{title:"",description:""}],outOfScope:[],
+      pricing:{currency:"USD",mode:"fixed",items:[{description:"Project fee",amount:0}],hourlyRate:0,estimatedHours:0,
+        milestones:[{name:"",amount:0,date:""}],discountType:"none",discountValue:0,depositType:"percent",depositValue:50},
+      timeline:{startDate:"",endDate:""},
+      termsSettings:{revisions:2,netDays:14,lateFee:1.5,jurisdiction:"the freelancer's principal place of business",kill:"a cancellation fee equal to 25% of the remaining unpaid project total"},
+      clauses:defaultClauses(),
+      signatures:{accepted:false,freelancer:{name:(profile&&profile.yourName)||"",role:"",date:""},client:{name:"",role:"",date:""}},
+      createdAt:now,updatedAt:now
+    };
+  }
+  function blankState(){
+    var p=blankProfile(),d=newDocObject("PRP-0001",p);
+    return {version:1,lang:"en",nextNumber:2,profile:p,docs:[d],currentId:d.id};
+  }
+  function normalizeText(v){return String(v==null?"":v);}
+  function normalizeNumber(v){v=Number(v);return Number.isFinite(v)&&v>=0?v:0;}
+  function normalizeDoc(raw,index,profile){
+    raw=(raw&&typeof raw==="object"&&!Array.isArray(raw))?raw:{};
+    var d=newDocObject(normalizeText(raw.number)||documentNumber(index+1),profile);
+    d.id=normalizeText(raw.id)||uid();
+    d.type=["proposal","agreement","both"].indexOf(raw.type)>=0?raw.type:"both";
+    d.number=normalizeText(raw.number)||d.number;
+    d.business=Object.assign(d.business,(raw.business&&typeof raw.business==="object")?raw.business:{});
+    d.client=Object.assign(d.client,(raw.client&&typeof raw.client==="object")?raw.client:{});
+    d.project=Object.assign(d.project,(raw.project&&typeof raw.project==="object")?raw.project:{});
+    ["businessName","yourName","email","phone","address","website"].forEach(function(k){d.business[k]=normalizeText(d.business[k]);});
+    ["company","contactName","email","address"].forEach(function(k){d.client[k]=normalizeText(d.client[k]);});
+    ["title","summary","preparedDate","validUntil"].forEach(function(k){d.project[k]=normalizeText(d.project[k]);});
+    d.deliverables=Array.isArray(raw.deliverables)?raw.deliverables.filter(isObject).map(function(x){return {title:normalizeText(x.title),description:normalizeText(x.description)};}):d.deliverables;
+    d.outOfScope=Array.isArray(raw.outOfScope)?raw.outOfScope.map(normalizeText):[];
+    d.pricing=Object.assign(d.pricing,(raw.pricing&&typeof raw.pricing==="object")?raw.pricing:{});
+    d.pricing.currency=CURRENCIES.some(function(c){return c.code===d.pricing.currency;})?d.pricing.currency:"USD";
+    d.pricing.mode=["fixed","hourly","milestone"].indexOf(d.pricing.mode)>=0?d.pricing.mode:"fixed";
+    d.pricing.items=Array.isArray(d.pricing.items)?d.pricing.items.filter(isObject).map(function(x){return {description:normalizeText(x.description),amount:normalizeNumber(x.amount)};}):[];
+    d.pricing.milestones=Array.isArray(d.pricing.milestones)?d.pricing.milestones.filter(isObject).map(function(x){return {name:normalizeText(x.name),amount:normalizeNumber(x.amount),date:normalizeText(x.date)};}):[];
+    ["hourlyRate","estimatedHours","discountValue","depositValue"].forEach(function(k){d.pricing[k]=normalizeNumber(d.pricing[k]);});
+    d.pricing.discountType=["none","percent","fixed"].indexOf(d.pricing.discountType)>=0?d.pricing.discountType:"none";
+    d.pricing.depositType=["none","percent","fixed"].indexOf(d.pricing.depositType)>=0?d.pricing.depositType:"none";
+    d.timeline=Object.assign(d.timeline,(raw.timeline&&typeof raw.timeline==="object")?raw.timeline:{});
+    d.timeline.startDate=normalizeText(d.timeline.startDate);d.timeline.endDate=normalizeText(d.timeline.endDate);
+    d.termsSettings=Object.assign(d.termsSettings,(raw.termsSettings&&typeof raw.termsSettings==="object")?raw.termsSettings:{});
+    d.termsSettings.revisions=normalizeNumber(d.termsSettings.revisions);d.termsSettings.netDays=normalizeNumber(d.termsSettings.netDays);
+    d.termsSettings.lateFee=normalizeNumber(d.termsSettings.lateFee);d.termsSettings.jurisdiction=normalizeText(d.termsSettings.jurisdiction);
+    d.termsSettings.kill=normalizeText(d.termsSettings.kill);
+    d.clauses=Array.isArray(raw.clauses)&&raw.clauses.length?raw.clauses.filter(isObject).map(function(x,i){
+      var base=DEFAULT_CLAUSES.find(function(c){return c.id===x.id;})||DEFAULT_CLAUSES[i]||{id:uid(),title:"Custom clause",enabled:true,body:""};
+      return {id:normalizeText(x.id)||base.id,title:normalizeText(x.title)||base.title,enabled:x.enabled!==false,body:normalizeText(x.body)||base.body};
+    }):defaultClauses();
+    d.signatures=Object.assign(d.signatures,(raw.signatures&&typeof raw.signatures==="object")?raw.signatures:{});
+    d.signatures.freelancer=Object.assign({name:"",role:"",date:""},isObject(d.signatures.freelancer)?d.signatures.freelancer:{});
+    d.signatures.client=Object.assign({name:"",role:"",date:""},isObject(d.signatures.client)?d.signatures.client:{});
+    d.signatures.accepted=!!d.signatures.accepted;
+    ["name","role","date"].forEach(function(k){d.signatures.freelancer[k]=normalizeText(d.signatures.freelancer[k]);d.signatures.client[k]=normalizeText(d.signatures.client[k]);});
+    d.createdAt=Number(raw.createdAt)||Date.now();d.updatedAt=Number(raw.updatedAt)||d.createdAt;
+    return d;
+  }
+  function isObject(x){return !!x&&typeof x==="object"&&!Array.isArray(x);}
+  function normalizeState(raw){
+    if(!isObject(raw))return blankState();
+    var p=Object.assign(blankProfile(),isObject(raw.profile)?raw.profile:{});
+    Object.keys(p).forEach(function(k){p[k]=normalizeText(p[k]);});
+    var docs=Array.isArray(raw.docs)?raw.docs.filter(isObject).map(function(x,i){return normalizeDoc(x,i,p);}):[];
+    if(!docs.length)docs=[newDocObject("PRP-0001",p)];
+    docs=docs.slice(0,LITE_CAP);
+    var maxNo=docs.reduce(function(max,d){var n=parseInt((d.number||"").replace(/\D/g,""),10);return Number.isFinite(n)?Math.max(max,n):max;},0);
+    return {version:1,lang:I18N[raw.lang]?raw.lang:"en",nextNumber:Math.max(Number(raw.nextNumber)||1,maxNo+1),profile:p,docs:docs,
+      currentId:docs.some(function(d){return d.id===raw.currentId;})?raw.currentId:docs[0].id};
+  }
+  function load(){try{var r=localStorage.getItem(STORE_KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+  var S=normalizeState(load());
+  function currentDoc(){return S.docs.find(function(d){return d.id===S.currentId;})||S.docs[0];}
+
+  function save(){
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(S));return true;}
+    catch(e){
+      if(!saveWarned){saveWarned=true;alert("ProposalPro Lite could not save to this browser's storage, so changes may be lost on reload.");}
+      return false;
+    }
+  }
+  function saveNow(){
+    clearTimeout(saveTimer);saveTimer=null;
+    var ok=save();setSaveStatus(ok?t("saved"):t("saveError"),!ok);renderSidebar();
+  }
+  function touch(){
+    var d=currentDoc();d.updatedAt=Date.now();setSaveStatus(t("saving"),false);
+    clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,350);
+  }
+  function setSaveStatus(text,isError){$("saveStatus").textContent=text;$("saveStatus").classList.toggle("error",!!isError);}
+  function toast(msg){clearTimeout(toastTimer);$("toast").textContent=msg;$("toast").classList.add("show");toastTimer=setTimeout(function(){$("toast").classList.remove("show");},2200);}
+
+  function currencyInfo(code){return CURRENCIES.find(function(c){return c.code===code;})||CURRENCIES[0];}
+  function noDecimals(code){return code==="JPY"||code==="KRW";}
+  function money(doc,n){
+    var code=doc.pricing.currency,info=currencyInfo(code),v=(Number(n)||0).toFixed(noDecimals(code)?0:2),neg=v.charAt(0)==="-";
+    if(neg)v=v.slice(1);var parts=v.split(".");parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,",");
+    return (neg?"-":"")+info.sym+parts.join(".");
+  }
+  function calc(doc){
+    var p=doc.pricing,subtotal=0;
+    if(p.mode==="fixed")subtotal=p.items.reduce(function(a,x){return a+normalizeNumber(x.amount);},0);
+    else if(p.mode==="hourly")subtotal=normalizeNumber(p.hourlyRate)*normalizeNumber(p.estimatedHours);
+    else subtotal=p.milestones.reduce(function(a,x){return a+normalizeNumber(x.amount);},0);
+    var discount=0;
+    if(p.discountType==="percent")discount=subtotal*Math.min(normalizeNumber(p.discountValue),100)/100;
+    else if(p.discountType==="fixed")discount=normalizeNumber(p.discountValue);
+    discount=Math.min(discount,subtotal);
+    var total=Math.max(0,subtotal-discount),deposit=0;
+    if(p.depositType==="percent")deposit=total*Math.min(normalizeNumber(p.depositValue),100)/100;
+    else if(p.depositType==="fixed")deposit=normalizeNumber(p.depositValue);
+    deposit=Math.min(deposit,total);
+    return {subtotal:subtotal,discount:discount,total:total,deposit:deposit,balance:Math.max(0,total-deposit)};
+  }
+  function fmtDate(s){if(!s)return t("notSet");var p=s.split("-"),d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));if(isNaN(d.getTime()))return s;return d.toLocaleDateString(S.lang==="zh"?"zh-TW":"en-US",{year:"numeric",month:"short",day:"numeric"});}
+  function docTypeLabel(type){return t(type==="proposal"?"proposal":type==="agreement"?"agreement":"both");}
+  function pricingModeLabel(mode){return t(mode==="fixed"?"fixedFeeLabel":mode==="hourly"?"hourlyLabel":"milestoneLabel");}
+  function displayTitle(d){return d.project.title.trim()||t("untitled");}
+  function displayClient(d){return d.client.company.trim()||d.client.contactName.trim()||t("noClient");}
+  function fmtUpdated(ms){var d=new Date(ms||Date.now());return d.toLocaleDateString(S.lang==="zh"?"zh-TW":"en-US",{month:"short",day:"numeric"});}
+  function getPath(obj,path){return path.split(".").reduce(function(v,k){return v==null?undefined:v[k];},obj);}
+  function setPath(obj,path,value){var parts=path.split("."),last=parts.pop(),at=obj;parts.forEach(function(k){at=at[k];});at[last]=value;}
+  function selected(a,b){return a===b?" selected":"";}
+  function checked(v){return v?" checked":"";}
+  function panel(key,title,sub,body){return '<details class="panel" data-panel="'+key+'"'+(openPanels[key]?" open":"")+'><summary>'+esc(title)+'</summary><div class="panel-body">'+(sub?'<div class="panel-sub">'+esc(sub)+'</div>':'')+body+'</div></details>';}
+  function field(label,path,value,type,placeholder,extra){
+    type=type||"text";placeholder=placeholder||"";extra=extra||"";
+    return '<div class="field"><label>'+esc(label)+'</label><input type="'+type+'" data-path="'+attr(path)+'" value="'+attr(value)+'" placeholder="'+attr(placeholder)+'" '+extra+'></div>';
+  }
+  function area(label,path,value,placeholder,rows){
+    return '<div class="field"><label>'+esc(label)+'</label><textarea data-path="'+attr(path)+'" placeholder="'+attr(placeholder)+'" rows="'+(rows||3)+'">'+esc(value)+'</textarea></div>';
+  }
+  function currencyOptions(value){return CURRENCIES.map(function(c){return '<option value="'+c.code+'"'+selected(c.code,value)+'>'+c.code+' ('+c.sym+')</option>';}).join("");}
+  function typeSeg(d){return '<div class="field"><label>'+esc(t("docType"))+'</label><div class="seg">'+
+    ['proposal','agreement','both'].map(function(x){return '<button type="button" data-action="set-type" data-value="'+x+'" class="'+(d.type===x?"active":"")+'">'+esc(docTypeLabel(x))+'</button>';}).join("")+'</div></div>';}
+  function pricingSeg(d){return '<div class="field"><label>'+esc(t("pricingMode"))+'</label><div class="seg">'+
+    ['fixed','hourly','milestone'].map(function(x){var key=x==="fixed"?"fixedFee":x;return '<button type="button" data-action="set-pricing-mode" data-value="'+x+'" class="'+(d.pricing.mode===x?"active":"")+'">'+esc(t(key))+'</button>';}).join("")+'</div></div>';}
+
+  function renderEditor(){
+    var d=currentDoc(),p=d.pricing,html=[];
+    html.push(panel("setup",t("docSetup"),t("docSetupSub"),typeSeg(d)+field(t("docNumber"),"number",d.number)));
+    html.push(panel("business",t("yourBusiness"),t("businessSub"),
+      field(t("businessName"),"business.businessName",d.business.businessName)+
+      '<div class="row2">'+field(t("yourName"),"business.yourName",d.business.yourName)+field(t("email"),"business.email",d.business.email,"email")+'</div>'+
+      '<div class="row2">'+field(t("phone"),"business.phone",d.business.phone,"tel")+field(t("website"),"business.website",d.business.website,"url")+'</div>'+
+      area(t("address"),"business.address",d.business.address,"",2)));
+    html.push(panel("client",t("client"),t("clientSub"),
+      '<div class="row2">'+field(t("company"),"client.company",d.client.company)+field(t("contactName"),"client.contactName",d.client.contactName)+'</div>'+
+      field(t("email"),"client.email",d.client.email,"email")+area(t("address"),"client.address",d.client.address,"",2)));
+    html.push(panel("project",t("project"),t("projectSub"),
+      field(t("projectTitle"),"project.title",d.project.title)+area(t("projectSummary"),"project.summary",d.project.summary,"",4)+
+      '<div class="row2">'+field(t("preparedDate"),"project.preparedDate",d.project.preparedDate,"date")+field(t("validUntil"),"project.validUntil",d.project.validUntil,"date")+'</div>'));
+    var deliverables=d.deliverables.map(function(x,i){return '<div class="repeat-row"><input data-path="deliverables.'+i+'.title" value="'+attr(x.title)+'" placeholder="'+attr(t("deliverableTitle"))+'">'+
+      '<textarea data-path="deliverables.'+i+'.description" placeholder="'+attr(t("descriptionOptional"))+'">'+esc(x.description)+'</textarea>'+
+      '<button type="button" class="remove-row" data-action="remove-row" data-list="deliverables" data-index="'+i+'" title="'+attr(t("remove"))+'">×</button></div>';}).join("");
+    var outs=d.outOfScope.map(function(x,i){return '<div class="repeat-row two"><input data-path="outOfScope.'+i+'" value="'+attr(x)+'" placeholder="'+attr(t("outOfScopePh"))+'">'+
+      '<span></span><button type="button" class="remove-row" data-action="remove-row" data-list="outOfScope" data-index="'+i+'" title="'+attr(t("remove"))+'">×</button></div>';}).join("");
+    html.push(panel("scope",t("scope"),t("scopeSub"),'<div class="field"><label>'+esc(t("deliverables"))+'</label><div class="repeat-list">'+deliverables+'</div>'+
+      '<div class="section-actions"><button class="btn small" type="button" data-action="add-deliverable">'+esc(t("addDeliverable"))+'</button></div></div>'+
+      '<div class="field"><label>'+esc(t("outOfScope"))+'</label><div class="repeat-list">'+outs+'</div>'+
+      '<div class="section-actions"><button class="btn small" type="button" data-action="add-out">'+esc(t("addOutOfScope"))+'</button></div></div>'));
+    var pricingBody='<div class="row2"><div class="field"><label>'+esc(t("currency"))+'</label><select data-path="pricing.currency">'+currencyOptions(p.currency)+'</select></div>'+pricingSeg(d)+'</div>';
+    if(p.mode==="fixed"){
+      pricingBody+='<div class="repeat-list">'+p.items.map(function(x,i){return '<div class="repeat-row two"><input data-path="pricing.items.'+i+'.description" value="'+attr(x.description)+'" placeholder="'+attr(t("lineDescription"))+'">'+
+        '<input type="number" min="0" step="any" data-path="pricing.items.'+i+'.amount" value="'+attr(x.amount)+'" placeholder="0"><button type="button" class="remove-row" data-action="remove-row" data-list="pricing.items" data-index="'+i+'" title="'+attr(t("remove"))+'">×</button></div>';}).join("")+'</div>'+
+        '<div class="section-actions"><button class="btn small" type="button" data-action="add-price-line">'+esc(t("addLine"))+'</button></div>';
+    }else if(p.mode==="hourly"){
+      pricingBody+='<div class="row2">'+field(t("hourlyRate"),"pricing.hourlyRate",p.hourlyRate,"number","0",'min="0" step="any"')+
+        field(t("estimatedHours"),"pricing.estimatedHours",p.estimatedHours,"number","0",'min="0" step="any"')+'</div>';
+    }else{
+      pricingBody+='<div class="repeat-list">'+p.milestones.map(function(x,i){return '<div class="repeat-row three"><input data-path="pricing.milestones.'+i+'.name" value="'+attr(x.name)+'" placeholder="'+attr(t("milestoneName"))+'">'+
+        '<input type="number" min="0" step="any" data-path="pricing.milestones.'+i+'.amount" value="'+attr(x.amount)+'" placeholder="0">'+
+        '<input type="date" data-path="pricing.milestones.'+i+'.date" value="'+attr(x.date)+'"><button type="button" class="remove-row" data-action="remove-row" data-list="pricing.milestones" data-index="'+i+'" title="'+attr(t("remove"))+'">×</button></div>';}).join("")+'</div>'+
+        '<div class="section-actions"><button class="btn small" type="button" data-action="add-milestone">'+esc(t("addMilestone"))+'</button></div>';
+    }
+    pricingBody+='<div class="row2"><div class="field"><label>'+esc(t("discount"))+'</label><select data-path="pricing.discountType"><option value="none"'+selected("none",p.discountType)+'>'+esc(t("none"))+'</option><option value="percent"'+selected("percent",p.discountType)+'>'+esc(t("percent"))+'</option><option value="fixed"'+selected("fixed",p.discountType)+'>'+esc(t("fixed"))+'</option></select></div>'+
+      field(t("amount"),"pricing.discountValue",p.discountValue,"number","0",'min="0" step="any"')+'</div>'+
+      '<div class="row2"><div class="field"><label>'+esc(t("deposit"))+'</label><select data-path="pricing.depositType"><option value="none"'+selected("none",p.depositType)+'>'+esc(t("none"))+'</option><option value="percent"'+selected("percent",p.depositType)+'>'+esc(t("percent"))+'</option><option value="fixed"'+selected("fixed",p.depositType)+'>'+esc(t("fixed"))+'</option></select></div>'+
+      field(t("amount"),"pricing.depositValue",p.depositValue,"number","0",'min="0" step="any"')+'</div>';
+    html.push(panel("pricing",t("pricing"),t("pricingSub"),pricingBody));
+    html.push(panel("timeline",t("timeline"),t("timelineSub"),'<div class="row2">'+field(t("startDate"),"timeline.startDate",d.timeline.startDate,"date")+field(t("endDate"),"timeline.endDate",d.timeline.endDate,"date")+'</div>'));
+    var ts=d.termsSettings;
+    var termsBody='<div class="legal-note">'+esc(t("legalNote"))+'</div><h4 style="font-size:12px;margin:0 0 9px">'+esc(t("termsSettings"))+'</h4>'+
+      '<div class="row3">'+field(t("revisions"),"termsSettings.revisions",ts.revisions,"number","2",'min="0" step="1"')+
+      field(t("netDays"),"termsSettings.netDays",ts.netDays,"number","14",'min="0" step="1"')+
+      field(t("lateFee"),"termsSettings.lateFee",ts.lateFee,"number","1.5",'min="0" step="any"')+'</div>'+
+      field(t("jurisdiction"),"termsSettings.jurisdiction",ts.jurisdiction)+area(t("killFee"),"termsSettings.kill",ts.kill,"",2)+
+      '<div class="token-list"><b>'+esc(t("tokens"))+':</b> <code>{{freelancer}}</code> <code>{{business}}</code> <code>{{client}}</code> <code>{{clientCompany}}</code> <code>{{total}}</code> <code>{{deposit}}</code> <code>{{currency}}</code> <code>{{revisions}}</code> <code>{{netDays}}</code> <code>{{lateFee}}</code> <code>{{jurisdiction}}</code> <code>{{kill}}</code> <code>{{startDate}}</code> <code>{{endDate}}</code></div>'+
+      '<div class="section-actions"><button class="btn small" type="button" data-action="reset-clauses">'+esc(t("resetClauses"))+'</button></div><div class="clause-list">';
+    termsBody+=d.clauses.map(function(c,i){return '<div class="clause-card '+(c.enabled?"":"off")+'"><div class="clause-head"><input type="checkbox" data-path="clauses.'+i+'.enabled"'+checked(c.enabled)+'>'+
+      '<input class="clause-title" style="border:0;background:transparent" data-path="clauses.'+i+'.title" value="'+attr(c.title)+'" aria-label="'+attr(c.title)+'">'+
+      '<div class="clause-order"><button type="button" data-action="move-clause" data-index="'+i+'" data-dir="-1" title="'+attr(t("moveUp"))+'"'+(i===0?" disabled":"")+'>↑</button>'+
+      '<button type="button" data-action="move-clause" data-index="'+i+'" data-dir="1" title="'+attr(t("moveDown"))+'"'+(i===d.clauses.length-1?" disabled":"")+'>↓</button></div></div>'+
+      '<textarea data-path="clauses.'+i+'.body" rows="5">'+esc(c.body)+'</textarea></div>';}).join("")+'</div>';
+    html.push(panel("terms",t("terms"),t("termsSub"),termsBody));
+    var s=d.signatures;
+    html.push(panel("signatures",t("signatures"),t("signaturesSub"),
+      '<label class="accept-line"><input type="checkbox" data-path="signatures.accepted"'+checked(s.accepted)+'><span>'+esc(t("acceptanceCheck"))+'</span></label>'+
+      '<h4 style="font-size:12px;margin:0 0 9px">'+esc(t("freelancer"))+'</h4><div class="row3">'+field(t("fullName"),"signatures.freelancer.name",s.freelancer.name)+field(t("roleTitle"),"signatures.freelancer.role",s.freelancer.role)+field(t("date"),"signatures.freelancer.date",s.freelancer.date,"date")+'</div>'+
+      '<h4 style="font-size:12px;margin:7px 0 9px">'+esc(t("clientSigner"))+'</h4><div class="row3">'+field(t("fullName"),"signatures.client.name",s.client.name)+field(t("roleTitle"),"signatures.client.role",s.client.role)+field(t("date"),"signatures.client.date",s.client.date,"date")+'</div>'));
+    $("editor").innerHTML=html.join("");
+  }
+
+  function renderCurrency(){
+    if(!$("currencySel").options.length)CURRENCIES.forEach(function(c){var o=document.createElement("option");o.value=c.code;o.textContent=c.code+" ("+c.sym+")";$("currencySel").appendChild(o);});
+    $("currencySel").value=currentDoc().pricing.currency;
+  }
+  function renderStats(){
+    var d=currentDoc(),c=calc(d);$("statTotal").textContent=money(d,c.total);$("statDeposit").textContent=money(d,c.deposit);
+    $("statClauses").textContent=d.clauses.filter(function(x){return x.enabled;}).length+" / "+d.clauses.length;
+  }
+  function renderSidebar(){
+    $("docCount").textContent=S.docs.length;
+    $("docList").innerHTML=S.docs.slice().sort(function(a,b){return b.updatedAt-a.updatedAt;}).map(function(d){
+      return '<button class="doc-item '+(d.id===S.currentId?"active":"")+'" data-open-doc="'+attr(d.id)+'"><div class="title">'+esc(displayTitle(d))+'</div>'+
+        '<div class="client">'+esc(displayClient(d))+'</div><div class="meta"><span>'+esc(docTypeLabel(d.type))+' · '+esc(fmtUpdated(d.updatedAt))+'</span><span class="amount">'+esc(money(d,calc(d).total))+'</span></div></button>';
+    }).join("");
+  }
+  function contactLine(b){return [b.email,b.phone,b.website].filter(Boolean).join(" · ");}
+  function partiesDetail(x){return [x.contactName||"",x.email||"",x.address||""].filter(Boolean).join("\n");}
+  function businessDetail(b){return [b.yourName||"",contactLine(b),b.address||""].filter(Boolean).join("\n");}
+  function tokenText(doc,body){
+    var c=calc(doc),map={
+      freelancer:doc.business.yourName||doc.business.businessName||"the freelancer",
+      business:doc.business.businessName||doc.business.yourName||"the freelancer",
+      client:doc.client.contactName||doc.client.company||"the client",
+      clientCompany:doc.client.company||doc.client.contactName||"the client",
+      total:money(doc,c.total),deposit:money(doc,c.deposit),currency:doc.pricing.currency,
+      revisions:String(doc.termsSettings.revisions),netDays:String(doc.termsSettings.netDays),lateFee:String(doc.termsSettings.lateFee),
+      jurisdiction:doc.termsSettings.jurisdiction||"the applicable jurisdiction",kill:doc.termsSettings.kill||"any agreed cancellation fee",
+      startDate:fmtDate(doc.timeline.startDate),endDate:fmtDate(doc.timeline.endDate)
+    };
+    Object.keys(map).forEach(function(k){body=replaceAll(body,"{{"+k+"}}",map[k]);});return body;
+  }
+  function previewHeader(d){
+    return '<div class="paper-header"><div class="left">'+esc(d.business.businessName||d.business.yourName||"ProposalPro")+'</div><div class="right">'+esc(d.number)+' · '+esc(displayTitle(d))+'</div></div>';
+  }
+  function coverPage(d,page){
+    var c=calc(d),label=docTypeLabel(d.type),summary=d.project.summary||"A clear project plan, investment, timeline, and working agreement.";
+    return '<article class="paper cover" data-page="'+attr(t("page").replace("{n}",page))+'"><div class="doc-topline"><div class="doc-identity"><div class="doc-mark">PP</div><div><div class="doc-business">'+esc(d.business.businessName||d.business.yourName||"Your Business")+'</div><div class="doc-contact">'+esc(contactLine(d.business))+'</div></div></div>'+
+      '<div class="doc-no"><span>'+esc(t("document"))+'</span><b>'+esc(d.number)+'</b></div></div><div class="cover-main"><div class="eyebrow">'+esc(label)+'</div><h1>'+esc(displayTitle(d))+'</h1><p class="cover-summary">'+esc(summary)+'</p>'+
+      '<div class="cover-parties"><div><div class="mini-label">'+esc(t("preparedFor"))+'</div><div class="party-name">'+esc(d.client.company||d.client.contactName||t("client"))+'</div><div class="party-detail">'+esc(partiesDetail(d.client))+'</div></div>'+
+      '<div><div class="mini-label">'+esc(t("preparedBy"))+'</div><div class="party-name">'+esc(d.business.businessName||d.business.yourName||t("freelancer"))+'</div><div class="party-detail">'+esc(businessDetail(d.business))+'</div></div></div>'+
+      '<div class="cover-facts"><div class="fact"><div class="mini-label">'+esc(t("preparedDate"))+'</div><b>'+esc(fmtDate(d.project.preparedDate))+'</b></div><div class="fact"><div class="mini-label">'+esc(t("proposalValid"))+'</div><b>'+esc(fmtDate(d.project.validUntil))+'</b></div><div class="fact"><div class="mini-label">'+esc(t("investment"))+'</div><b>'+esc(money(d,c.total))+'</b></div></div></div><div class="cover-accent"></div></article>';
+  }
+  function pricingRows(d){
+    var p=d.pricing,rows=[];
+    if(p.mode==="fixed")rows=p.items.map(function(x){return {name:x.description||t("item"),detail:t("fixedFeeLabel"),amount:x.amount};});
+    else if(p.mode==="hourly")rows=[{name:t("hourlyLabel"),detail:String(p.estimatedHours)+" × "+money(d,p.hourlyRate),amount:p.hourlyRate*p.estimatedHours}];
+    else rows=p.milestones.map(function(x){return {name:x.name||t("milestone"),detail:x.date?fmtDate(x.date):t("milestoneLabel"),amount:x.amount};});
+    return rows;
+  }
+  function contentPage(d,page){
+    var c=calc(d),items=d.deliverables.filter(function(x){return x.title||x.description;}),outs=d.outOfScope.filter(Boolean),rows=pricingRows(d);
+    var scope=items.length?items.map(function(x,i){return '<div class="scope-item"><div class="scope-num">'+(i+1)+'</div><div><div class="scope-title">'+esc(x.title||t("deliverables"))+'</div><div class="scope-desc">'+esc(x.description)+'</div></div></div>';}).join(""):'<p class="empty-preview">'+esc(t("noDeliverables"))+'</p>';
+    var price=rows.length?'<table class="price-table"><thead><tr><th>'+esc(t("item"))+'</th><th>'+esc(t("details"))+'</th><th>'+esc(t("amount"))+'</th></tr></thead><tbody>'+rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td>'+esc(x.detail)+'</td><td>'+esc(money(d,x.amount))+'</td></tr>';}).join("")+'</tbody></table>':'<p class="empty-preview">'+esc(t("noPricing"))+'</p>';
+    var milestones=d.pricing.milestones.filter(function(x){return x.name||x.date;});
+    var timeline='<div class="timeline-grid"><div class="timeline-card"><div class="mini-label">'+esc(t("startDate"))+'</div><b>'+esc(fmtDate(d.timeline.startDate))+'</b></div><div class="timeline-card"><div class="mini-label">'+esc(t("endDate"))+'</div><b>'+esc(fmtDate(d.timeline.endDate))+'</b></div></div>'+
+      (milestones.length?'<div style="margin-top:7px">'+milestones.map(function(x){return '<div class="milestone-line"><b>'+esc(x.name||t("milestone"))+'</b><span>'+esc(fmtDate(x.date))+'</span></div>';}).join("")+'</div>':'');
+    return '<article class="paper" data-page="'+attr(t("page").replace("{n}",page))+'">'+previewHeader(d)+
+      '<section class="doc-section"><div class="section-kicker">'+esc(d.type==="agreement"?t("agreement"):t("proposal"))+'</div><h2>'+esc(t("projectOverview"))+'</h2><p class="lead-copy">'+esc(d.project.summary||t("noDeliverables"))+'</p></section>'+
+      '<section class="doc-section"><div class="section-kicker">01</div><h2>'+esc(t("scope"))+'</h2><div class="scope-list">'+scope+'</div>'+
+      (outs.length?'<h3>'+esc(t("outOfScope"))+'</h3><ul class="plain-list">'+outs.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>':'')+'</section>'+
+      '<section class="doc-section"><div class="section-kicker">02</div><h2>'+esc(t("investment"))+'</h2>'+price+
+      '<div class="totals"><div class="total-row"><span>'+esc(t("subtotal"))+'</span><b>'+esc(money(d,c.subtotal))+'</b></div>'+
+      (c.discount?'<div class="total-row"><span>'+esc(t("discountLabel"))+'</span><b>-'+esc(money(d,c.discount))+'</b></div>':'')+
+      '<div class="total-row grand"><span>'+esc(t("total"))+'</span><b>'+esc(money(d,c.total))+'</b></div>'+
+      (c.deposit?'<div class="total-row deposit"><span>'+esc(t("depositLabel"))+'</span><b>'+esc(money(d,c.deposit))+'</b></div><div class="total-row"><span>'+esc(t("balanceDue"))+'</span><b>'+esc(money(d,c.balance))+'</b></div>':'')+'</div></section>'+
+      '<section class="doc-section"><div class="section-kicker">03</div><h2>'+esc(t("timeline"))+'</h2>'+timeline+'</section>'+
+      (d.type!=="agreement"?'<section class="doc-section"><h3>'+esc(t("nextSteps"))+'</h3><div class="next-step">'+esc(t("nextStepsBody"))+'</div></section>':'')+
+      '</article>';
+  }
+  function termsPage(d,page){
+    var clauses=d.clauses.filter(function(x){return x.enabled;});
+    return '<article class="paper" data-page="'+attr(t("page").replace("{n}",page))+'">'+previewHeader(d)+'<div class="section-kicker">'+esc(t("agreement"))+'</div><h2>'+esc(t("termsConditions"))+'</h2>'+
+      '<p class="lead-copy" style="margin-bottom:13px">'+esc(t("agreementIntro"))+'</p><div class="agreement-intro"><div><div class="mini-label">'+esc(t("freelancer"))+'</div><b>'+esc(d.business.businessName||d.business.yourName||t("notSet"))+'</b></div>'+
+      '<div><div class="mini-label">'+esc(t("client"))+'</div><b>'+esc(d.client.company||d.client.contactName||t("notSet"))+'</b></div></div>'+
+      '<div class="clauses">'+clauses.map(function(c){return '<section class="clause"><h3>'+esc(c.title)+'</h3><p>'+esc(tokenText(d,c.body))+'</p></section>';}).join("")+'</div></article>';
+  }
+  function signatureCard(label,s){
+    return '<div class="signature-card"><div class="signature-role-label">'+esc(label)+'</div><div class="typed-signature">'+esc(s.name||"")+'</div><div class="signature-line">'+esc(t("signature"))+'</div>'+
+      '<div class="signature-meta"><div><span>'+esc(t("titleRole"))+'</span>'+esc(s.role||"")+'</div><div><span>'+esc(t("date"))+'</span>'+esc(fmtDate(s.date))+'</div></div></div>';
+  }
+  function signaturePage(d,page){
+    return '<article class="paper" data-page="'+attr(t("page").replace("{n}",page))+'">'+previewHeader(d)+'<div class="section-kicker">'+esc(t("agreement"))+'</div><h2>'+esc(t("acceptanceSignatures"))+'</h2>'+
+      '<p class="lead-copy">'+esc(t("signatureIntro"))+'</p><div class="acceptance-box"><div class="acceptance-check"><span class="check-box">'+(d.signatures.accepted?"✓":"")+'</span><span>'+esc(t("acceptanceCheck"))+'</span></div></div>'+
+      '<div class="signature-grid">'+signatureCard(t("freelancer"),d.signatures.freelancer)+signatureCard(t("clientSigner"),d.signatures.client)+'</div>'+
+      '<div class="doc-disclaimer">'+esc(t("legalNoteShort"))+'</div></article>';
+  }
+  function renderPreview(){
+    var d=currentDoc(),pages=[],n=1;pages.push(coverPage(d,n++));pages.push(contentPage(d,n++));
+    if(d.type==="agreement"||d.type==="both"){pages.push(termsPage(d,n++));pages.push(signaturePage(d,n++));}
+    $("previewCanvas").innerHTML=pages.join("");$("pageCount").textContent=t("pages").replace("{n}",pages.length);
+  }
+  function applyI18n(){
+    document.documentElement.lang=S.lang==="zh"?"zh-Hant":"en";
+    document.querySelectorAll("[data-i18n]").forEach(function(el){el.textContent=t(el.getAttribute("data-i18n"));});
+    $("crossSell").innerHTML=t("crossSell");$("langSel").value=S.lang;
+    $("promoText").textContent=t("promoText");$("promoLink").href=PRO_URL;$("promoLink").textContent=t("promoCta");
+  }
+  function renderAll(){
+    applyI18n();renderCurrency();renderSidebar();renderStats();renderEditor();renderPreview();setSaveStatus(t("saved"),false);
+  }
+
+  function addDocument(){
+    if(S.docs.length>=LITE_CAP){openUpgrade("capMsg");return;}
+    var d=newDocObject(documentNumber(S.nextNumber++),S.profile);S.docs.push(d);S.currentId=d.id;saveNow();renderAll();
+  }
+  function duplicateDocument(){
+    if(S.docs.length>=LITE_CAP){openUpgrade("capMsg");return;}
+    var src=currentDoc(),d=deepCopy(src);d.id=uid();d.number=documentNumber(S.nextNumber++);d.project.title=(src.project.title||t("untitled"))+t("copySuffix");
+    d.createdAt=Date.now();d.updatedAt=d.createdAt;S.docs.push(d);S.currentId=d.id;saveNow();renderAll();toast(t("duplicated"));
+  }
+  function deleteDocument(){
+    var id=S.currentId;S.docs=S.docs.filter(function(d){return d.id!==id;});
+    if(!S.docs.length){var d=newDocObject(documentNumber(S.nextNumber++),S.profile);S.docs.push(d);}
+    S.currentId=S.docs[0].id;saveNow();renderAll();toast(t("deleted"));
+  }
+  function loadSampleDocument(){
+    var d=newDocObject(documentNumber(S.nextNumber++),S.profile),base=today();
+    d.type="both";d.business={businessName:"Northstar Design Studio",yourName:"Maya Chen",email:"maya@northstar.studio",phone:"+1 415 555 0147",address:"218 Harbor Street\nSan Francisco, CA 94107",website:"northstar.studio"};
+    d.client={company:"BrightPath Learning",contactName:"Jordan Lee",email:"jordan@brightpath.example",address:"88 Market Avenue\nOakland, CA 94607"};
+    d.project={title:"BrightPath Website Redesign",summary:"A focused redesign of BrightPath Learning's marketing website to clarify its programs, build trust with parents and school partners, and increase qualified consultation requests.",preparedDate:base,validUntil:addDays(base,14)};
+    d.deliverables=[
+      {title:"Discovery and content plan",description:"Kickoff workshop, audience priorities, sitemap, and page-level content recommendations."},
+      {title:"Responsive website design",description:"Custom desktop and mobile designs for up to eight core pages, including one consolidated feedback round per design phase."},
+      {title:"CMS build and launch",description:"Responsive implementation, CMS setup, basic SEO metadata, accessibility checks, analytics handoff, and launch support."}
+    ];
+    d.outOfScope=["Copywriting beyond light editing","Paid fonts, stock photography, or third-party subscriptions","Ongoing maintenance after the 14-day launch support period"];
+    d.pricing={currency:"USD",mode:"milestone",items:[],hourlyRate:145,estimatedHours:0,milestones:[
+      {name:"Discovery and direction",amount:2400,date:addDays(base,7)},{name:"Design approval",amount:4200,date:addDays(base,28)},{name:"Build and launch",amount:5400,date:addDays(base,56)}
+    ],discountType:"none",discountValue:0,depositType:"percent",depositValue:20};
+    d.timeline={startDate:addDays(base,7),endDate:addDays(base,63)};
+    d.termsSettings={revisions:2,netDays:14,lateFee:1.5,jurisdiction:"the State of California, United States",kill:"a cancellation fee equal to 25% of the remaining unpaid project total"};
+    d.clauses=defaultClauses();d.signatures={accepted:true,freelancer:{name:"Maya Chen",role:"Creative Director",date:base},client:{name:"Jordan Lee",role:"Director of Programs",date:base}};
+    d.updatedAt=Date.now();S.docs=[d];S.currentId=d.id;saveNow();renderAll();toast(t("sampleLoaded"));
+  }
+  function sampleDocument(){openConfirm(t("confirmSampleTitle"),t("confirmSample"),t("sample"),loadSampleDocument);}
+  function openUpgrade(messageKey){alert(t(messageKey));window.open(PRO_URL,"_blank","noopener");}
+  function downloadJson(){
+    openUpgrade("exportPro");
+  }
+  function validBackup(raw){return isObject(raw)&&raw.app==="ProposalPro"&&Array.isArray(raw.docs);}
+  function importBackup(raw){S=normalizeState(raw);saveNow();renderAll();toast(t("imported"));}
+  function openConfirm(title,message,okLabel,action){
+    confirmAction=action;$("confirmTitle").textContent=title;$("confirmMessage").textContent=message;$("confirmOk").textContent=okLabel;$("confirmOverlay").classList.add("open");
+    setTimeout(function(){$("confirmCancel").focus();},20);
+  }
+  function closeConfirm(){confirmAction=null;$("confirmOverlay").classList.remove("open");}
+
+  $("editor").addEventListener("toggle",function(e){if(e.target.matches("details[data-panel]"))openPanels[e.target.getAttribute("data-panel")]=e.target.open;},true);
+  $("editor").addEventListener("input",function(e){
+    var el=e.target,path=el.getAttribute("data-path");if(!path)return;var value=el.type==="checkbox"?el.checked:el.type==="number"?normalizeNumber(el.value):el.value;
+    setPath(currentDoc(),path,value);
+    if(path.indexOf("business.")===0)S.profile=deepCopy(currentDoc().business);
+    renderStats();renderPreview();renderCurrency();touch();
+  });
+  $("editor").addEventListener("change",function(e){
+    var path=e.target.getAttribute("data-path");if(!path)return;
+    if(path==="pricing.currency"||path==="pricing.discountType"||path==="pricing.depositType"){renderEditor();}
+  });
+  $("editor").addEventListener("click",function(e){
+    var b=e.target.closest("[data-action]");if(!b)return;var d=currentDoc(),action=b.getAttribute("data-action");
+    if(action==="set-type")d.type=b.getAttribute("data-value");
+    else if(action==="set-pricing-mode")d.pricing.mode=b.getAttribute("data-value");
+    else if(action==="add-deliverable")d.deliverables.push({title:"",description:""});
+    else if(action==="add-out")d.outOfScope.push("");
+    else if(action==="add-price-line")d.pricing.items.push({description:"",amount:0});
+    else if(action==="add-milestone")d.pricing.milestones.push({name:"",amount:0,date:""});
+    else if(action==="remove-row"){var arr=getPath(d,b.getAttribute("data-list"));if(Array.isArray(arr))arr.splice(Number(b.getAttribute("data-index")),1);}
+    else if(action==="move-clause"){var i=Number(b.getAttribute("data-index")),to=i+Number(b.getAttribute("data-dir"));if(to>=0&&to<d.clauses.length){var x=d.clauses.splice(i,1)[0];d.clauses.splice(to,0,x);}}
+    else if(action==="reset-clauses"){openConfirm(t("confirmResetTitle"),t("confirmReset"),t("reset"),function(){currentDoc().clauses=defaultClauses();touch();renderAll();});return;}
+    touch();renderAll();
+  });
+  $("docList").addEventListener("click",function(e){var b=e.target.closest("[data-open-doc]");if(!b)return;S.currentId=b.getAttribute("data-open-doc");saveNow();renderAll();});
+  $("newBtn").onclick=addDocument;
+  $("sampleBtn").onclick=sampleDocument;
+  $("duplicateBtn").onclick=duplicateDocument;
+  $("deleteBtn").onclick=function(){openConfirm(t("confirmDeleteTitle"),t("confirmDelete"),t("delete"),deleteDocument);};
+  $("exportBtn").onclick=downloadJson;
+  $("importBtn").onclick=function(){openUpgrade("importPro");};
+  $("importFile").onchange=function(){
+    var file=this.files&&this.files[0];if(!file)return;var reader=new FileReader();
+    reader.onload=function(){try{var raw=JSON.parse(String(reader.result||""));if(!validBackup(raw))throw new Error("invalid");pendingImport=raw;openConfirm(t("confirmImportTitle"),t("confirmImport"),t("restore"),function(){importBackup(pendingImport);pendingImport=null;});}catch(e){toast(t("invalidBackup"));}};
+    reader.onerror=function(){toast(t("invalidBackup"));};reader.readAsText(file);
+  };
+  $("printBtn").onclick=function(){window.print();};
+  $("langSel").onchange=function(){S.lang=this.value;saveNow();renderAll();};
+  $("currencySel").onchange=function(){currentDoc().pricing.currency=this.value;touch();renderAll();};
+  document.querySelectorAll("[data-surface]").forEach(function(b){b.onclick=function(){var preview=b.getAttribute("data-surface")==="preview";$("workspace").classList.toggle("show-preview",preview);document.querySelectorAll("[data-surface]").forEach(function(x){x.classList.toggle("active",x===b);});};});
+  $("confirmCancel").onclick=closeConfirm;
+  $("confirmOk").onclick=function(){var fn=confirmAction;closeConfirm();if(fn)fn();};
+  $("confirmOverlay").addEventListener("click",function(e){if(e.target===$("confirmOverlay"))closeConfirm();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("confirmOverlay").classList.contains("open"))closeConfirm();});
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
