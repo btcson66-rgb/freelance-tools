@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Toggl Alternative for Freelancers — Offline, No Sign-Up</title>
+<meta name="description" content="Looking for a free Toggl alternative? TimeTrack is a single-file, offline time tracker for freelancers: one-click timer, billable hours, effective rate, invoice-ready CSV. No account, pay once.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/toggl-alternative/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Toggl Alternative for Freelancers — Offline, No Sign-Up">
+<meta property="og:description" content="A free, offline Toggl alternative for freelancers. One-click timer, billable hours, invoice-ready CSV. No account, pay once.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/toggl-alternative/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/timetrack.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Toggl Alternative for Freelancers — Offline, No Sign-Up">
+<meta name="twitter:description" content="A free, offline Toggl alternative for freelancers. One-click timer, billable hours, invoice-ready CSV. No account, pay once.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/timetrack.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is TimeTrack really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The free version tracks time and billable hours in your browser with no account. An optional one-time $12 Pro version lifts the entry cap and removes upgrade prompts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it a true Toggl alternative?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For a solo freelancer, yes — it covers the core job of tracking billable hours and exporting them for invoicing. It is not a team product with shared dashboards and admin, by design."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to install anything?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It is a single HTML file that runs in any modern browser, on Windows, macOS or Linux. You can even save it and use it offline."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is my data stored?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Entirely in your browser’s local storage. Nothing about your projects, clients or rates is ever sent to a server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I export to invoice clients?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Export an invoice-ready CSV that opens cleanly in Excel, Google Sheets or Numbers, then bill the hours."
+      }
+    }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#4f46e5}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#e0e7ff,transparent),linear-gradient(180deg,#fff,#f8fafc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#4338ca;background:#e0e7ff;border:1px solid #c7d2fe;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:38px;line-height:1.14;letter-spacing:-1px;font-weight:850;max-width:700px}
+  .sub{font-size:18px;color:var(--muted);max-width:640px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#cbd5e1}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#1f2937}
+  table.cmp{width:100%;border-collapse:collapse;margin:14px 0 6px;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  table.cmp th,table.cmp td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.cmp thead th{background:#f1f5f9;font-size:13px;letter-spacing:.2px;color:#475569}
+  table.cmp tbody th{font-weight:700;color:var(--ink);width:38%}
+  table.cmp td.them{color:#64748b}
+  table.cmp td.us{color:var(--ink);font-weight:600}
+  table.cmp thead th.uscol{color:var(--brand)}
+  table.cmp tr:last-child th,table.cmp tr:last-child td{border-bottom:none}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:30px}table.cmp{font-size:13.5px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#374151}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#cbd5e1}
+  .endcta{background:#0f172a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#cbd5e1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#334155;color:#fff}
+  .note{font-size:12.5px;color:#94a3b8;margin-top:10px}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>A free Toggl alternative that never asks you to log in</h1>
+    <p class="sub">Toggl is excellent for teams. If you are one freelancer billing a few clients, TimeTrack does the same core job in a single offline web page — one-click timer, billable hours, effective rate, CSV for invoicing. No account, no monthly fee.</p>
+    <div class="cta">
+      <a class="btn try" href="../timetrack-lite/TimeTrack-Lite.html">Open the free tracker →</a>
+      <a class="btn buy" href="https://bitsonic1.gumroad.com/l/timetrack" target="_blank" rel="noopener">Get Pro ($12, one-time)</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> No account, ever</span>
+      <span><span class="dotg">●</span> Pay once, own it</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Why freelancers look past Toggl</h2>
+    <p>Toggl Track is a polished, capable time tracker — and for a solo freelancer it can feel like renting a team product. It wants an account, keeps your project and client data on its servers, and the features you actually pay for (rounding, billable rates without limits, longer reporting history) sit behind a monthly subscription.</p>
+    <p>TimeTrack takes the opposite approach. It is one HTML file that runs entirely in your browser, stores everything locally, and makes zero network requests. You open it, start the timer, and at the end of the week export an invoice-ready CSV. You pay once and own it — there is nothing to cancel.</p>
+
+    <h2>Toggl vs. TimeTrack at a glance</h2>
+    <table class="cmp">
+      <thead><tr><th>&nbsp;</th><th>Toggl</th><th class="uscol">TimeTrack</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Pricing model</th><td class="them">Free tier + monthly subscription</td><td class="us">Free version + one-time $12 Pro</td></tr>
+        <tr><th scope="row">Account required</th><td class="them">Yes, sign-up needed</td><td class="us">No account, ever</td></tr>
+        <tr><th scope="row">Where your data lives</th><td class="them">On Toggl’s cloud servers</td><td class="us">Only in your browser (local)</td></tr>
+        <tr><th scope="row">Works fully offline</th><td class="them">Limited</td><td class="us">Yes, zero network requests</td></tr>
+        <tr><th scope="row">Billable vs non-billable</th><td class="them">Yes</td><td class="us">Yes, per-entry rate</td></tr>
+        <tr><th scope="row">Utilization &amp; effective rate</th><td class="them">Yes</td><td class="us">Yes</td></tr>
+        <tr><th scope="row">Invoice-ready CSV</th><td class="them">Yes</td><td class="us">Yes (UTF-8)</td></tr>
+        <tr><th scope="row">Best for</th><td class="them">Teams &amp; agencies</td><td class="us">Solo freelancers</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Comparison reflects the typical solo-freelancer experience; Toggl’s exact plans and prices change over time — check their site for current details.</p>
+
+    <h2>Where TimeTrack wins</h2>
+    <div class="feat">
+      <div><h4>No login wall</h4><p>Open the file and the timer is ready. Nothing to sign up for, nothing to verify.</p></div>
+      <div><h4>Your data stays put</h4><p>Projects, clients and rates live in your browser only — never uploaded.</p></div>
+      <div><h4>One-time price</h4><p>Pay $12 once for Pro. No seat fees, no annual renewal.</p></div>
+      <div><h4>Effective hourly rate</h4><p>See what you actually earn per hour after non-billable time, not just raw hours.</p></div>
+      <div><h4>Survives a reload</h4><p>A running timer is saved with its start time, so a refresh never loses minutes.</p></div>
+      <div><h4>Pairs with invoicing</h4><p>Export CSV straight into InvoicePro or any spreadsheet to bill the hours.</p></div>
+    </div>
+
+    <h2>When Toggl is still the better pick</h2>
+    <p>If you run a team, need shared dashboards, integrations with dozens of apps, or centralized admin across many users, Toggl earns its subscription. TimeTrack is deliberately single-user and local — that is the whole point. Pick the tool that matches how you actually work.</p>
+
+    <h2>Switching is one click</h2>
+    <p>There is nothing to migrate: open the free tracker and start your next session in seconds. Get the single tool for $12, or all five in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$39 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is TimeTrack really free?</dt>
+      <dd>Yes. The free version tracks time and billable hours in your browser with no account. An optional one-time $12 Pro version lifts the entry cap and removes upgrade prompts.</dd>
+      <dt>Is it a true Toggl alternative?</dt>
+      <dd>For a solo freelancer, yes — it covers the core job of tracking billable hours and exporting them for invoicing. It is not a team product with shared dashboards and admin, by design.</dd>
+      <dt>Do I need to install anything?</dt>
+      <dd>No. It is a single HTML file that runs in any modern browser, on Windows, macOS or Linux. You can even save it and use it offline.</dd>
+      <dt>Where is my data stored?</dt>
+      <dd>Entirely in your browser’s local storage. Nothing about your projects, clients or rates is ever sent to a server.</dd>
+      <dt>Can I export to invoice clients?</dt>
+      <dd>Yes. Export an invoice-ready CSV that opens cleanly in Excel, Google Sheets or Numbers, then bill the hours.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of five offline, no-subscription tools that share a CSV format:</p>
+    <div class="related">
+      <a href="../free-time-tracker/">◷ Free time tracker</a>
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+      <a href="../free-freelance-crm/">◎ Free freelance CRM</a>
+      <a href="../free-expense-tracker/">$ Free expense tracker</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Track your next billable hour now</h2>
+      <p>One click, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="../timetrack-lite/TimeTrack-Lite.html">Open the free tracker →</a>
+        <a class="btn buy" href="https://bitsonic1.gumroad.com/l/timetrack" target="_blank" rel="noopener">Get Pro ($12, one-time)</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>
