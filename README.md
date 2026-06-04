@@ -9,6 +9,8 @@ never leaves your computer. This repo hosts the **free Lite versions** + a landi
 ## Try the free tools (no signup)
 - **[LeadTrack Lite](leadtrack-lite/LeadTrack-Lite.html)** — client & sales-pipeline CRM (up to 15 deals)
 - **[InvoicePro Lite](invoicepro-lite/InvoiceGenerator-Lite.html)** — invoice & quote generator
+- **[TimeTrack Lite](timetrack-lite/TimeTrack-Lite.html)** — time tracker & billable hours (up to 25 entries)
+- **[CashFlow Lite](cashflow-lite/CashFlow-Lite.html)** — income, expense & tax tracker (up to 25 transactions)
 
 Each is one HTML file — download it, double-click, done. It runs in your browser, makes
 **zero network requests**, and stores everything locally.

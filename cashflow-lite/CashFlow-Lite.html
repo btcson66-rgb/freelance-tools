@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CashFlow Lite — Free Offline Income &amp; Expense Tracker (no signup)</title>
+<style>
+  :root{
+    --accent:#0f766e;
+    --income:#16a34a;
+    --expense:#dc2626;
+    --bg:#f1f5f9;
+    --panel:#ffffff;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+      "PingFang TC","Microsoft JhengHei",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+
+  /* ---------- Top toolbar ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:10px 16px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:6px;font-size:16px}
+  .brand .dot{width:24px;height:24px;border-radius:7px;background:var(--accent);
+    display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+  .toolbar .spacer{flex:1}
+  .toolbar label.inl{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:600}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;
+    font-size:13px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+  .btn:hover{border-color:#cbd5e1}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{filter:brightness(.95)}
+  .btn.pro{background:#f0fdfa;border-color:#99f6e4;color:#115e59}
+  .btn.pro:hover{background:#ccfbf1}
+  .promo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:9px 16px;background:linear-gradient(90deg,#f0fdfa,#ccfbf1);border-bottom:1px solid #99f6e4;font-size:13px;color:#115e59;font-weight:600}
+  .promo a{color:#0f766e;font-weight:800;text-decoration:none;border-bottom:2px solid #5eead4}
+  .promo a:hover{border-color:#0d9488}
+  .lite-tag{font-size:11px;font-weight:800;color:#0f766e;background:#ccfbf1;border:1px solid #99f6e4;border-radius:999px;padding:1px 7px;margin-left:2px}
+  select.mini,input.mini{border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:#fff;font-weight:600}
+  input.mini{width:64px;text-align:right}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 16px 60px}
+
+  /* ---------- Stat cards ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  @media (max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:460px){.stats{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;box-shadow:var(--shadow)}
+  .card .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:6px}
+  .card .val{font-size:26px;font-weight:800;margin-top:6px;letter-spacing:-.01em}
+  .card .sub{font-size:12px;color:var(--muted);margin-top:3px}
+  .card.income .val{color:var(--income)}
+  .card.expense .val{color:var(--expense)}
+  .card .info{cursor:help;color:#94a3b8;font-size:11px;border:1px solid var(--line);
+    border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center}
+
+  /* ---------- Panels (chart + breakdown) ---------- */
+  .panels{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:18px}
+  @media (max-width:860px){.panels{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;box-shadow:var(--shadow)}
+  .panel h3{margin:0 0 4px;font-size:13px;font-weight:700}
+  .panel .ph-sub{font-size:12px;color:var(--muted);margin:0 0 12px}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+  /* category breakdown rows */
+  .cat-row{margin-bottom:10px}
+  .cat-row:last-child{margin-bottom:0}
+  .cat-row .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+  .cat-row .top .nm{font-weight:600}
+  .cat-row .top .amt{color:var(--muted);white-space:nowrap}
+  .bar{height:8px;border-radius:6px;background:#eef2f6;overflow:hidden}
+  .bar > span{display:block;height:100%;border-radius:6px;background:var(--expense)}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:24px 0}
+
+  /* ---------- Filters ---------- */
+  .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .filters .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  .filters .seg button{border:0;background:#fff;padding:7px 13px;font-size:13px;font-weight:600;color:var(--muted)}
+  .filters .seg button.active{background:var(--accent);color:#fff}
+  .filters .search{flex:1;min-width:140px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff}
+  .filters .spacer{flex:1}
+
+  /* ---------- Transactions table ---------- */
+  .tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  table.tx{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.tx thead th{background:#f8fafc;color:var(--muted);text-align:left;padding:11px 14px;font-size:11px;
+    text-transform:uppercase;letter-spacing:.05em;font-weight:700;border-bottom:1px solid var(--line)}
+  table.tx thead th.num{text-align:right}
+  table.tx tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+  table.tx tbody tr:last-child td{border-bottom:0}
+  table.tx tbody tr:hover{background:#f8fafc}
+  table.tx td.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .pill.in{background:#dcfce7;color:#15803d}
+  .pill.ex{background:#fee2e2;color:#b91c1c}
+  .pill.paid{background:#dbeafe;color:#1d4ed8}
+  .pill.pend{background:#fef3c7;color:#b45309}
+  .amt-in{color:var(--income);font-weight:700}
+  .amt-ex{color:var(--expense);font-weight:700}
+  .rowbtn{background:none;border:0;color:var(--muted);font-size:15px;padding:2px 6px;border-radius:6px}
+  .rowbtn:hover{background:#eef2f6;color:var(--ink)}
+  .cat-tag{color:var(--muted);font-size:12px}
+
+  /* ---------- Modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;
+    justify-content:center;z-index:100;padding:16px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:16px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.3);
+    max-height:92vh;overflow:auto}
+  .modal h2{margin:0;padding:18px 20px;font-size:17px;border-bottom:1px solid var(--line)}
+  .modal .body{padding:18px 20px}
+  .modal .foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+  .field{margin-bottom:13px}
+  .field:last-child{margin-bottom:0}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  .field input,.field select,.field textarea{
+    width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .typeseg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:14px}
+  .typeseg button{flex:1;border:0;background:#fff;padding:10px;font-size:14px;font-weight:700;color:var(--muted)}
+  .typeseg button.act-in{background:var(--income);color:#fff}
+  .typeseg button.act-ex{background:var(--expense);color:#fff}
+
+  .footnote{text-align:center;font-size:12px;color:var(--muted);margin-top:26px}
+  .footnote b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand"><span class="dot">$</span><span>CashFlow</span><span class="lite-tag">LITE</span></div>
+  <div class="spacer"></div>
+  <label class="inl"><span data-i18n="tax">Tax %</span>
+    <input class="mini" id="taxRate" type="number" min="0" max="100" step="0.5" title="Tax set-aside rate"></label>
+  <select class="mini" id="currency" title="Currency"></select>
+  <select class="mini" id="langSel" title="Language">
+    <option value="en">EN</option>
+    <option value="zh">繁中</option>
+  </select>
+  <button class="btn" id="sampleBtn" data-i18n="sample">Sample data</button>
+  <button class="btn" id="exportBtn" data-i18n="exportCsv">⤓ CSV</button>
+  <a class="btn pro" id="getProBtn" href="#" target="_blank" rel="noopener">✦ <span id="getProTxt">Get Pro</span></a>
+  <button class="btn primary" id="addBtn" data-i18n="addTx">+ Add transaction</button>
+</div>
+
+<div class="promo"><span id="promoText"></span> <a id="promoLink" href="#" target="_blank" rel="noopener"></a></div>
+
+<div class="wrap">
+
+  <!-- ============ STAT CARDS ============ -->
+  <div class="stats">
+    <div class="card income">
+      <div class="lbl"><span data-i18n="totalIncome">Income</span></div>
+      <div class="val" id="stIncome">—</div>
+      <div class="sub" id="stIncomeSub"></div>
+    </div>
+    <div class="card expense">
+      <div class="lbl"><span data-i18n="totalExpenses">Expenses</span></div>
+      <div class="val" id="stExpense">—</div>
+      <div class="sub" id="stExpenseSub"></div>
+    </div>
+    <div class="card">
+      <div class="lbl"><span data-i18n="netProfit">Net profit</span></div>
+      <div class="val" id="stNet">—</div>
+      <div class="sub" id="stNetSub"></div>
+    </div>
+    <div class="card">
+      <div class="lbl"><span data-i18n="taxSetAside">Tax to set aside</span>
+        <span class="info" id="taxInfo" title="">?</span></div>
+      <div class="val" id="stTax">—</div>
+      <div class="sub" id="stTaxSub"></div>
+    </div>
+  </div>
+
+  <!-- ============ CHART + BREAKDOWN ============ -->
+  <div class="panels">
+    <div class="panel">
+      <h3 data-i18n="monthlyTitle">Monthly cash flow</h3>
+      <p class="ph-sub" id="chartSub"></p>
+      <div id="chart"></div>
+      <div class="legend">
+        <span><i style="background:var(--income)"></i><span data-i18n="totalIncome">Income</span></span>
+        <span><i style="background:var(--expense)"></i><span data-i18n="totalExpenses">Expenses</span></span>
+      </div>
+    </div>
+    <div class="panel">
+      <h3 data-i18n="breakdownTitle">Expense breakdown</h3>
+      <p class="ph-sub" data-i18n="breakdownSub">By category, in the selected period.</p>
+      <div id="breakdown"></div>
+    </div>
+  </div>
+
+  <!-- ============ FILTERS ============ -->
+  <div class="filters">
+    <select class="mini" id="yearSel" title="Year"></select>
+    <select class="mini" id="monthSel" title="Month"></select>
+    <div class="seg" id="typeFilter">
+      <button data-f="all" class="active" data-i18n="fAll">All</button>
+      <button data-f="income" data-i18n="fIncome">Income</button>
+      <button data-f="expense" data-i18n="fExpense">Expenses</button>
+    </div>
+    <input class="search" id="search" placeholder="Search…" data-i18n-ph="searchPh">
+  </div>
+
+  <!-- ============ TABLE ============ -->
+  <div class="tbl-wrap">
+    <table class="tx">
+      <thead><tr>
+        <th data-i18n="thDate">Date</th>
+        <th data-i18n="thDesc">Description</th>
+        <th data-i18n="thCategory">Category</th>
+        <th data-i18n="thParty">Client / Source</th>
+        <th data-i18n="thStatus">Status</th>
+        <th class="num" data-i18n="thAmount">Amount</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="txBody"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg" style="display:none" data-i18n="noTx">No transactions yet. Click “+ Add transaction” to start.</div>
+  </div>
+
+  <div class="footnote">
+    <span data-i18n="privacy">100% offline. Your financial data is saved only in this browser and is never uploaded.</span>
+    <div id="crossSell" style="margin-top:6px"></div>
+  </div>
+</div>
+
+<!-- ============ ADD/EDIT MODAL ============ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle" data-i18n="addTx">Add transaction</h2>
+    <div class="body">
+      <div class="typeseg" id="mType">
+        <button data-type="income" data-i18n="fIncome">Income</button>
+        <button data-type="expense" data-i18n="fExpense">Expense</button>
+      </div>
+      <div class="row2">
+        <div class="field"><label data-i18n="thDate">Date</label><input type="date" id="mDate"></div>
+        <div class="field"><label data-i18n="mAmount">Amount</label><input type="number" id="mAmount" step="any" min="0" placeholder="0.00"></div>
+      </div>
+      <div class="field"><label data-i18n="thDesc">Description</label><input id="mDesc" placeholder=""></div>
+      <div class="row2">
+        <div class="field"><label data-i18n="thCategory">Category</label>
+          <input id="mCategory" list="catList" placeholder="">
+          <datalist id="catList"></datalist>
+        </div>
+        <div class="field"><label data-i18n="thParty">Client / Source</label><input id="mParty" placeholder=""></div>
+      </div>
+      <div class="field"><label data-i18n="thStatus">Status</label>
+        <select id="mStatus">
+          <option value="paid" data-i18n="stPaid">Paid / Received</option>
+          <option value="pending" data-i18n="stPending">Pending</option>
+        </select>
+      </div>
+    </div>
+    <div class="foot">
+      <button class="btn" id="mDelete" style="margin-right:auto;display:none;color:var(--expense);border-color:#fecaca" data-i18n="delete">Delete</button>
+      <button class="btn" id="mCancel" data-i18n="cancel">Cancel</button>
+      <button class="btn primary" id="mSave" data-i18n="save">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CashFlow — single-file offline income & expense tracker
+   for freelancers & solopreneurs.
+   All data stays in this browser (localStorage). No network.
+   ============================================================ */
+(function(){
+  "use strict";
+
+  var STORE_KEY = "cashflow_lite_v1";
+  var PRO_URL = "https://bitsonic1.gumroad.com/l/cashflow";
+  var PRO_INVOICE_URL = "https://bitsonic1.gumroad.com/l/invoicepro";
+  var PRO_TIMETRACK_URL = "https://bitsonic1.gumroad.com/l/timetrack";
+  var PRO_LEADTRACK_URL = "https://bitsonic1.gumroad.com/l/leadtrack";
+  var LITE_CAP = 25;
+  var LITE = {
+    en:{getPro:"Get Pro",
+        promo:"Free version · up to "+LITE_CAP+" transactions, CSV export is Pro.",
+        cta:"Unlock CashFlow Pro →",
+        cap:"CashFlow Lite is limited to "+LITE_CAP+" transactions.\n\nUpgrade to Pro for unlimited transactions, CSV export and no banner — one-time purchase. Opening the upgrade page…",
+        exp:"CSV export is a Pro feature.\n\nUpgrade to CashFlow Pro (one-time) to export your books to Excel / Sheets / Numbers. Opening the upgrade page…",
+        foot:"You're using <b>CashFlow Lite</b> (free). <a href='"+PRO_URL+"' target='_blank' rel='noopener'>Upgrade to Pro</a> for unlimited transactions + CSV export. Also: <a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>InvoicePro</a> · <a href='"+PRO_TIMETRACK_URL+"' target='_blank' rel='noopener'>TimeTrack</a> · <a href='"+PRO_LEADTRACK_URL+"' target='_blank' rel='noopener'>LeadTrack</a>."},
+    zh:{getPro:"升級 Pro",
+        promo:"免費版 · 最多 "+LITE_CAP+" 筆交易，CSV 匯出為 Pro 功能。",
+        cta:"解鎖 CashFlow Pro →",
+        cap:"CashFlow Lite 免費版最多 "+LITE_CAP+" 筆交易。\n\n升級 Pro 可無限筆數、開放 CSV 匯出、移除橫幅 — 一次買斷。即將開啟升級頁面…",
+        exp:"CSV 匯出是 Pro 功能。\n\n升級 CashFlow Pro（一次買斷）即可把帳本匯出到 Excel / Sheets / Numbers。即將開啟升級頁面…",
+        foot:"您正在使用 <b>CashFlow Lite</b>（免費版）。<a href='"+PRO_URL+"' target='_blank' rel='noopener'>升級 Pro</a> 解除筆數上限並開放 CSV 匯出。同系列：<a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>InvoicePro</a> · <a href='"+PRO_TIMETRACK_URL+"' target='_blank' rel='noopener'>TimeTrack</a> · <a href='"+PRO_LEADTRACK_URL+"' target='_blank' rel='noopener'>LeadTrack</a>。"}
+  };
+  function L(k){ return (LITE[S.lang]||LITE.en)[k]; }
+
+  var CURRENCIES = [
+    {code:"USD",sym:"$"},{code:"EUR",sym:"€"},{code:"GBP",sym:"£"},
+    {code:"TWD",sym:"NT$"},{code:"CNY",sym:"¥"},{code:"JPY",sym:"¥"},
+    {code:"HKD",sym:"HK$"},{code:"SGD",sym:"S$"},{code:"AUD",sym:"A$"},
+    {code:"CAD",sym:"C$"},{code:"INR",sym:"₹"},{code:"KRW",sym:"₩"}
+  ];
+
+  var MONTHS = {
+    en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+    zh:["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]
+  };
+
+  var I18N = {
+    en:{
+      tax:"Tax %",sample:"Sample data",exportCsv:"⤓ CSV",addTx:"+ Add transaction",
+      totalIncome:"Income",totalExpenses:"Expenses",netProfit:"Net profit",
+      taxSetAside:"Tax to set aside",
+      monthlyTitle:"Monthly cash flow",breakdownTitle:"Expense breakdown",
+      breakdownSub:"By category, in the selected period.",
+      fAll:"All",fIncome:"Income",fExpense:"Expenses",searchPh:"Search description, client…",
+      thDate:"Date",thDesc:"Description",thCategory:"Category",thParty:"Client / Source",
+      thStatus:"Status",thAmount:"Amount",mAmount:"Amount",
+      noTx:"No transactions yet. Click “+ Add transaction” to start.",
+      privacy:"100% offline. Your financial data is saved only in this browser and is never uploaded.",
+      stPaid:"Paid / Received",stPending:"Pending",delete:"Delete",cancel:"Cancel",save:"Save",
+      editTx:"Edit transaction",allMonths:"Whole year",
+      taxTip:"Estimated amount to set aside for tax: your tax rate × net profit (income − expenses), counting paid items only. Adjust the rate to match your situation. This is not tax advice.",
+      countN:"{n} transactions",pendingNote:"{a} pending",
+      confirmSample:"Load sample data? This replaces all current transactions.",
+      confirmDelete:"Delete this transaction?",
+      catFees:"Platform fees",catSoftware:"Software",catEquipment:"Equipment",
+      catMarketing:"Marketing",catOffice:"Office",catTravel:"Travel",
+      cliDesign:"Design project",cliConsult:"Consulting",cliRetainer:"Retainer"
+    },
+    zh:{
+      tax:"稅率 %",sample:"範例資料",exportCsv:"⤓ CSV",addTx:"+ 新增交易",
+      totalIncome:"收入",totalExpenses:"支出",netProfit:"淨利",
+      taxSetAside:"應預留稅金",
+      monthlyTitle:"每月現金流",breakdownTitle:"支出分析",
+      breakdownSub:"依類別顯示（所選期間）。",
+      fAll:"全部",fIncome:"收入",fExpense:"支出",searchPh:"搜尋說明、客戶…",
+      thDate:"日期",thDesc:"說明",thCategory:"類別",thParty:"客戶 / 來源",
+      thStatus:"狀態",thAmount:"金額",mAmount:"金額",
+      noTx:"尚無交易。點「＋ 新增交易」開始。",
+      privacy:"100% 離線。您的財務資料只儲存在此瀏覽器，絕不會上傳。",
+      stPaid:"已付 / 已收",stPending:"待處理",delete:"刪除",cancel:"取消",save:"儲存",
+      editTx:"編輯交易",allMonths:"整年",
+      taxTip:"建議預留的稅金估算：稅率 × 淨利（收入 − 支出），僅計入已收／已付項目。請依您的實際情況調整稅率。此非稅務建議。",
+      countN:"{n} 筆交易",pendingNote:"{a} 待處理",
+      confirmSample:"載入範例資料？將取代目前所有交易。",
+      confirmDelete:"刪除這筆交易？",
+      catFees:"平台手續費",catSoftware:"軟體訂閱",catEquipment:"設備",
+      catMarketing:"行銷",catOffice:"辦公",catTravel:"差旅",
+      cliDesign:"設計專案",cliConsult:"顧問諮詢",cliRetainer:"月費合約"
+    }
+  };
+
+  function blankState(){
+    var now=new Date();
+    return {
+      lang:"en", currency:"USD", taxRate:20,
+      filterYear:now.getFullYear(), filterMonth:"all", filterType:"all", q:"",
+      txns:[]
+    };
+  }
+
+  var S = load() || blankState();
+  // forward-compat: normalise loaded state with full defaults
+  if(!Array.isArray(S.txns)) S.txns=[];
+  if(!S.lang || !I18N[S.lang]) S.lang="en";
+  if(!S.currency) S.currency="USD";
+  if(!S.filterYear) S.filterYear=new Date().getFullYear();
+  if(!S.filterMonth) S.filterMonth="all";
+  if(!S.filterType) S.filterType="all";
+  if(S.q==null) S.q="";
+  if(S.taxRate==null) S.taxRate=20;
+
+  /* ---------- persistence ---------- */
+  var saveWarned=false;
+  function save(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+    catch(e){
+      if(!saveWarned){ saveWarned=true;
+        alert("CashFlow could not save to this browser's storage, so changes may be lost on reload. "+
+              "Use the CSV button to back up your data. (Private/Incognito mode and full storage can cause this.)");
+      }
+    }
+  }
+  function load(){ try{ var r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+
+  /* ---------- helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function t(k){ return (I18N[S.lang]&&I18N[S.lang][k])||I18N.en[k]||k; }
+  function sym(){ var c=CURRENCIES.find(function(x){return x.code===S.currency;}); return c?c.sym:""; }
+  function noDec(){ return (S.currency==="JPY"||S.currency==="KRW"); }
+  function money(n){
+    var v=(Number(n)||0).toFixed(noDec()?0:2);
+    var neg=v.charAt(0)==="-"; if(neg) v=v.slice(1);
+    var parts=v.split(".");
+    parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,",");
+    return (neg?"−":"")+sym()+parts.join(".");
+  }
+  function today(){
+    var d=new Date(), m=("0"+(d.getMonth()+1)).slice(-2), day=("0"+d.getDate()).slice(-2);
+    return d.getFullYear()+"-"+m+"-"+day;
+  }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function yearOf(d){ return parseInt((d||"").slice(0,4),10); }
+  function monthOf(d){ return parseInt((d||"").slice(5,7),10); } // 1-12
+
+  /* ---------- data selection ---------- */
+  // transactions matching the period (year + month) — used for stats & charts
+  function periodTxns(){
+    return S.txns.filter(function(x){
+      if(yearOf(x.date)!==Number(S.filterYear)) return false;
+      if(S.filterMonth!=="all" && monthOf(x.date)!==Number(S.filterMonth)) return false;
+      return true;
+    });
+  }
+  // transactions for the table (period + type filter + search)
+  function tableTxns(){
+    var q=(S.q||"").toLowerCase();
+    return periodTxns().filter(function(x){
+      if(S.filterType!=="all" && x.type!==S.filterType) return false;
+      if(q){
+        var hay=((x.desc||"")+" "+(x.party||"")+" "+(x.category||"")).toLowerCase();
+        if(hay.indexOf(q)<0) return false;
+      }
+      return true;
+    }).sort(function(a,b){ return (b.date||"").localeCompare(a.date||"") || (b.created||0)-(a.created||0); });
+  }
+
+  function sum(arr){ return arr.reduce(function(a,x){ return a+(Number(x.amount)||0); },0); }
+
+  /* ============================================================
+     STATS
+     ============================================================ */
+  function computeStats(){
+    var p=periodTxns();
+    var inc=p.filter(function(x){return x.type==="income";});
+    var exp=p.filter(function(x){return x.type==="expense";});
+    var incPaid=sum(inc.filter(function(x){return x.status!=="pending";}));
+    var incPend=sum(inc.filter(function(x){return x.status==="pending";}));
+    var expPaid=sum(exp.filter(function(x){return x.status!=="pending";}));
+    var expPend=sum(exp.filter(function(x){return x.status==="pending";}));
+    var incTotal=incPaid+incPend, expTotal=expPaid+expPend;
+    var netPaid=incPaid-expPaid;
+    var net=incTotal-expTotal;
+    var tax=Math.max(0, netPaid)*((Number(S.taxRate)||0)/100);
+    return {inc:inc,exp:exp,incTotal:incTotal,expTotal:expTotal,incPend:incPend,expPend:expPend,
+            net:net,netPaid:netPaid,tax:tax};
+  }
+
+  function renderStats(){
+    var s=computeStats();
+    $("stIncome").textContent=money(s.incTotal);
+    $("stExpense").textContent=money(s.expTotal);
+    $("stNet").textContent=money(s.net);
+    $("stNet").style.color = s.net<0 ? "var(--expense)" : "var(--ink)";
+    $("stTax").textContent=money(s.tax);
+
+    function pend(a){ return a>0 ? t("pendingNote").replace("{a}",money(a)) : ""; }
+    $("stIncomeSub").textContent=pend(s.incPend);
+    $("stExpenseSub").textContent=pend(s.expPend);
+    $("stNetSub").textContent="";
+    $("stTaxSub").textContent="@ "+(Number(S.taxRate)||0)+"%";
+  }
+
+  /* ============================================================
+     MONTHLY CHART (pure SVG)
+     ============================================================ */
+  function renderChart(){
+    var year=Number(S.filterYear);
+    var inc=new Array(12).fill(0), exp=new Array(12).fill(0);
+    S.txns.forEach(function(x){
+      if(yearOf(x.date)!==year) return;
+      var m=monthOf(x.date)-1; if(m<0||m>11) return;
+      if(x.type==="income") inc[m]+=Number(x.amount)||0; else exp[m]+=Number(x.amount)||0;
+    });
+    var max=Math.max(1, Math.max.apply(null,inc), Math.max.apply(null,exp));
+    var W=560,H=180, padB=22, padT=8, plot=H-padB-padT;
+    var groupW=W/12, barW=groupW*0.3, gap=groupW*0.08;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block">';
+    // baseline
+    svg+='<line x1="0" y1="'+(padT+plot)+'" x2="'+W+'" y2="'+(padT+plot)+'" stroke="#e2e8f0"/>';
+    for(var m=0;m<12;m++){
+      var cx=m*groupW+groupW/2;
+      var ih=inc[m]/max*plot, eh=exp[m]/max*plot;
+      var x1=cx-barW-gap/2, x2=cx+gap/2;
+      svg+='<rect x="'+x1.toFixed(1)+'" y="'+(padT+plot-ih).toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+ih.toFixed(1)+'" rx="2" fill="#16a34a"><title>'+MONTHS[S.lang][m]+' · '+t("totalIncome")+' '+money(inc[m])+'</title></rect>';
+      svg+='<rect x="'+x2.toFixed(1)+'" y="'+(padT+plot-eh).toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+eh.toFixed(1)+'" rx="2" fill="#dc2626"><title>'+MONTHS[S.lang][m]+' · '+t("totalExpenses")+' '+money(exp[m])+'</title></rect>';
+      svg+='<text x="'+cx.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="10" fill="#94a3b8">'+MONTHS[S.lang][m].replace("月","")+'</text>';
+    }
+    svg+='</svg>';
+    $("chart").innerHTML=svg;
+    $("chartSub").textContent=year+"";
+  }
+
+  /* ============================================================
+     EXPENSE BREAKDOWN
+     ============================================================ */
+  function renderBreakdown(){
+    var exp=periodTxns().filter(function(x){return x.type==="expense";});
+    var map={};
+    exp.forEach(function(x){ var c=x.category||"—"; map[c]=(map[c]||0)+(Number(x.amount)||0); });
+    var rows=Object.keys(map).map(function(k){ return {k:k,v:map[k]}; })
+                .sort(function(a,b){return b.v-a.v;});
+    var total=rows.reduce(function(a,r){return a+r.v;},0);
+    var el=$("breakdown");
+    if(!rows.length){ el.innerHTML='<div class="empty">—</div>'; return; }
+    var html="";
+    rows.slice(0,8).forEach(function(r){
+      var pct=total? (r.v/total*100):0;
+      html+='<div class="cat-row"><div class="top"><span class="nm">'+esc(r.k)+
+            '</span><span class="amt">'+money(r.v)+' · '+pct.toFixed(0)+'%</span></div>'+
+            '<div class="bar"><span style="width:'+pct.toFixed(1)+'%"></span></div></div>';
+    });
+    el.innerHTML=html;
+  }
+
+  /* ============================================================
+     TABLE
+     ============================================================ */
+  function renderTable(){
+    var rows=tableTxns();
+    var body=$("txBody");
+    $("emptyMsg").style.display = rows.length ? "none" : "";
+    body.innerHTML = rows.map(function(x){
+      var isIn=x.type==="income";
+      var amt='<span class="'+(isIn?"amt-in":"amt-ex")+'">'+(isIn?"+":"−")+money(x.amount).replace("−","")+'</span>';
+      var statusPill = x.status==="pending"
+        ? '<span class="pill pend">'+t("stPending")+'</span>'
+        : '<span class="pill paid">'+t("stPaid")+'</span>';
+      return '<tr>'+
+        '<td style="white-space:nowrap">'+esc(x.date)+'</td>'+
+        '<td>'+esc(x.desc||"")+'</td>'+
+        '<td><span class="cat-tag">'+esc(x.category||"—")+'</span></td>'+
+        '<td>'+esc(x.party||"")+'</td>'+
+        '<td>'+statusPill+'</td>'+
+        '<td class="num">'+amt+'</td>'+
+        '<td class="num"><button class="rowbtn" data-edit="'+esc(x.id)+'" title="edit">✎</button></td>'+
+      '</tr>';
+    }).join("");
+    body.querySelectorAll("[data-edit]").forEach(function(b){
+      b.onclick=function(){ openModal(b.getAttribute("data-edit")); };
+    });
+  }
+
+  /* ============================================================
+     FILTERS UI
+     ============================================================ */
+  function years(){
+    var set={};
+    S.txns.forEach(function(x){ var y=yearOf(x.date); if(y) set[y]=1; });
+    set[new Date().getFullYear()]=1;
+    set[Number(S.filterYear)]=1;
+    return Object.keys(set).map(Number).sort(function(a,b){return b-a;});
+  }
+  function renderFilters(){
+    var ys=$("yearSel"); ys.innerHTML="";
+    years().forEach(function(y){
+      var o=document.createElement("option"); o.value=y; o.textContent=y;
+      if(y===Number(S.filterYear)) o.selected=true; ys.appendChild(o);
+    });
+    var ms=$("monthSel"); ms.innerHTML="";
+    var oAll=document.createElement("option"); oAll.value="all"; oAll.textContent=t("allMonths");
+    if(S.filterMonth==="all") oAll.selected=true; ms.appendChild(oAll);
+    for(var m=1;m<=12;m++){
+      var o=document.createElement("option"); o.value=m; o.textContent=MONTHS[S.lang][m-1];
+      if(String(S.filterMonth)===String(m)) o.selected=true; ms.appendChild(o);
+    }
+    document.querySelectorAll("#typeFilter button").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-f")===S.filterType);
+    });
+    $("search").value=S.q||"";
+  }
+
+  /* ---------- category suggestions ---------- */
+  function refreshCatList(){
+    var set={};
+    S.txns.forEach(function(x){ if(x.category) set[x.category]=1; });
+    [t("catFees"),t("catSoftware"),t("catEquipment"),t("catMarketing"),t("catOffice"),t("catTravel")]
+      .forEach(function(c){ set[c]=1; });
+    var dl=$("catList"); dl.innerHTML="";
+    Object.keys(set).forEach(function(c){ var o=document.createElement("option"); o.value=c; dl.appendChild(o); });
+  }
+
+  /* ============================================================
+     MODAL (add / edit)
+     ============================================================ */
+  var editingId=null, mType="income";
+  function setModalType(ty){
+    mType=ty;
+    var btns=document.querySelectorAll("#mType button");
+    btns.forEach(function(b){
+      var on=b.getAttribute("data-type")===ty;
+      b.classList.remove("act-in","act-ex");
+      if(on) b.classList.add(ty==="income"?"act-in":"act-ex");
+    });
+  }
+  function openModal(id){
+    editingId=id||null;
+    refreshCatList();
+    if(id){
+      var x=S.txns.find(function(t){return t.id===id;});
+      if(!x){ return; }
+      $("modalTitle").textContent=t("editTx");
+      setModalType(x.type);
+      $("mDate").value=x.date; $("mAmount").value=x.amount;
+      $("mDesc").value=x.desc||""; $("mCategory").value=x.category||"";
+      $("mParty").value=x.party||""; $("mStatus").value=x.status||"paid";
+      $("mDelete").style.display="";
+    } else {
+      $("modalTitle").textContent=t("addTx");
+      setModalType("income");
+      $("mDate").value=today(); $("mAmount").value="";
+      $("mDesc").value=""; $("mCategory").value=""; $("mParty").value=""; $("mStatus").value="paid";
+      $("mDelete").style.display="none";
+    }
+    $("overlay").classList.add("open");
+    setTimeout(function(){ $("mAmount").focus(); },30);
+  }
+  function closeModal(){ $("overlay").classList.remove("open"); editingId=null; }
+  function saveModal(){
+    var amt=Number($("mAmount").value);
+    if(!Number.isFinite(amt) || amt<=0){ $("mAmount").focus(); return; }
+    var rec={
+      type:mType, date:$("mDate").value||today(), amount:amt,
+      desc:$("mDesc").value.trim(), category:$("mCategory").value.trim(),
+      party:$("mParty").value.trim(), status:$("mStatus").value
+    };
+    if(editingId){
+      var x=S.txns.find(function(t){return t.id===editingId;});
+      if(x) Object.assign(x,rec);
+    } else {
+      if(S.txns.length>=LITE_CAP){ alert(L("cap")); window.open(PRO_URL,"_blank","noopener"); return; }
+      rec.id=uid(); rec.created=Date.now(); S.txns.push(rec);
+      // jump the period filter to the new transaction so the user sees it
+      S.filterYear=yearOf(rec.date);
+      if(S.filterMonth!=="all" && monthOf(rec.date)!==Number(S.filterMonth)) S.filterMonth="all";
+    }
+    save(); closeModal(); renderAll();
+  }
+  function deleteModal(){
+    if(!editingId) return;
+    if(!confirm(t("confirmDelete"))) return;
+    S.txns=S.txns.filter(function(t){return t.id!==editingId;});
+    save(); closeModal(); renderAll();
+  }
+
+  /* ============================================================
+     CSV EXPORT
+     ============================================================ */
+  function exportCsv(){
+    alert(L("exp")); window.open(PRO_URL,"_blank","noopener"); return;
+    var rows=tableTxns();
+    var head=["Date","Type","Description","Category","Client/Source","Status","Amount","Currency"];
+    var lines=[head.join(",")];
+    function cell(v){ v=String(v==null?"":v);
+      if(/^[=+\-@\t\r]/.test(v)) v="'"+v;           // neutralise spreadsheet formula injection
+      return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+    rows.forEach(function(x){
+      lines.push([x.date,x.type,x.desc,x.category,x.party,x.status,(Number(x.amount)||0),S.currency].map(cell).join(","));
+    });
+    var blob=new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url; a.download="cashflow-"+S.filterYear+(S.filterMonth==="all"?"":"-"+S.filterMonth)+".csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+  }
+
+  /* ============================================================
+     SAMPLE DATA
+     ============================================================ */
+  function loadSample(){
+    if(S.txns.length && !confirm(t("confirmSample"))) return;
+    var y=new Date().getFullYear();
+    function d(m,day){ return y+"-"+("0"+m).slice(-2)+"-"+("0"+day).slice(-2); }
+    var zh=S.lang==="zh";
+    S.currency = zh ? "TWD" : "USD";
+    S.txns=[
+      {type:"income", date:d(1,8),  amount: zh?60000:2400, desc: zh?"品牌識別設計":"Brand identity design", category:t("cliDesign"),   party: zh?"宏圖科技":"Horizon Tech", status:"paid"},
+      {type:"expense",date:d(1,10), amount: zh?480:16,     desc: zh?"設計軟體月費":"Design app subscription", category:t("catSoftware"), party:"Adobe", status:"paid"},
+      {type:"income", date:d(2,2),  amount: zh?36000:1500, desc: zh?"顧問諮詢 (10 小時)":"Consulting (10h)", category:t("cliConsult"), party: zh?"新創 A":"Startup A", status:"paid"},
+      {type:"expense",date:d(2,5),  amount: zh?1800:60,    desc: zh?"平台手續費":"Marketplace fees", category:t("catFees"), party:"Gumroad", status:"paid"},
+      {type:"income", date:d(3,15), amount: zh?90000:3000, desc: zh?"月費合約":"Monthly retainer", category:t("cliRetainer"), party: zh?"宏圖科技":"Horizon Tech", status:"paid"},
+      {type:"expense",date:d(3,18), amount: zh?12000:400,  desc: zh?"新螢幕":"New monitor", category:t("catEquipment"), party: zh?"電腦商城":"TechMart", status:"paid"},
+      {type:"income", date:d(4,9),  amount: zh?48000:1800, desc: zh?"網站改版":"Website redesign", category:t("cliDesign"), party: zh?"咖啡品牌":"Bean & Co.", status:"pending"},
+      {type:"expense",date:d(4,12), amount: zh?900:30,     desc: zh?"線上廣告":"Online ads", category:t("catMarketing"), party:"Meta", status:"paid"}
+    ];
+    S.filterYear=y; S.filterMonth="all"; S.filterType="all"; S.q="";
+    save(); renderAll();
+  }
+
+  /* ============================================================
+     I18N + FULL RENDER
+     ============================================================ */
+  function applyI18n(){
+    document.querySelectorAll("[data-i18n]").forEach(function(el){ el.textContent=t(el.getAttribute("data-i18n")); });
+    document.querySelectorAll("[data-i18n-ph]").forEach(function(el){ el.placeholder=t(el.getAttribute("data-i18n-ph")); });
+    $("langSel").value=S.lang;
+    $("taxInfo").title=t("taxTip");
+    $("crossSell").innerHTML=L("foot");
+    $("getProBtn").href=PRO_URL; $("getProTxt").textContent=L("getPro");
+    $("promoText").textContent=L("promo");
+    var _pl=$("promoLink"); _pl.href=PRO_URL; _pl.textContent=L("cta");
+  }
+  function renderCurrency(){
+    var sel=$("currency"); if(!sel.options.length){
+      CURRENCIES.forEach(function(c){ var o=document.createElement("option"); o.value=c.code; o.textContent=c.code+" ("+c.sym+")"; sel.appendChild(o); });
+    }
+    sel.value=S.currency;
+  }
+  function renderAll(){
+    applyI18n(); renderCurrency();
+    $("taxRate").value=S.taxRate;
+    renderFilters(); renderStats(); renderChart(); renderBreakdown(); renderTable(); refreshCatList();
+  }
+
+  /* ============================================================
+     EVENTS
+     ============================================================ */
+  $("langSel").onchange=function(){ S.lang=$("langSel").value; save(); renderAll(); };
+  $("currency").onchange=function(){ S.currency=$("currency").value; save(); renderAll(); };
+  $("taxRate").addEventListener("input",function(){ S.taxRate=Number($("taxRate").value)||0; save(); renderStats(); });
+  $("yearSel").onchange=function(){ S.filterYear=Number($("yearSel").value); save(); renderAll(); };
+  $("monthSel").onchange=function(){ S.filterMonth=$("monthSel").value; save(); renderStats(); renderBreakdown(); renderTable(); };
+  document.querySelectorAll("#typeFilter button").forEach(function(b){
+    b.onclick=function(){ S.filterType=b.getAttribute("data-f"); save(); renderFilters(); renderTable(); };
+  });
+  $("search").addEventListener("input",function(){ S.q=$("search").value; save(); renderTable(); });
+
+  $("addBtn").onclick=function(){ openModal(null); };
+  $("sampleBtn").onclick=loadSample;
+  $("exportBtn").onclick=exportCsv;
+
+  document.querySelectorAll("#mType button").forEach(function(b){
+    b.onclick=function(){ setModalType(b.getAttribute("data-type")); };
+  });
+  $("mCancel").onclick=closeModal;
+  $("mSave").onclick=saveModal;
+  $("mDelete").onclick=deleteModal;
+  $("overlay").addEventListener("click",function(e){ if(e.target===$("overlay")) closeModal(); });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape" && $("overlay").classList.contains("open")) closeModal();
+    if(e.key==="Enter" && $("overlay").classList.contains("open") && e.target.tagName!=="TEXTAREA") saveModal();
+  });
+
+  /* ---------- init ---------- */
+  renderAll();
+
+})();
+</script>
+</body>
+</html>

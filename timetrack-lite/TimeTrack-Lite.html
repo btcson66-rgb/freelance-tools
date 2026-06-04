@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TimeTrack Lite — Free Offline Time Tracker (no signup)</title>
+<style>
+  :root{
+    --accent:#4f46e5;
+    --bill:#16a34a;
+    --nonbill:#94a3b8;
+    --bg:#f1f5f9;
+    --panel:#ffffff;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+      "PingFang TC","Microsoft JhengHei",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+
+  /* ---------- Top toolbar ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:10px 16px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:6px;font-size:16px}
+  .brand .dot{width:24px;height:24px;border-radius:7px;background:var(--accent);
+    display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+  .toolbar .spacer{flex:1}
+  .toolbar label.inl{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:600}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;
+    font-size:13px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+  .btn:hover{border-color:#cbd5e1}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{filter:brightness(.95)}
+  .btn.pro{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+  .btn.pro:hover{background:#e0e7ff}
+  .promo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:9px 16px;background:linear-gradient(90deg,#eef2ff,#e0e7ff);border-bottom:1px solid #c7d2fe;font-size:13px;color:#3730a3;font-weight:600}
+  .promo a{color:#4338ca;font-weight:800;text-decoration:none;border-bottom:2px solid #a5b4fc}
+  .promo a:hover{border-color:#4f46e5}
+  .lite-tag{font-size:11px;font-weight:800;color:#4338ca;background:#e0e7ff;border:1px solid #c7d2fe;border-radius:999px;padding:1px 7px;margin-left:2px}
+  select.mini,input.mini{border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:#fff;font-weight:600}
+  input.mini{width:72px;text-align:right}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 16px 60px}
+
+  /* ---------- Live timer bar ---------- */
+  .timer{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:14px 16px;margin-bottom:18px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .timer input.tdesc{flex:1;min-width:170px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+  .timer input.tproj{width:150px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+  .timer .clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:22px;letter-spacing:.02em;
+    min-width:96px;text-align:center;color:var(--ink)}
+  .timer .clock.run{color:var(--accent)}
+  .timer .tbill{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+  .bigbtn{border:0;border-radius:12px;padding:11px 20px;font-size:14px;font-weight:700;color:#fff;background:var(--accent);
+    display:inline-flex;align-items:center;gap:8px}
+  .bigbtn.stop{background:var(--bill)}
+  .bigbtn:hover{filter:brightness(.95)}
+
+  /* ---------- Stat cards ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  @media (max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:460px){.stats{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;box-shadow:var(--shadow)}
+  .card .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:6px}
+  .card .val{font-size:26px;font-weight:800;margin-top:6px;letter-spacing:-.01em}
+  .card .sub{font-size:12px;color:var(--muted);margin-top:3px}
+  .card.bill .val{color:var(--bill)}
+  .card.money .val{color:var(--accent)}
+  .card .info{cursor:help;color:#94a3b8;font-size:11px;border:1px solid var(--line);
+    border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center}
+
+  /* ---------- Panels (chart + breakdown) ---------- */
+  .panels{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:18px}
+  @media (max-width:860px){.panels{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;box-shadow:var(--shadow)}
+  .panel h3{margin:0 0 4px;font-size:13px;font-weight:700}
+  .panel .ph-sub{font-size:12px;color:var(--muted);margin:0 0 12px}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+  /* project breakdown rows */
+  .cat-row{margin-bottom:10px}
+  .cat-row:last-child{margin-bottom:0}
+  .cat-row .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+  .cat-row .top .nm{font-weight:600}
+  .cat-row .top .amt{color:var(--muted);white-space:nowrap}
+  .bar{height:8px;border-radius:6px;background:#eef2f6;overflow:hidden}
+  .bar > span{display:block;height:100%;border-radius:6px;background:var(--accent)}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:24px 0}
+
+  /* ---------- Filters ---------- */
+  .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .filters .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  .filters .seg button{border:0;background:#fff;padding:7px 13px;font-size:13px;font-weight:600;color:var(--muted)}
+  .filters .seg button.active{background:var(--accent);color:#fff}
+  .filters .search{flex:1;min-width:140px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff}
+
+  /* ---------- Entries table ---------- */
+  .tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  table.tx{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.tx thead th{background:#f8fafc;color:var(--muted);text-align:left;padding:11px 14px;font-size:11px;
+    text-transform:uppercase;letter-spacing:.05em;font-weight:700;border-bottom:1px solid var(--line)}
+  table.tx thead th.num{text-align:right}
+  table.tx tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+  table.tx tbody tr:last-child td{border-bottom:0}
+  table.tx tbody tr:hover{background:#f8fafc}
+  table.tx td.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .pill.b{background:#dcfce7;color:#15803d}
+  .pill.n{background:#e2e8f0;color:#475569}
+  .dur{font-weight:700;font-variant-numeric:tabular-nums}
+  .amt{font-weight:700;color:var(--accent)}
+  .rowbtn{background:none;border:0;color:var(--muted);font-size:15px;padding:2px 6px;border-radius:6px}
+  .rowbtn:hover{background:#eef2f6;color:var(--ink)}
+  .proj-tag{color:var(--muted);font-size:12px}
+
+  /* ---------- Modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;
+    justify-content:center;z-index:100;padding:16px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:16px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.3);
+    max-height:92vh;overflow:auto}
+  .modal h2{margin:0;padding:18px 20px;font-size:17px;border-bottom:1px solid var(--line)}
+  .modal .body{padding:18px 20px}
+  .modal .foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+  .field{margin-bottom:13px}
+  .field:last-child{margin-bottom:0}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  .field input,.field select,.field textarea{
+    width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .chk{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink)}
+  .chk input{width:auto}
+
+  .footnote{text-align:center;font-size:12px;color:var(--muted);margin-top:26px}
+  .footnote b{color:var(--ink)}
+  .footnote a{color:var(--accent);text-decoration:none;font-weight:700}
+  .footnote a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand"><span class="dot">⏱</span><span>TimeTrack</span><span class="lite-tag">LITE</span></div>
+  <div class="spacer"></div>
+  <label class="inl"><span data-i18n="rate">Rate</span>
+    <input class="mini" id="defRate" type="number" min="0" step="any" title="Default hourly rate"></label>
+  <select class="mini" id="currency" title="Currency"></select>
+  <select class="mini" id="langSel" title="Language">
+    <option value="en">EN</option>
+    <option value="zh">繁中</option>
+  </select>
+  <button class="btn" id="sampleBtn" data-i18n="sample">Sample data</button>
+  <button class="btn" id="exportBtn" data-i18n="exportCsv">⤓ CSV</button>
+  <a class="btn pro" id="getProBtn" href="#" target="_blank" rel="noopener">✦ <span id="getProTxt">Get Pro</span></a>
+  <button class="btn primary" id="addBtn" data-i18n="addEntry">+ Add entry</button>
+</div>
+
+<div class="promo"><span id="promoText"></span> <a id="promoLink" href="#" target="_blank" rel="noopener"></a></div>
+
+<div class="wrap">
+
+  <!-- ============ LIVE TIMER ============ -->
+  <div class="timer">
+    <input class="tdesc" id="tDesc" placeholder="" data-i18n-ph="whatWorking">
+    <input class="tproj" id="tProj" list="projList" placeholder="" data-i18n-ph="project">
+    <label class="tbill"><input type="checkbox" id="tBill" checked> <span data-i18n="billable">Billable</span></label>
+    <div class="clock" id="clock">0:00:00</div>
+    <button class="bigbtn" id="toggleBtn" data-i18n="start">▶ Start</button>
+  </div>
+  <datalist id="projList"></datalist>
+
+  <!-- ============ STAT CARDS ============ -->
+  <div class="stats">
+    <div class="card">
+      <div class="lbl"><span data-i18n="totalHours">Tracked</span></div>
+      <div class="val" id="stTotal">—</div>
+      <div class="sub" id="stTotalSub"></div>
+    </div>
+    <div class="card bill">
+      <div class="lbl"><span data-i18n="billableHours">Billable hrs</span></div>
+      <div class="val" id="stBill">—</div>
+      <div class="sub" id="stBillSub"></div>
+    </div>
+    <div class="card money">
+      <div class="lbl"><span data-i18n="billableValue">Billable value</span></div>
+      <div class="val" id="stValue">—</div>
+      <div class="sub" id="stValueSub"></div>
+    </div>
+    <div class="card">
+      <div class="lbl"><span data-i18n="utilization">Utilization</span>
+        <span class="info" id="utilInfo" title="">?</span></div>
+      <div class="val" id="stUtil">—</div>
+      <div class="sub" id="stUtilSub"></div>
+    </div>
+  </div>
+
+  <!-- ============ CHART + BREAKDOWN ============ -->
+  <div class="panels">
+    <div class="panel">
+      <h3 data-i18n="hoursTitle">Hours logged</h3>
+      <p class="ph-sub" id="chartSub"></p>
+      <div id="chart"></div>
+      <div class="legend">
+        <span><i style="background:var(--bill)"></i><span data-i18n="billable">Billable</span></span>
+        <span><i style="background:var(--nonbill)"></i><span data-i18n="nonBillable">Non-billable</span></span>
+      </div>
+    </div>
+    <div class="panel">
+      <h3 data-i18n="byProject">By project</h3>
+      <p class="ph-sub" data-i18n="byProjectSub">Hours &amp; billable value, in the selected period.</p>
+      <div id="breakdown"></div>
+    </div>
+  </div>
+
+  <!-- ============ FILTERS ============ -->
+  <div class="filters">
+    <select class="mini" id="yearSel" title="Year"></select>
+    <select class="mini" id="monthSel" title="Month"></select>
+    <div class="seg" id="billFilter">
+      <button data-f="all" class="active" data-i18n="fAll">All</button>
+      <button data-f="billable" data-i18n="billable">Billable</button>
+      <button data-f="nonbillable" data-i18n="nonBillable">Non-billable</button>
+    </div>
+    <input class="search" id="search" placeholder="Search…" data-i18n-ph="searchPh">
+  </div>
+
+  <!-- ============ TABLE ============ -->
+  <div class="tbl-wrap">
+    <table class="tx">
+      <thead><tr>
+        <th data-i18n="thDate">Date</th>
+        <th data-i18n="thProject">Project</th>
+        <th data-i18n="thTask">Task</th>
+        <th data-i18n="thType">Type</th>
+        <th class="num" data-i18n="thDuration">Duration</th>
+        <th class="num" data-i18n="thAmount">Amount</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="txBody"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg" style="display:none" data-i18n="noTx">No time entries yet. Start the timer above or click “+ Add entry”.</div>
+  </div>
+
+  <div class="footnote">
+    <div data-i18n="privacy">100% offline. Your time data is saved only in this browser and is never uploaded.</div>
+    <div style="margin-top:6px" id="crossSell"></div>
+  </div>
+</div>
+
+<!-- ============ ADD/EDIT MODAL ============ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle" data-i18n="addEntry">Add entry</h2>
+    <div class="body">
+      <div class="field"><label data-i18n="thTask">Task</label><input id="mDesc" placeholder=""></div>
+      <div class="row2">
+        <div class="field"><label data-i18n="thProject">Project</label>
+          <input id="mProj" list="projList" placeholder="">
+        </div>
+        <div class="field"><label data-i18n="thDate">Date</label><input type="date" id="mDate"></div>
+      </div>
+      <div class="row3">
+        <div class="field"><label data-i18n="hours">Hours</label><input type="number" id="mHours" min="0" step="1" placeholder="0"></div>
+        <div class="field"><label data-i18n="minutes">Minutes</label><input type="number" id="mMins" min="0" max="59" step="1" placeholder="0"></div>
+        <div class="field"><label data-i18n="rateField">Rate / hr</label><input type="number" id="mRate" min="0" step="any" placeholder="0"></div>
+      </div>
+      <div class="field">
+        <label class="chk"><input type="checkbox" id="mBill"> <span data-i18n="billable">Billable</span></label>
+      </div>
+    </div>
+    <div class="foot">
+      <button class="btn" id="mDelete" style="margin-right:auto;display:none;color:#dc2626;border-color:#fecaca" data-i18n="delete">Delete</button>
+      <button class="btn" id="mCancel" data-i18n="cancel">Cancel</button>
+      <button class="btn primary" id="mSave" data-i18n="save">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   TimeTrack — single-file offline time tracker & timesheet
+   for freelancers & solopreneurs.
+   Live timer + manual entries. Billable hours -> invoice-ready.
+   All data stays in this browser (localStorage). No network.
+   ============================================================ */
+(function(){
+  "use strict";
+
+  var STORE_KEY = "timetrack_lite_v1";
+  var PRO_INVOICE_URL = "https://bitsonic1.gumroad.com/l/invoicepro";
+  var PRO_CASHFLOW_URL = "https://bitsonic1.gumroad.com/l/cashflow";
+  var PRO_URL = "https://bitsonic1.gumroad.com/l/timetrack";
+  var LITE_CAP = 25;
+  var LITE = {
+    en:{getPro:"Get Pro",
+        promo:"Free version · up to "+LITE_CAP+" entries, CSV export is Pro.",
+        cta:"Unlock TimeTrack Pro →",
+        cap:"TimeTrack Lite is limited to "+LITE_CAP+" time entries.\n\nUpgrade to Pro for unlimited entries, CSV export and no banner — one-time purchase. Opening the upgrade page…",
+        exp:"CSV export is a Pro feature.\n\nUpgrade to TimeTrack Pro (one-time) to export an invoice-ready CSV. Opening the upgrade page…",
+        foot:"You're using <b>TimeTrack Lite</b> (free). <a href='"+PRO_URL+"' target='_blank' rel='noopener'>Upgrade to Pro</a> for unlimited entries + CSV export. Also: <a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>InvoicePro</a> · <a href='"+PRO_CASHFLOW_URL+"' target='_blank' rel='noopener'>CashFlow</a>."},
+    zh:{getPro:"升級 Pro",
+        promo:"免費版 · 最多 "+LITE_CAP+" 筆，CSV 匯出為 Pro 功能。",
+        cta:"解鎖 TimeTrack Pro →",
+        cap:"TimeTrack Lite 免費版最多 "+LITE_CAP+" 筆工時。\n\n升級 Pro 可無限筆數、開放 CSV 匯出、移除橫幅 — 一次買斷。即將開啟升級頁面…",
+        exp:"CSV 匯出是 Pro 功能。\n\n升級 TimeTrack Pro（一次買斷）即可匯出可請款的 CSV。即將開啟升級頁面…",
+        foot:"您正在使用 <b>TimeTrack Lite</b>（免費版）。<a href='"+PRO_URL+"' target='_blank' rel='noopener'>升級 Pro</a> 解除筆數上限並開放 CSV 匯出。同系列：<a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>InvoicePro</a> · <a href='"+PRO_CASHFLOW_URL+"' target='_blank' rel='noopener'>CashFlow</a>。"}
+  };
+  function L(k){ return (LITE[S.lang]||LITE.en)[k]; }
+
+  var CURRENCIES = [
+    {code:"USD",sym:"$"},{code:"EUR",sym:"€"},{code:"GBP",sym:"£"},
+    {code:"TWD",sym:"NT$"},{code:"CNY",sym:"¥"},{code:"JPY",sym:"¥"},
+    {code:"HKD",sym:"HK$"},{code:"SGD",sym:"S$"},{code:"AUD",sym:"A$"},
+    {code:"CAD",sym:"C$"},{code:"INR",sym:"₹"},{code:"KRW",sym:"₩"}
+  ];
+
+  var MONTHS = {
+    en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+    zh:["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]
+  };
+
+  var I18N = {
+    en:{
+      rate:"Rate",sample:"Sample data",exportCsv:"⤓ CSV",addEntry:"+ Add entry",
+      whatWorking:"What are you working on?",project:"Project",billable:"Billable",
+      nonBillable:"Non-billable",start:"▶ Start",stop:"■ Stop",
+      totalHours:"Tracked",billableHours:"Billable hrs",billableValue:"Billable value",
+      utilization:"Utilization",
+      hoursTitle:"Hours logged",byProject:"By project",
+      byProjectSub:"Hours & billable value, in the selected period.",
+      fAll:"All",searchPh:"Search task, project…",
+      thDate:"Date",thProject:"Project",thTask:"Task",thType:"Type",thDuration:"Duration",thAmount:"Amount",
+      hours:"Hours",minutes:"Minutes",rateField:"Rate / hr",
+      noTx:"No time entries yet. Start the timer above or click “+ Add entry”.",
+      privacy:"100% offline. Your time data is saved only in this browser and is never uploaded.",
+      delete:"Delete",cancel:"Cancel",save:"Save",editEntry:"Edit entry",allMonths:"Whole year",
+      utilTip:"Utilization = billable hours ÷ total tracked hours. It shows how much of your logged time is actually earning money.",
+      countN:"{n} entries",ofTotal:"of {h}",entriesN:"{n} entries",
+      effRate:"~{r}/hr effective",
+      confirmSample:"Load sample data? This replaces all current entries.",
+      confirmDelete:"Delete this entry?",
+      runningNote:"Timer running — stop it to log this entry.",
+      crossSell:"Turn billable hours into an <a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>invoice with InvoicePro</a> · track your money with <a href='"+PRO_CASHFLOW_URL+"' target='_blank' rel='noopener'>CashFlow</a>.",
+      pjWebsite:"Website redesign",pjBranding:"Brand identity",pjConsult:"Consulting",pjInternal:"Admin / Internal"
+    },
+    zh:{
+      rate:"時薪",sample:"範例資料",exportCsv:"⤓ CSV",addEntry:"+ 新增紀錄",
+      whatWorking:"正在進行什麼工作？",project:"專案",billable:"可計費",
+      nonBillable:"不可計費",start:"▶ 開始",stop:"■ 停止",
+      totalHours:"總工時",billableHours:"可計費時數",billableValue:"可計費金額",
+      utilization:"計費率",
+      hoursTitle:"工時紀錄",byProject:"依專案",
+      byProjectSub:"所選期間的工時與可計費金額。",
+      fAll:"全部",searchPh:"搜尋工作、專案…",
+      thDate:"日期",thProject:"專案",thTask:"工作",thType:"類型",thDuration:"時長",thAmount:"金額",
+      hours:"小時",minutes:"分鐘",rateField:"時薪",
+      noTx:"尚無工時紀錄。按上方計時器開始，或點「＋ 新增紀錄」。",
+      privacy:"100% 離線。您的工時資料只儲存在此瀏覽器，絕不會上傳。",
+      delete:"刪除",cancel:"取消",save:"儲存",editEntry:"編輯紀錄",allMonths:"整年",
+      utilTip:"計費率 = 可計費時數 ÷ 總工時。顯示您所記錄的時間有多少真正能轉換為收入。",
+      countN:"{n} 筆",ofTotal:"／共 {h}",entriesN:"{n} 筆",
+      effRate:"約 {r}/小時 有效時薪",
+      confirmSample:"載入範例資料？將取代目前所有紀錄。",
+      confirmDelete:"刪除這筆紀錄？",
+      runningNote:"計時中 — 停止後即會記錄。",
+      crossSell:"把可計費時數變成 <a href='"+PRO_INVOICE_URL+"' target='_blank' rel='noopener'>InvoicePro 發票</a>，並用 <a href='"+PRO_CASHFLOW_URL+"' target='_blank' rel='noopener'>CashFlow</a> 管理收支。",
+      pjWebsite:"網站改版",pjBranding:"品牌識別",pjConsult:"顧問諮詢",pjInternal:"行政 / 內部"
+    }
+  };
+
+  function blankState(){
+    var now=new Date();
+    return {
+      lang:"en", currency:"USD", defRate:60,
+      filterYear:now.getFullYear(), filterMonth:"all", filterBill:"all", q:"",
+      running:null, entries:[]
+    };
+  }
+
+  var S = load() || blankState();
+  // forward-compat: normalise loaded state with full defaults
+  if(!Array.isArray(S.entries)) S.entries=[];
+  if(!S.lang || !I18N[S.lang]) S.lang="en";
+  if(!S.currency) S.currency="USD";
+  if(!S.filterYear) S.filterYear=new Date().getFullYear();
+  if(!S.filterMonth) S.filterMonth="all";
+  if(!S.filterBill) S.filterBill="all";
+  if(S.q==null) S.q="";
+  if(S.defRate==null) S.defRate=60;
+  if(S.running!==null && (typeof S.running!=="object" || !Number.isFinite(Number(S.running.start)))) S.running=null;
+
+  /* ---------- persistence ---------- */
+  var saveWarned=false;
+  function save(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+    catch(e){
+      if(!saveWarned){ saveWarned=true;
+        alert("TimeTrack could not save to this browser's storage, so changes may be lost on reload. "+
+              "Use the CSV button to back up your data. (Private/Incognito mode and full storage can cause this.)");
+      }
+    }
+  }
+  function load(){ try{ var r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+
+  /* ---------- helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function t(k){ return (I18N[S.lang]&&I18N[S.lang][k])||I18N.en[k]||k; }
+  function sym(){ var c=CURRENCIES.find(function(x){return x.code===S.currency;}); return c?c.sym:""; }
+  function noDec(){ return (S.currency==="JPY"||S.currency==="KRW"); }
+  function money(n){
+    var v=(Number(n)||0).toFixed(noDec()?0:2);
+    var neg=v.charAt(0)==="-"; if(neg) v=v.slice(1);
+    var parts=v.split(".");
+    parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,",");
+    return (neg?"−":"")+sym()+parts.join(".");
+  }
+  function today(){
+    var d=new Date(), m=("0"+(d.getMonth()+1)).slice(-2), day=("0"+d.getDate()).slice(-2);
+    return d.getFullYear()+"-"+m+"-"+day;
+  }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function yearOf(d){ return parseInt((d||"").slice(0,4),10); }
+  function monthOf(d){ return parseInt((d||"").slice(5,7),10); } // 1-12
+  function dayOf(d){ return parseInt((d||"").slice(8,10),10); }  // 1-31
+
+  // minutes -> "Hh Mm" / "Mm"
+  function fmtDur(mins){
+    mins=Math.max(0,Math.round(Number(mins)||0));
+    var h=Math.floor(mins/60), m=mins%60;
+    if(h&&m) return h+"h "+m+"m";
+    if(h) return h+"h";
+    return m+"m";
+  }
+  // minutes -> hours number (2 dp)
+  function toHours(mins){ return (Number(mins)||0)/60; }
+  function fmtHours(mins){
+    var h=toHours(mins);
+    return (Math.round(h*100)/100).toLocaleString(undefined,{maximumFractionDigits:2})+"h";
+  }
+  function amountOf(x){ return x.billable ? toHours(x.mins)*(Number(x.rate)||0) : 0; }
+
+  /* ---------- data selection ---------- */
+  function periodEntries(){
+    return S.entries.filter(function(x){
+      if(yearOf(x.date)!==Number(S.filterYear)) return false;
+      if(S.filterMonth!=="all" && monthOf(x.date)!==Number(S.filterMonth)) return false;
+      return true;
+    });
+  }
+  function tableEntries(){
+    var q=(S.q||"").toLowerCase();
+    return periodEntries().filter(function(x){
+      if(S.filterBill==="billable" && !x.billable) return false;
+      if(S.filterBill==="nonbillable" && x.billable) return false;
+      if(q){
+        var hay=((x.desc||"")+" "+(x.project||"")).toLowerCase();
+        if(hay.indexOf(q)<0) return false;
+      }
+      return true;
+    }).sort(function(a,b){ return (b.date||"").localeCompare(a.date||"") || (b.created||0)-(a.created||0); });
+  }
+
+  /* ============================================================
+     STATS
+     ============================================================ */
+  function computeStats(){
+    var p=periodEntries();
+    var totMins=0, billMins=0, value=0;
+    p.forEach(function(x){
+      var m=Number(x.mins)||0;
+      totMins+=m;
+      if(x.billable){ billMins+=m; value+=toHours(m)*(Number(x.rate)||0); }
+    });
+    var util = totMins>0 ? (billMins/totMins*100) : 0;
+    var eff = totMins>0 ? value/toHours(totMins) : 0; // effective rate over ALL tracked time
+    return {n:p.length,totMins:totMins,billMins:billMins,value:value,util:util,eff:eff};
+  }
+  function renderStats(){
+    var s=computeStats();
+    $("stTotal").textContent=fmtHours(s.totMins);
+    $("stTotalSub").textContent=t("entriesN").replace("{n}",s.n);
+    $("stBill").textContent=fmtHours(s.billMins);
+    $("stBillSub").textContent=t("ofTotal").replace("{h}",fmtHours(s.totMins));
+    $("stValue").textContent=money(s.value);
+    $("stValueSub").textContent = s.totMins>0 ? t("effRate").replace("{r}",money(s.eff)) : "";
+    $("stUtil").textContent=(Math.round(s.util)||0)+"%";
+    $("stUtilSub").textContent="";
+  }
+
+  /* ============================================================
+     CHART (pure SVG): daily within a month, monthly across a year
+     ============================================================ */
+  function renderChart(){
+    var year=Number(S.filterYear);
+    var billArr, nonArr, labels, sub;
+    if(S.filterMonth==="all"){
+      billArr=new Array(12).fill(0); nonArr=new Array(12).fill(0);
+      S.entries.forEach(function(x){
+        if(yearOf(x.date)!==year) return;
+        var i=monthOf(x.date)-1; if(i<0||i>11) return;
+        var h=toHours(x.mins);
+        if(x.billable) billArr[i]+=h; else nonArr[i]+=h;
+      });
+      labels=MONTHS[S.lang].map(function(m){ return m.replace("月",""); });
+      sub=year+"";
+    } else {
+      var mo=Number(S.filterMonth);
+      var days=new Date(year,mo,0).getDate();
+      billArr=new Array(days).fill(0); nonArr=new Array(days).fill(0);
+      S.entries.forEach(function(x){
+        if(yearOf(x.date)!==year || monthOf(x.date)!==mo) return;
+        var i=dayOf(x.date)-1; if(i<0||i>=days) return;
+        var h=toHours(x.mins);
+        if(x.billable) billArr[i]+=h; else nonArr[i]+=h;
+      });
+      labels=[]; for(var d=1;d<=days;d++) labels.push(d%5===0||d===1?String(d):"");
+      sub=MONTHS[S.lang][mo-1]+" "+year;
+    }
+    var N=billArr.length;
+    var tot=billArr.map(function(b,i){ return b+nonArr[i]; });
+    var max=Math.max(1, Math.max.apply(null,tot));
+    var W=560,H=180, padB=22, padT=8, plot=H-padB-padT;
+    var groupW=W/N, barW=Math.max(2, groupW*(N>20?0.6:0.42));
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block">';
+    svg+='<line x1="0" y1="'+(padT+plot)+'" x2="'+W+'" y2="'+(padT+plot)+'" stroke="#e2e8f0"/>';
+    for(var i=0;i<N;i++){
+      var cx=i*groupW+groupW/2, x=cx-barW/2;
+      var bh=billArr[i]/max*plot, nh=nonArr[i]/max*plot;
+      var yB=padT+plot-bh, yN=yB-nh;
+      var lbl=labels[i]?(labels[i]+(S.filterMonth==="all"?"":"")):"";
+      var tipLabel=(S.filterMonth==="all"?MONTHS[S.lang][i]:(MONTHS[S.lang][Number(S.filterMonth)-1]+" "+(i+1)));
+      if(nh>0.2) svg+='<rect x="'+x.toFixed(1)+'" y="'+yN.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+nh.toFixed(1)+'" rx="1.5" fill="#94a3b8"><title>'+tipLabel+' · '+t("nonBillable")+' '+(Math.round(nonArr[i]*100)/100)+'h</title></rect>';
+      if(bh>0.2) svg+='<rect x="'+x.toFixed(1)+'" y="'+yB.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="1.5" fill="#16a34a"><title>'+tipLabel+' · '+t("billable")+' '+(Math.round(billArr[i]*100)/100)+'h</title></rect>';
+      if(lbl) svg+='<text x="'+cx.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="10" fill="#94a3b8">'+lbl+'</text>';
+    }
+    svg+='</svg>';
+    $("chart").innerHTML=svg;
+    $("chartSub").textContent=sub;
+  }
+
+  /* ============================================================
+     BY-PROJECT BREAKDOWN
+     ============================================================ */
+  function renderBreakdown(){
+    var p=periodEntries();
+    var map={};
+    p.forEach(function(x){
+      var k=x.project||"—";
+      if(!map[k]) map[k]={mins:0,val:0};
+      map[k].mins+=Number(x.mins)||0;
+      map[k].val+=amountOf(x);
+    });
+    var rows=Object.keys(map).map(function(k){ return {k:k,mins:map[k].mins,val:map[k].val}; })
+                .sort(function(a,b){return b.mins-a.mins;});
+    var maxMins=rows.reduce(function(a,r){return Math.max(a,r.mins);},0)||1;
+    var el=$("breakdown");
+    if(!rows.length){ el.innerHTML='<div class="empty">—</div>'; return; }
+    var html="";
+    rows.slice(0,8).forEach(function(r){
+      var pct=r.mins/maxMins*100;
+      var amt=r.val>0 ? (fmtHours(r.mins)+" · "+money(r.val)) : fmtHours(r.mins);
+      html+='<div class="cat-row"><div class="top"><span class="nm">'+esc(r.k)+
+            '</span><span class="amt">'+amt+'</span></div>'+
+            '<div class="bar"><span style="width:'+pct.toFixed(1)+'%"></span></div></div>';
+    });
+    el.innerHTML=html;
+  }
+
+  /* ============================================================
+     TABLE
+     ============================================================ */
+  function renderTable(){
+    var rows=tableEntries();
+    var body=$("txBody");
+    $("emptyMsg").style.display = rows.length ? "none" : "";
+    body.innerHTML = rows.map(function(x){
+      var typePill = x.billable
+        ? '<span class="pill b">'+t("billable")+'</span>'
+        : '<span class="pill n">'+t("nonBillable")+'</span>';
+      var amt = x.billable ? '<span class="amt">'+money(amountOf(x))+'</span>' : '<span style="color:var(--muted)">—</span>';
+      return '<tr>'+
+        '<td style="white-space:nowrap">'+esc(x.date)+'</td>'+
+        '<td><span class="proj-tag">'+esc(x.project||"—")+'</span></td>'+
+        '<td>'+esc(x.desc||"")+'</td>'+
+        '<td>'+typePill+'</td>'+
+        '<td class="num"><span class="dur">'+fmtDur(x.mins)+'</span></td>'+
+        '<td class="num">'+amt+'</td>'+
+        '<td class="num"><button class="rowbtn" data-edit="'+esc(x.id)+'" title="edit">✎</button></td>'+
+      '</tr>';
+    }).join("");
+    body.querySelectorAll("[data-edit]").forEach(function(b){
+      b.onclick=function(){ openModal(b.getAttribute("data-edit")); };
+    });
+  }
+
+  /* ============================================================
+     FILTERS UI
+     ============================================================ */
+  function years(){
+    var set={};
+    S.entries.forEach(function(x){ var y=yearOf(x.date); if(y) set[y]=1; });
+    set[new Date().getFullYear()]=1;
+    set[Number(S.filterYear)]=1;
+    return Object.keys(set).map(Number).sort(function(a,b){return b-a;});
+  }
+  function renderFilters(){
+    var ys=$("yearSel"); ys.innerHTML="";
+    years().forEach(function(y){
+      var o=document.createElement("option"); o.value=y; o.textContent=y;
+      if(y===Number(S.filterYear)) o.selected=true; ys.appendChild(o);
+    });
+    var ms=$("monthSel"); ms.innerHTML="";
+    var oAll=document.createElement("option"); oAll.value="all"; oAll.textContent=t("allMonths");
+    if(S.filterMonth==="all") oAll.selected=true; ms.appendChild(oAll);
+    for(var m=1;m<=12;m++){
+      var o=document.createElement("option"); o.value=m; o.textContent=MONTHS[S.lang][m-1];
+      if(String(S.filterMonth)===String(m)) o.selected=true; ms.appendChild(o);
+    }
+    document.querySelectorAll("#billFilter button").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-f")===S.filterBill);
+    });
+    $("search").value=S.q||"";
+  }
+
+  /* ---------- project suggestions ---------- */
+  function refreshProjList(){
+    var set={};
+    S.entries.forEach(function(x){ if(x.project) set[x.project]=1; });
+    var dl=$("projList"); dl.innerHTML="";
+    Object.keys(set).forEach(function(c){ var o=document.createElement("option"); o.value=c; dl.appendChild(o); });
+  }
+
+  /* ============================================================
+     LIVE TIMER
+     ============================================================ */
+  var tickHandle=null;
+  function elapsedMs(){ return S.running ? (Date.now()-Number(S.running.start)) : 0; }
+  function fmtClock(ms){
+    var s=Math.max(0,Math.floor(ms/1000));
+    var h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
+    return h+":"+("0"+m).slice(-2)+":"+("0"+sec).slice(-2);
+  }
+  function paintClock(){
+    var c=$("clock");
+    if(S.running){ c.textContent=fmtClock(elapsedMs()); c.classList.add("run"); }
+    else { c.textContent="0:00:00"; c.classList.remove("run"); }
+  }
+  function startTick(){ if(tickHandle) return; tickHandle=setInterval(paintClock,1000); }
+  function stopTick(){ if(tickHandle){ clearInterval(tickHandle); tickHandle=null; } }
+  function reflectRunning(){
+    var on=!!S.running, btn=$("toggleBtn");
+    btn.textContent=on?t("stop"):t("start");
+    btn.classList.toggle("stop",on);
+    $("tDesc").disabled=on; $("tProj").disabled=on; $("tBill").disabled=on;
+    if(on){
+      $("tDesc").value=S.running.desc||"";
+      $("tProj").value=S.running.project||"";
+      $("tBill").checked=!!S.running.billable;
+      startTick(); paintClock();
+    } else { stopTick(); paintClock(); }
+  }
+  function startTimer(){
+    S.running={ start:Date.now(), desc:$("tDesc").value.trim(),
+      project:$("tProj").value.trim(), billable:$("tBill").checked,
+      rate:Number(S.defRate)||0 };
+    save(); reflectRunning();
+  }
+  function stopTimer(){
+    if(!S.running) return;
+    var mins=Math.round(elapsedMs()/60000);
+    var r=S.running;
+    S.running=null; save();
+    if(mins>=1 && S.entries.length>=LITE_CAP){ alert(L("cap")); window.open(PRO_URL,"_blank","noopener"); }
+    else if(mins>=1){
+      S.entries.push({ id:uid(), created:Date.now(), date:today(), mins:mins,
+        project:r.project||"", desc:r.desc||"", billable:!!r.billable, rate:Number(r.rate)||0 });
+      // jump period filter to today so the new entry is visible
+      var d=new Date();
+      S.filterYear=d.getFullYear();
+      if(S.filterMonth!=="all" && Number(S.filterMonth)!==d.getMonth()+1) S.filterMonth="all";
+      save();
+    }
+    $("tDesc").value=""; $("tProj").value="";
+    reflectRunning(); renderAll();
+  }
+  function toggleTimer(){ if(S.running) stopTimer(); else startTimer(); }
+
+  /* ============================================================
+     MODAL (add / edit)
+     ============================================================ */
+  var editingId=null;
+  function openModal(id){
+    editingId=id||null;
+    refreshProjList();
+    if(id){
+      var x=S.entries.find(function(e){return e.id===id;});
+      if(!x){ return; }
+      $("modalTitle").textContent=t("editEntry");
+      $("mDesc").value=x.desc||""; $("mProj").value=x.project||"";
+      $("mDate").value=x.date;
+      var mm=Number(x.mins)||0;
+      $("mHours").value=Math.floor(mm/60); $("mMins").value=mm%60;
+      $("mRate").value=x.rate!=null?x.rate:(Number(S.defRate)||0);
+      $("mBill").checked=!!x.billable;
+      $("mDelete").style.display="";
+    } else {
+      $("modalTitle").textContent=t("addEntry");
+      $("mDesc").value=""; $("mProj").value=""; $("mDate").value=today();
+      $("mHours").value=""; $("mMins").value=""; $("mRate").value=Number(S.defRate)||0;
+      $("mBill").checked=true;
+      $("mDelete").style.display="none";
+    }
+    $("overlay").classList.add("open");
+    setTimeout(function(){ $("mDesc").focus(); },30);
+  }
+  function closeModal(){ $("overlay").classList.remove("open"); editingId=null; }
+  function saveModal(){
+    var h=Number($("mHours").value)||0, m=Number($("mMins").value)||0;
+    if(!Number.isFinite(h)||!Number.isFinite(m)||h<0||m<0){ $("mHours").focus(); return; }
+    var mins=Math.round(h*60+m);
+    if(mins<1){ $("mHours").focus(); return; }
+    var rate=Number($("mRate").value);
+    if(!Number.isFinite(rate)||rate<0) rate=0;
+    var rec={
+      date:$("mDate").value||today(), mins:mins,
+      project:$("mProj").value.trim(), desc:$("mDesc").value.trim(),
+      billable:$("mBill").checked, rate:rate
+    };
+    if(editingId){
+      var x=S.entries.find(function(e){return e.id===editingId;});
+      if(x) Object.assign(x,rec);
+    } else {
+      if(S.entries.length>=LITE_CAP){ alert(L("cap")); window.open(PRO_URL,"_blank","noopener"); return; }
+      rec.id=uid(); rec.created=Date.now(); S.entries.push(rec);
+      S.filterYear=yearOf(rec.date);
+      if(S.filterMonth!=="all" && monthOf(rec.date)!==Number(S.filterMonth)) S.filterMonth="all";
+    }
+    save(); closeModal(); renderAll();
+  }
+  function deleteModal(){
+    if(!editingId) return;
+    if(!confirm(t("confirmDelete"))) return;
+    S.entries=S.entries.filter(function(e){return e.id!==editingId;});
+    save(); closeModal(); renderAll();
+  }
+
+  /* ============================================================
+     CSV EXPORT (invoice-ready)
+     ============================================================ */
+  function exportCsv(){
+    alert(L("exp")); window.open(PRO_URL,"_blank","noopener"); return;
+    var rows=tableEntries();
+    var head=["Date","Project","Task","Billable","Hours","Rate","Amount","Currency"];
+    var lines=[head.join(",")];
+    function cell(v){ v=String(v==null?"":v);
+      if(/^[=+\-@\t\r]/.test(v)) v="'"+v;           // neutralise spreadsheet formula injection
+      return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+    rows.forEach(function(x){
+      var hrs=Math.round(toHours(x.mins)*100)/100;
+      lines.push([x.date,x.project,x.desc,(x.billable?"Yes":"No"),hrs,
+        (Number(x.rate)||0),(Math.round(amountOf(x)*100)/100),S.currency].map(cell).join(","));
+    });
+    var blob=new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url; a.download="timetrack-"+S.filterYear+(S.filterMonth==="all"?"":"-"+S.filterMonth)+".csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+  }
+
+  /* ============================================================
+     SAMPLE DATA
+     ============================================================ */
+  function loadSample(){
+    if((S.entries.length||S.running) && !confirm(t("confirmSample"))) return;
+    S.running=null;
+    var now=new Date(), y=now.getFullYear(), mo=now.getMonth()+1;
+    function d(day){ return y+"-"+("0"+mo).slice(-2)+"-"+("0"+day).slice(-2); }
+    var zh=S.lang==="zh";
+    S.currency = zh ? "TWD" : "USD";
+    S.defRate = zh ? 1500 : 60;
+    var r=S.defRate;
+    S.entries=[
+      {date:d(2), mins:185, project:t("pjWebsite"),  desc: zh?"首頁線框圖":"Homepage wireframes",       billable:true,  rate:r},
+      {date:d(3), mins:240, project:t("pjWebsite"),  desc: zh?"切版與 RWD":"Build & responsive layout", billable:true,  rate:r},
+      {date:d(4), mins:50,  project:t("pjInternal"), desc: zh?"信件與請款":"Email & invoicing",          billable:false, rate:r},
+      {date:d(5), mins:135, project:t("pjBranding"), desc: zh?"Logo 草稿":"Logo concepts",               billable:true,  rate:r},
+      {date:d(8), mins:90,  project:t("pjConsult"),  desc: zh?"策略通話":"Strategy call",                billable:true,  rate: zh?2000:80},
+      {date:d(9), mins:200, project:t("pjBranding"), desc: zh?"品牌指南":"Brand guidelines",             billable:true,  rate:r},
+      {date:d(10),mins:40,  project:t("pjInternal"), desc: zh?"學習新工具":"Learning a new tool",         billable:false, rate:r},
+      {date:d(11),mins:160, project:t("pjWebsite"),  desc: zh?"上線與測試":"Launch & QA",                billable:true,  rate:r}
+    ];
+    S.filterYear=y; S.filterMonth=mo; S.filterBill="all"; S.q="";
+    save(); renderAll();
+  }
+
+  /* ============================================================
+     I18N + FULL RENDER
+     ============================================================ */
+  function applyI18n(){
+    document.querySelectorAll("[data-i18n]").forEach(function(el){ el.textContent=t(el.getAttribute("data-i18n")); });
+    document.querySelectorAll("[data-i18n-ph]").forEach(function(el){ el.placeholder=t(el.getAttribute("data-i18n-ph")); });
+    $("langSel").value=S.lang;
+    $("utilInfo").title=t("utilTip");
+    $("crossSell").innerHTML=L("foot");
+    $("getProBtn").href=PRO_URL; $("getProTxt").textContent=L("getPro");
+    $("promoText").textContent=L("promo");
+    var _pl=$("promoLink"); _pl.href=PRO_URL; _pl.textContent=L("cta");
+  }
+  function renderCurrency(){
+    var sel=$("currency"); if(!sel.options.length){
+      CURRENCIES.forEach(function(c){ var o=document.createElement("option"); o.value=c.code; o.textContent=c.code+" ("+c.sym+")"; sel.appendChild(o); });
+    }
+    sel.value=S.currency;
+  }
+  function renderAll(){
+    applyI18n(); renderCurrency();
+    $("defRate").value=S.defRate;
+    reflectRunning();
+    renderFilters(); renderStats(); renderChart(); renderBreakdown(); renderTable(); refreshProjList();
+  }
+
+  /* ============================================================
+     EVENTS
+     ============================================================ */
+  $("langSel").onchange=function(){ S.lang=$("langSel").value; save(); renderAll(); };
+  $("currency").onchange=function(){ S.currency=$("currency").value; save(); renderAll(); };
+  $("defRate").addEventListener("input",function(){ S.defRate=Number($("defRate").value)||0; save(); });
+  $("yearSel").onchange=function(){ S.filterYear=Number($("yearSel").value); save(); renderAll(); };
+  $("monthSel").onchange=function(){ S.filterMonth=$("monthSel").value; save(); renderStats(); renderChart(); renderBreakdown(); renderTable(); };
+  document.querySelectorAll("#billFilter button").forEach(function(b){
+    b.onclick=function(){ S.filterBill=b.getAttribute("data-f"); save(); renderFilters(); renderTable(); };
+  });
+  $("search").addEventListener("input",function(){ S.q=$("search").value; save(); renderTable(); });
+
+  $("toggleBtn").onclick=toggleTimer;
+  $("addBtn").onclick=function(){ openModal(null); };
+  $("sampleBtn").onclick=loadSample;
+  $("exportBtn").onclick=exportCsv;
+
+  $("mCancel").onclick=closeModal;
+  $("mSave").onclick=saveModal;
+  $("mDelete").onclick=deleteModal;
+  $("overlay").addEventListener("click",function(e){ if(e.target===$("overlay")) closeModal(); });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape" && $("overlay").classList.contains("open")) closeModal();
+    if(e.key==="Enter" && $("overlay").classList.contains("open") && e.target.tagName!=="TEXTAREA") saveModal();
+  });
+  // keep a running timer accurate if the tab was backgrounded
+  document.addEventListener("visibilitychange",function(){ if(!document.hidden) paintClock(); });
+
+  /* ---------- init ---------- */
+  renderAll();
+
+})();
+</script>
+</body>
+</html>
