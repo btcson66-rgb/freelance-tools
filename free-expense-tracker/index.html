@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Expense Tracker for Freelancers — Income, Tax &amp; Profit</title>
+<meta name="description" content="A free income and expense tracker for self-employed freelancers. See net profit, set aside tax automatically, and break down spending by category. No account, nothing uploaded, works offline in your browser.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/free-expense-tracker/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Expense Tracker for Freelancers — Income, Tax &amp; Profit">
+<meta property="og:description" content="Track income and expenses, see net profit, set aside tax. No account, nothing uploaded. Free.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/free-expense-tracker/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/cashflow.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Expense Tracker for Freelancers">
+<meta name="twitter:description" content="Track income and expenses, see net profit, set aside tax. No account. Free.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/cashflow.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CashFlow — Free Expense &amp; Income Tracker for Freelancers",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline income and expense tracker for self-employed freelancers. Net profit, automatic tax set-aside, category breakdown and monthly chart. No account, no data upload.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/free-expense-tracker/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Income and expense logging",
+    "Net profit dashboard",
+    "Automatic tax set-aside",
+    "Spending by category",
+    "Monthly income-vs-expense chart",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this expense tracker free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The free version logs income and expenses in your browser with no account. An optional one-time-purchase Pro version lifts the transaction cap and enables CSV export, but the free version covers everyday tracking." } },
+    { "@type": "Question", "name": "How does the tax set-aside work?", "acceptedAnswer": { "@type": "Answer", "text": "You set a tax rate, and the tool calculates how much to put aside as your tax rate multiplied by your net paid income (paid income minus paid expenses). It is an estimate to help you save, not formal tax advice." } },
+    { "@type": "Question", "name": "Is it for self-employed and freelance income?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is designed for freelancers and the self-employed who need a simple profit-and-tax picture rather than full double-entry accounting. Mark items paid or pending and filter by month, year or type." } },
+    { "@type": "Question", "name": "Can I see where my money goes?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Expenses are broken down by category and there is a monthly income-vs-expense bar chart, so you can see profit trends and your biggest cost areas at a glance." } },
+    { "@type": "Question", "name": "Is my financial data private?", "acceptedAnswer": { "@type": "Answer", "text": "Completely. Everything stays in your browser's local storage with zero network requests, so your income and expense figures are never uploaded to any server." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#0d9488}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#ccfbf1,transparent),linear-gradient(180deg,#fff,#f8fafc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#0f766e;background:#ccfbf1;border:1px solid #99f6e4;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:40px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#cbd5e1}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#1f2937}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#374151}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#cbd5e1}
+  .endcta{background:#0f172a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#cbd5e1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#334155;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free expense tracker that sets your tax aside for you</h1>
+    <p class="sub">Log income and expenses, see your real net profit, and know exactly how much to put away for tax. Built for freelancers and the self-employed. No account, nothing uploaded, runs in your browser.</p>
+    <div class="cta">
+      <a class="btn try" href="../cashflow-lite/CashFlow-Lite.html">Open the free tracker →</a>
+      <a class="btn buy" href="https://bitsonic1.gumroad.com/l/cashflow" target="_blank" rel="noopener">Get Pro ($12, one-time)</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Net profit at a glance</span>
+      <span><span class="dotg">●</span> Tax set-aside built in</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Know your profit — and your tax — without a spreadsheet</h2>
+    <p>Freelance money is messy: income lands at random, expenses pile up, and tax season is a nasty surprise if you never set anything aside. Full accounting apps like QuickBooks are built for businesses with payroll and want a monthly subscription. This is a simple income-and-expense tracker that gives a freelancer the three numbers that matter — money in, money out, and what's actually yours after tax.</p>
+    <p>Add each transaction as income or expense, mark it paid or pending, and tag a category. The dashboard shows income, expenses, net profit and a tax-to-set-aside figure based on your rate. A monthly bar chart shows income vs expenses over the year, and a category breakdown shows where the money goes. Everything stays on your computer.</p>
+
+    <h2>What you can do</h2>
+    <div class="feat">
+      <div><h4>Income &amp; expenses</h4><p>Add, edit and delete transactions; mark each one paid or pending.</p></div>
+      <div><h4>Net profit dashboard</h4><p>Income, expenses and true net profit update live as you add entries.</p></div>
+      <div><h4>Automatic tax set-aside</h4><p>Set a tax rate and see how much to save from your net paid income.</p></div>
+      <div><h4>Spending by category</h4><p>See your biggest cost areas so you can trim what doesn't pay off.</p></div>
+      <div><h4>Monthly chart</h4><p>An income-vs-expense bar chart across the year to spot trends.</p></div>
+      <div><h4>Works offline</h4><p>Zero network requests. Your financial data never leaves your machine.</p></div>
+    </div>
+
+    <h2>How to track your finances in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Add your income and expenses</strong> as they happen, with a category and paid/pending status.</li>
+      <li><strong>Set your tax rate</strong> so the tool tells you how much to set aside.</li>
+      <li><strong>Check the dashboard</strong> for net profit and the running tax figure — no surprises at year-end.</li>
+    </ol>
+    <p style="font-size:13.5px;color:var(--muted)">Note: the tax set-aside is an estimate to help you save, not formal tax advice. Confirm your actual liability with a qualified accountant.</p>
+
+    <h2>Free vs. Pro</h2>
+    <p>The free tracker above covers everyday income and expense tracking. The one-time <a href="https://bitsonic1.gumroad.com/l/cashflow" target="_blank" rel="noopener">CashFlow Pro ($12)</a> lifts the transaction cap and enables CSV export — pay once, no subscription. It completes the freelance loop: <a href="../free-freelance-crm/">win the client</a>, <a href="../free-invoice-generator/">invoice them</a>, <a href="../free-time-tracker/">track hours</a>, and manage the cash here. Get all four in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$33 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this expense tracker free?</dt>
+      <dd>Yes. The free version logs income and expenses with no account. An optional one-time Pro version lifts the transaction cap and enables CSV export.</dd>
+      <dt>How does the tax set-aside work?</dt>
+      <dd>You set a tax rate; the tool sets aside that percentage of your net paid income (paid income minus paid expenses). It's an estimate to help you save, not tax advice.</dd>
+      <dt>Is it for self-employed and freelance income?</dt>
+      <dd>Yes. It's built for freelancers who want a simple profit-and-tax picture, not full double-entry accounting. Mark items paid or pending and filter by month, year or type.</dd>
+      <dt>Can I see where my money goes?</dt>
+      <dd>Yes. Expenses break down by category, with a monthly income-vs-expense chart for trends and biggest cost areas.</dd>
+      <dt>Is my financial data private?</dt>
+      <dd>Completely. Everything stays in local storage with zero network requests — nothing is uploaded.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of four offline, no-subscription tools that share a CSV format:</p>
+    <div class="related">
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+      <a href="../free-time-tracker/">⏱ Free time tracker</a>
+      <a href="../free-freelance-crm/">◎ Free freelance CRM</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>See your real profit today</h2>
+      <p>Log your first transaction and know what to set aside for tax. No account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="../cashflow-lite/CashFlow-Lite.html">Open the free tracker →</a>
+        <a class="btn buy" href="https://bitsonic1.gumroad.com/l/cashflow" target="_blank" rel="noopener">Get Pro ($12)</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>

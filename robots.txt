@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://btcson66-rgb.github.io/freelance-tools/sitemap.xml

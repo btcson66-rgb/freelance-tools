@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Invoice Generator — Offline, No Sign-Up, Print to PDF</title>
+<meta name="description" content="A free invoice generator that runs 100% in your browser — no account, no email, no upload. Create invoices and quotes, add your logo and tax, then print or save as PDF. Works offline.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/free-invoice-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Invoice Generator — Offline, No Sign-Up, Print to PDF">
+<meta property="og:description" content="Create invoices and quotes in your browser. No account, no subscription, nothing uploaded. Free.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/free-invoice-generator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/invoicepro.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Invoice Generator — Offline, No Sign-Up">
+<meta name="twitter:description" content="Create invoices and quotes in your browser. No account, nothing uploaded. Free.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/invoicepro.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "InvoicePro — Free Invoice Generator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline invoice and quote generator that runs entirely in the browser. No account or sign-up, no data upload, print or save to PDF.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/free-invoice-generator/",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Invoices and quotes",
+    "Logo upload",
+    "Tax and discount lines",
+    "12 currencies",
+    "Print or save to PDF",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this invoice generator really free?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The free version runs entirely in your browser with no account and no sign-up. There is also an optional one-time-purchase Pro version with extra templates and no upgrade prompts, but you never need it to create and print an invoice." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to create an account or give my email?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. There is no login, no email capture, and no newsletter. You open the page and start invoicing immediately." }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is my invoice data stored?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Everything stays on your own computer in your browser's local storage. Nothing is ever uploaded to a server, so your client and pricing information never leaves your machine." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I save the invoice as a PDF?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Click Print and choose 'Save as PDF' in your browser's print dialog. The invoice is laid out for a clean one-page PDF, including your logo, tax and totals." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work offline?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is a single self-contained HTML file with zero network requests, so it works on a plane or with Wi-Fi off once the page has loaded." }
+    }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#2563eb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#dbeafe,transparent),linear-gradient(180deg,#fff,#f8fafc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#1d4ed8;background:#dbeafe;border:1px solid #bfdbfe;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:40px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}
+  .btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn.buy:hover{border-color:#cbd5e1}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#1f2937}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}
+  ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}
+  .faq dd{margin:5px 0 0;color:#374151}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#cbd5e1}
+  .endcta{background:#0f172a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}
+  .endcta p{color:#cbd5e1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.try{background:var(--brand)}
+  .endcta .btn.buy{background:transparent;border-color:#334155;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free invoice generator that never asks you to log in</h1>
+    <p class="sub">Create professional invoices and quotes right in your browser. Add your logo, tax and discounts, then print or save as PDF. No account, no email, nothing uploaded — your client data stays on your computer.</p>
+    <div class="cta">
+      <a class="btn try" href="../invoicepro-lite/InvoiceGenerator-Lite.html">Open the free generator →</a>
+      <a class="btn buy" href="https://bitsonic1.gumroad.com/l/invoicepro" target="_blank" rel="noopener">Get Pro ($9, one-time)</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> No watermark on print</span>
+      <span><span class="dotg">●</span> 12 currencies</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>A real invoice generator — not a sign-up funnel</h2>
+    <p>Most "free" invoice tools online make you create an account, verify an email, and watch a free trial countdown before you can even print. This one doesn't. It's a single self-contained web page: you open it, fill in your details, and you have a clean, printable invoice in under a minute. Nothing is uploaded, so the names, addresses and amounts you type never leave your browser.</p>
+    <p>It's built for freelancers, contractors and small studios who bill a handful of clients a month and don't want to rent a subscription accounting suite to do it. Switch between <strong>invoice mode</strong> and <strong>quote mode</strong>, drop in your logo, set a tax rate and label (VAT, GST, sales tax — your call), apply a discount, mark it PAID, and print straight to PDF.</p>
+
+    <h2>What you can do</h2>
+    <div class="feat">
+      <div><h4>Invoices &amp; quotes</h4><p>One tool, two modes. Send a quote, then convert the same details into an invoice.</p></div>
+      <div><h4>Your logo &amp; brand</h4><p>Upload a logo and pick an accent colour so it looks like your business, not a template.</p></div>
+      <div><h4>Tax, discounts, totals</h4><p>Auto subtotal, custom tax label and rate, discount line, and a running total that always adds up.</p></div>
+      <div><h4>Print or save to PDF</h4><p>Laid out for a clean single page. Use your browser's "Save as PDF" — no extra software.</p></div>
+      <div><h4>12 currencies</h4><p>Bill in USD, EUR, GBP, JPY, TWD and more, with correct symbols and formatting.</p></div>
+      <div><h4>Works offline</h4><p>Zero network requests. Save the page and it keeps working with Wi-Fi off.</p></div>
+    </div>
+
+    <h2>How to make an invoice in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Open the generator.</strong> No download or install — it loads instantly in any modern browser.</li>
+      <li><strong>Fill in your details.</strong> Add your business and client info, line items, tax and any discount. Totals update as you type and autosave locally.</li>
+      <li><strong>Print or save as PDF.</strong> Click Print, choose "Save as PDF", and send it to your client. Done.</li>
+    </ol>
+
+    <h2>Free vs. Pro</h2>
+    <p>The free generator above handles real invoicing for free, forever. If you bill regularly and want more polish, the one-time <a href="https://bitsonic1.gumroad.com/l/invoicepro" target="_blank" rel="noopener">InvoicePro ($9)</a> adds four layout templates (Modern, Classic, Minimal, Bold) and removes the gentle upgrade nudge — a single purchase, no subscription, yours forever. You can also get it with the three other freelance tools in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$33 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this invoice generator really free?</dt>
+      <dd>Yes. The free version runs entirely in your browser with no account and no sign-up. There's an optional one-time Pro version with extra templates, but you never need it to create and print an invoice.</dd>
+      <dt>Do I need to create an account or give my email?</dt>
+      <dd>No. There's no login, no email capture and no newsletter. Open the page and start invoicing immediately.</dd>
+      <dt>Where is my invoice data stored?</dt>
+      <dd>On your own computer, in your browser's local storage. Nothing is uploaded to a server, so your client and pricing details never leave your machine.</dd>
+      <dt>How do I save the invoice as a PDF?</dt>
+      <dd>Click Print and choose "Save as PDF" in the print dialog. The invoice is laid out for a clean one-page PDF with your logo, tax and totals.</dd>
+      <dt>Does it work offline?</dt>
+      <dd>Yes. It's a single self-contained HTML file with zero network requests, so it works on a plane or with Wi-Fi off once loaded.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of four offline, no-subscription tools that share a CSV format:</p>
+    <div class="related">
+      <a href="../free-time-tracker/">⏱ Free time tracker</a>
+      <a href="../free-freelance-crm/">◎ Free freelance CRM</a>
+      <a href="../free-expense-tracker/">$ Free expense tracker</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Make your first invoice now</h2>
+      <p>No account, no email, no upload. Just a clean invoice in your browser.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="../invoicepro-lite/InvoiceGenerator-Lite.html">Open the free generator →</a>
+        <a class="btn buy" href="https://bitsonic1.gumroad.com/l/invoicepro" target="_blank" rel="noopener">Get Pro ($9)</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>
