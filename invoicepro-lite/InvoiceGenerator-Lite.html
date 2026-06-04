@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoicePro Lite — Free Invoice Generator</title>
+<style>
+  :root{
+    --accent:#2563eb;
+    --accent-soft:#eff4ff;
+    --bg:#f1f5f9;
+    --panel:#ffffff;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --radius:12px;
+    --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+      "PingFang TC","Microsoft JhengHei",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+
+  /* ---------- Top toolbar ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:10px 16px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:6px}
+  .brand .dot{width:22px;height:22px;border-radius:6px;background:var(--accent);
+    display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+  .toolbar .spacer{flex:1}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+  .seg button{border:0;background:#fff;padding:7px 14px;font-size:13px;font-weight:600;color:var(--muted)}
+  .seg button.active{background:var(--accent);color:#fff}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 14px;
+    font-size:13px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+  .btn:hover{border-color:#cbd5e1}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{filter:brightness(.95)}
+  .swatches{display:inline-flex;gap:6px;align-items:center}
+  .swatch{width:20px;height:20px;border-radius:50%;border:2px solid #fff;
+    box-shadow:0 0 0 1px var(--line);cursor:pointer}
+  .swatch.active{box-shadow:0 0 0 2px var(--ink)}
+  select.mini{border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff;font-weight:600}
+
+  /* ---------- Layout ---------- */
+  .layout{display:grid;grid-template-columns:380px 1fr;gap:0;align-items:start}
+  @media (max-width:960px){.layout{grid-template-columns:1fr}}
+
+  .editor{padding:18px;max-height:calc(100vh - 56px);overflow:auto;border-right:1px solid var(--line)}
+  .group{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .group h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .field{margin-bottom:10px}
+  .field:last-child{margin-bottom:0}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600}
+  .field input,.field textarea,.field select{
+    width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+  .field textarea{resize:vertical;min-height:54px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .logo-row{display:flex;gap:10px;align-items:center}
+  .logo-prev{width:54px;height:54px;border:1px dashed var(--line);border-radius:8px;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fafafa;flex:0 0 auto}
+  .logo-prev img{max-width:100%;max-height:100%;object-fit:contain}
+  .linkbtn{background:none;border:0;color:var(--accent);font-size:12px;font-weight:600;padding:0}
+
+  /* ---------- Preview / the document ---------- */
+  .preview-wrap{padding:24px;display:flex;justify-content:center}
+  .paper{
+    background:#fff;width:100%;max-width:210mm;min-height:297mm;padding:18mm 16mm;box-shadow:var(--shadow);
+    border-radius:4px;position:relative;
+  }
+  @media (max-width:560px){ .paper{padding:24px 18px;min-height:0} }
+  .doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:28px}
+  .doc-logo{max-width:160px;max-height:80px;object-fit:contain}
+  .doc-from .name{font-size:18px;font-weight:700}
+  .doc-from div{color:var(--muted);font-size:13px}
+  .doc-title{text-align:right}
+  .doc-title h1{margin:0;font-size:34px;letter-spacing:.04em;color:var(--accent);text-transform:uppercase}
+  .doc-title .meta{margin-top:8px;font-size:13px;color:var(--muted)}
+  .doc-title .meta b{color:var(--ink)}
+  .parties{display:flex;justify-content:space-between;gap:24px;margin-bottom:22px}
+  .parties .blk{font-size:13px}
+  .parties .blk .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+  .parties .blk .who{font-weight:700;font-size:15px}
+  table.items{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:13px}
+  table.items thead th{background:var(--accent);color:#fff;padding:9px 10px;text-align:left;font-weight:600}
+  table.items thead th.num{text-align:right}
+  table.items tbody td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.items tbody td.num{text-align:right;white-space:nowrap}
+  table.items thead th:first-child{border-top-left-radius:6px}
+  table.items thead th:last-child{border-top-right-radius:6px}
+  .totals{display:flex;justify-content:flex-end;margin-bottom:22px}
+  .totals table{font-size:14px;min-width:260px}
+  .totals td{padding:6px 10px}
+  .totals td.num{text-align:right;white-space:nowrap}
+  .totals tr.grand td{font-size:18px;font-weight:700;border-top:2px solid var(--ink);color:var(--accent)}
+  .doc-notes{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+  .doc-notes .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:3px;font-weight:700}
+  .doc-notes p{margin:0 0 10px;white-space:pre-wrap}
+  .paid-stamp{position:absolute;top:34mm;right:20mm;transform:rotate(-14deg);
+    border:4px solid #16a34a;color:#16a34a;font-weight:800;font-size:26px;letter-spacing:.08em;
+    padding:4px 16px;border-radius:8px;opacity:.85;display:none}
+  .paper.is-paid .paid-stamp{display:block}
+
+  .hint{font-size:12px;color:var(--muted);text-align:center;padding:4px 0 22px}
+  .lite-foot{margin-top:22px;padding-top:10px;border-top:1px dashed var(--line);
+    text-align:center;font-size:11px;color:#94a3b8}
+  .lite-foot a{color:var(--accent);text-decoration:none;font-weight:600}
+  .promo{display:block;background:linear-gradient(135deg,var(--accent),#1e40af);color:#fff;
+    border-radius:var(--radius);padding:14px;margin-bottom:14px;text-decoration:none;box-shadow:var(--shadow)}
+  .promo b{display:block;font-size:14px;margin-bottom:3px}
+  .promo span{font-size:12px;opacity:.92}
+
+  /* ---------- Document templates ---------- */
+  /* MODERN is the base style defined above. */
+
+  /* CLASSIC — traditional serif, ruled lines */
+  .paper.tpl-classic{font-family:Georgia,"Times New Roman","Songti TC","PingFang TC",serif;border:1px solid var(--ink)}
+  .paper.tpl-classic .doc-title h1{color:var(--ink);font-weight:700}
+  .paper.tpl-classic table.items thead th{background:transparent;color:var(--ink);
+    border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);border-radius:0}
+  .paper.tpl-classic table.items tbody td{border-bottom:1px solid var(--line)}
+  .paper.tpl-classic .totals tr.grand td{color:var(--ink)}
+
+  /* MINIMAL — airy, no color blocks */
+  .paper.tpl-minimal .doc-title h1{color:var(--muted);font-size:24px;font-weight:600;letter-spacing:.18em}
+  .paper.tpl-minimal table.items thead th{background:transparent;color:var(--muted);
+    border-bottom:1px solid var(--line);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.05em;border-radius:0}
+  .paper.tpl-minimal .totals tr.grand td{color:var(--ink);border-top:1px solid var(--ink)}
+
+  /* BOLD — full-width colored header band */
+  .paper.tpl-bold .doc-head{background:var(--accent);margin:-18mm -16mm 28px;padding:18mm 16mm 18px;
+    color:#fff;border-radius:0}
+  .paper.tpl-bold .doc-from .name{color:#fff}
+  .paper.tpl-bold .doc-from div{color:rgba(255,255,255,.85)}
+  .paper.tpl-bold .doc-title h1{color:#fff}
+  .paper.tpl-bold .doc-title .meta,.paper.tpl-bold .doc-title .meta b{color:rgba(255,255,255,.92)}
+  .paper.tpl-bold table.items thead th{background:var(--ink)}
+
+  /* ---------- Print ---------- */
+  @media print{
+    @page{size:A4;margin:0}
+    body{background:#fff}
+    .toolbar,.editor,.hint{display:none !important}
+    .layout{display:block}
+    .preview-wrap{padding:0}
+    .paper{width:auto;min-height:auto;box-shadow:none;border-radius:0;margin:0;
+      padding:16mm 14mm;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand"><span class="dot">₿</span><span>InvoicePro <span style="font-weight:600;color:var(--muted);font-size:12px">Lite</span></span></div>
+  <div class="seg" id="docTypeSeg">
+    <button data-type="invoice" class="active" data-i18n="tabInvoice">Invoice</button>
+  </div>
+  <div class="spacer"></div>
+  <a id="upgradeBtn" class="btn primary" target="_blank" rel="noopener" style="text-decoration:none">★ <span data-i18n="getPro">Get Pro</span></a>
+  <div class="swatches" id="swatches"></div>
+  <select class="mini" id="tplSel" title="Template" style="display:none">
+    <option value="modern">Modern</option>
+  </select>
+  <select class="mini" id="langSel" title="Language">
+    <option value="en">EN</option>
+    <option value="zh">繁中</option>
+  </select>
+  <button class="btn" id="sampleBtn" data-i18n="sample">Sample</button>
+  <button class="btn" id="newBtn" data-i18n="newDoc">New</button>
+  <button class="btn primary" id="printBtn" data-i18n="downloadPdf">⤓ Save PDF</button>
+</div>
+
+<div class="layout">
+  <!-- ===================== EDITOR ===================== -->
+  <div class="editor">
+
+    <a class="promo" id="promoBanner" target="_blank" rel="noopener">
+      <b data-i18n="promoTitle">Upgrade to InvoicePro Pro</b>
+      <span data-i18n="promoBody">Quote mode · 4 designer templates · PAID stamp · no footer · one-time payment</span>
+    </a>
+
+    <div class="group">
+      <h3 data-i18n="secYourBiz">Your business</h3>
+      <div class="logo-row field">
+        <div class="logo-prev" id="logoPrev"><span style="font-size:11px;color:#94a3b8" data-i18n="logo">Logo</span></div>
+        <div>
+          <input type="file" id="logoInput" accept="image/*" style="display:none">
+          <button class="btn" id="logoBtn" data-i18n="uploadLogo">Upload logo</button>
+          <button class="linkbtn" id="logoClear" style="margin-left:8px;display:none" data-i18n="remove">Remove</button>
+        </div>
+      </div>
+      <div class="field"><label data-i18n="bizName">Business name</label><input id="fromName" data-bind="fromName"></div>
+      <div class="field"><label data-i18n="address">Address &amp; details</label><textarea id="fromInfo" data-bind="fromInfo"></textarea></div>
+    </div>
+
+    <div class="group">
+      <h3 data-i18n="secClient">Bill to</h3>
+      <div class="field"><label data-i18n="clientName">Client name</label><input id="toName" data-bind="toName"></div>
+      <div class="field"><label data-i18n="clientDetails">Client details</label><textarea id="toInfo" data-bind="toInfo"></textarea></div>
+    </div>
+
+    <div class="group">
+      <h3 data-i18n="secDetails">Details</h3>
+      <div class="row2">
+        <div class="field"><label data-i18n="docNumber">Number</label><input id="number" data-bind="number"></div>
+        <div class="field"><label data-i18n="currency">Currency</label>
+          <select id="currency" data-bind="currency"></select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label data-i18n="issueDate">Issue date</label><input type="date" id="issueDate" data-bind="issueDate"></div>
+        <div class="field"><label id="dueLabel" data-i18n="dueDate">Due date</label><input type="date" id="dueDate" data-bind="dueDate"></div>
+      </div>
+      <div class="field" id="paidField">
+        <label><input type="checkbox" id="paid" data-bind="paid" style="width:auto;margin-right:6px">
+        <span data-i18n="markPaid">Mark as paid</span></label>
+      </div>
+    </div>
+
+    <div class="group">
+      <h3 data-i18n="secItems">Line items</h3>
+      <div id="itemsEditor"></div>
+      <button class="btn" id="addItem" style="width:100%;margin-top:4px" data-i18n="addItem">+ Add item</button>
+    </div>
+
+    <div class="group">
+      <h3 data-i18n="secTotals">Tax &amp; discount</h3>
+      <div class="row2">
+        <div class="field"><label data-i18n="taxRate">Tax rate (%)</label><input type="number" id="taxRate" data-bind="taxRate" step="0.01" min="0"></div>
+        <div class="field"><label data-i18n="discount">Discount</label><input type="number" id="discount" data-bind="discount" step="0.01" min="0"></div>
+      </div>
+      <div class="field"><label data-i18n="taxLabel">Tax label</label><input id="taxName" data-bind="taxName" placeholder="Tax / VAT / GST"></div>
+    </div>
+
+    <div class="group">
+      <h3 data-i18n="secNotes">Notes &amp; terms</h3>
+      <div class="field"><label data-i18n="notes">Notes</label><textarea id="notes" data-bind="notes"></textarea></div>
+      <div class="field"><label data-i18n="terms">Payment terms</label><textarea id="terms" data-bind="terms"></textarea></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== PREVIEW ===================== -->
+  <div>
+    <div class="preview-wrap">
+      <div class="paper" id="paper">
+        <div class="paid-stamp" data-i18n="paidStamp">PAID</div>
+
+        <div class="doc-head">
+          <div class="doc-from">
+            <img class="doc-logo" id="pvLogo" style="display:none">
+            <div class="name" id="pvFromName"></div>
+            <div id="pvFromInfo"></div>
+          </div>
+          <div class="doc-title">
+            <h1 id="pvTitle">INVOICE</h1>
+            <div class="meta" id="pvMeta"></div>
+          </div>
+        </div>
+
+        <div class="parties">
+          <div class="blk">
+            <div class="lbl" id="pvBillToLbl">Bill to</div>
+            <div class="who" id="pvToName"></div>
+            <div id="pvToInfo" style="color:var(--muted)"></div>
+          </div>
+        </div>
+
+        <table class="items">
+          <thead><tr>
+            <th id="thDesc">Description</th>
+            <th class="num" id="thQty">Qty</th>
+            <th class="num" id="thPrice">Unit price</th>
+            <th class="num" id="thAmt">Amount</th>
+          </tr></thead>
+          <tbody id="pvItems"></tbody>
+        </table>
+
+        <div class="totals">
+          <table>
+            <tr><td id="pvSubLbl">Subtotal</td><td class="num" id="pvSub"></td></tr>
+            <tr id="pvDiscRow"><td id="pvDiscLbl">Discount</td><td class="num" id="pvDisc"></td></tr>
+            <tr id="pvTaxRow"><td id="pvTaxLbl">Tax</td><td class="num" id="pvTax"></td></tr>
+            <tr class="grand"><td id="pvTotalLbl">Total</td><td class="num" id="pvTotal"></td></tr>
+          </table>
+        </div>
+
+        <div class="doc-notes" id="pvNotesWrap">
+          <div id="pvNotesBlk" style="display:none">
+            <div class="lbl" id="pvNotesLbl">Notes</div><p id="pvNotes"></p>
+          </div>
+          <div id="pvTermsBlk" style="display:none">
+            <div class="lbl" id="pvTermsLbl">Payment terms</div><p id="pvTerms"></p>
+          </div>
+        </div>
+        <div class="lite-foot" id="liteFoot"></div>
+      </div>
+    </div>
+    <div class="hint" data-i18n="printHint">Tip: click “Save PDF”, then choose “Save as PDF” as the destination. Your data is saved automatically in this browser — nothing is uploaded.</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   InvoicePro — single-file offline invoice & quote generator
+   All data stays in the browser (localStorage). No network.
+   ============================================================ */
+(function(){
+  "use strict";
+
+  var STORE_KEY = "invoicepro_lite_v1";
+
+  /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     BEFORE PUBLISHING: replace this with your real store link
+     (e.g. https://yourname.gumroad.com/l/invoicepro)
+     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
+  var PRO_URL = "https://bitsonic1.gumroad.com/l/invoicepro";
+
+  var ACCENTS = ["#2563eb","#0f766e","#7c3aed","#db2777","#ea580c","#0f172a"];
+
+  var CURRENCIES = [
+    {code:"USD",sym:"$"},{code:"EUR",sym:"€"},{code:"GBP",sym:"£"},
+    {code:"TWD",sym:"NT$"},{code:"CNY",sym:"¥"},{code:"JPY",sym:"¥"},
+    {code:"HKD",sym:"HK$"},{code:"SGD",sym:"S$"},{code:"AUD",sym:"A$"},
+    {code:"CAD",sym:"C$"},{code:"INR",sym:"₹"},{code:"KRW",sym:"₩"}
+  ];
+
+  var I18N = {
+    en:{
+      tabInvoice:"Invoice",tabQuote:"Quote",sample:"Sample",newDoc:"New",
+      downloadPdf:"⤓ Save PDF",secYourBiz:"Your business",logo:"Logo",
+      uploadLogo:"Upload logo",remove:"Remove",bizName:"Business name",
+      address:"Address & details",secClient:"Bill to",clientName:"Client name",
+      clientDetails:"Client details",secDetails:"Details",docNumber:"Number",
+      currency:"Currency",issueDate:"Issue date",dueDate:"Due date",
+      validUntil:"Valid until",markPaid:"Mark as paid",secItems:"Line items",
+      addItem:"+ Add item",secTotals:"Tax & discount",taxRate:"Tax rate (%)",
+      discount:"Discount",taxLabel:"Tax label",secNotes:"Notes & terms",
+      notes:"Notes",terms:"Payment terms",paidStamp:"PAID",
+      printHint:"Tip: click “Save PDF”, then choose “Save as PDF” as the destination. Your data is saved automatically in this browser — nothing is uploaded.",
+      titleInvoice:"INVOICE",titleQuote:"QUOTE",billTo:"Bill to",
+      desc:"Description",qty:"Qty",price:"Unit price",amount:"Amount",
+      subtotal:"Subtotal",total:"Total",itemDesc:"Item description",
+      confirmNew:"Clear everything and start a new document?",
+      getPro:"Get Pro", promoTitle:"Upgrade to InvoicePro Pro",
+      promoBody:"Quote mode · 4 designer templates · PAID stamp · no footer · one-time payment",
+      liteFoot:"Made with InvoicePro Lite · Get the Pro version →"
+    },
+    zh:{
+      tabInvoice:"發票",tabQuote:"報價單",sample:"範例",newDoc:"新建",
+      downloadPdf:"⤓ 存成 PDF",secYourBiz:"您的公司",logo:"標誌",
+      uploadLogo:"上傳標誌",remove:"移除",bizName:"公司名稱",
+      address:"地址與資訊",secClient:"客戶",clientName:"客戶名稱",
+      clientDetails:"客戶資訊",secDetails:"明細",docNumber:"編號",
+      currency:"幣別",issueDate:"開立日期",dueDate:"到期日",
+      validUntil:"有效期限",markPaid:"標記為已付款",secItems:"項目",
+      addItem:"+ 新增項目",secTotals:"稅金與折扣",taxRate:"稅率 (%)",
+      discount:"折扣",taxLabel:"稅金名稱",secNotes:"備註與條款",
+      notes:"備註",terms:"付款條款",paidStamp:"已付款",
+      printHint:"提示：點「存成 PDF」後，在列印目的地選擇「另存為 PDF」。所有資料只存在此瀏覽器中，不會上傳。",
+      titleInvoice:"發票",titleQuote:"報價單",billTo:"客戶",
+      desc:"項目說明",qty:"數量",price:"單價",amount:"金額",
+      subtotal:"小計",total:"總計",itemDesc:"項目說明",
+      confirmNew:"清除全部內容並開始新文件？",
+      getPro:"取得 Pro", promoTitle:"升級 InvoicePro Pro",
+      promoBody:"報價單模式 · 4 種設計模板 · 已付款印章 · 無頁尾標記 · 一次買斷",
+      liteFoot:"使用 InvoicePro Lite 製作 · 取得 Pro 完整版 →"
+    }
+  };
+
+  function blankState(){
+    return {
+      lang:"en", type:"invoice", accent:ACCENTS[0], template:"modern",
+      logo:"", fromName:"", fromInfo:"", toName:"", toInfo:"",
+      number:"INV-0001", currency:"USD",
+      issueDate:today(), dueDate:"", paid:false,
+      items:[{desc:"",qty:1,price:0}],
+      taxRate:0, discount:0, taxName:"Tax",
+      notes:"", terms:""
+    };
+  }
+
+  function today(){
+    var d=new Date(), m=("0"+(d.getMonth()+1)).slice(-2), day=("0"+d.getDate()).slice(-2);
+    return d.getFullYear()+"-"+m+"-"+day;
+  }
+
+  var S = load() || blankState();
+  // Lite is locked to the Modern template and Invoice mode
+  S.template = "modern";
+  if(S.type === "quote") S.type = "invoice";
+
+  /* ---------- persistence ---------- */
+  function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
+  function load(){ try{ var r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+
+  /* ---------- helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function nl2br(s){ return esc(s).replace(/\n/g,"<br>"); }
+  function t(k){ return (I18N[S.lang]&&I18N[S.lang][k])||I18N.en[k]||k; }
+  function sym(){ var c=CURRENCIES.find(function(x){return x.code===S.currency;}); return c?c.sym:""; }
+  function money(n){
+    var noDec = (S.currency==="JPY"||S.currency==="KRW");
+    var v = (Number(n)||0).toFixed(noDec?0:2);
+    var parts = v.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,",");
+    return sym()+parts.join(".");
+  }
+
+  /* ---------- calculations ---------- */
+  function subtotal(){ return S.items.reduce(function(a,it){ return a+(Number(it.qty)||0)*(Number(it.price)||0); },0); }
+  function discountVal(){ return Number(S.discount)||0; }
+  function taxableBase(){ return Math.max(0, subtotal()-discountVal()); }
+  function taxVal(){ return taxableBase()*((Number(S.taxRate)||0)/100); }
+  function grandTotal(){ return taxableBase()+taxVal(); }
+
+  /* ============================================================
+     RENDER
+     ============================================================ */
+  function applyI18n(){
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    $("dueLabel").textContent = S.type==="quote" ? t("validUntil") : t("dueDate");
+    $("paidField").style.display = S.type==="quote" ? "none" : "";
+    $("langSel").value = S.lang;
+  }
+
+  function renderSwatches(){
+    var wrap=$("swatches"); wrap.innerHTML="";
+    ACCENTS.forEach(function(c){
+      var b=document.createElement("button");
+      b.className="swatch"+(c===S.accent?" active":"");
+      b.style.background=c; b.title=c;
+      b.onclick=function(){ S.accent=c; document.documentElement.style.setProperty("--accent",c); renderSwatches(); save(); };
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderCurrency(){
+    var sel=$("currency"); if(sel.options.length) return;
+    CURRENCIES.forEach(function(c){
+      var o=document.createElement("option"); o.value=c.code; o.textContent=c.code+" ("+c.sym+")"; sel.appendChild(o);
+    });
+  }
+
+  function renderItemsEditor(){
+    var wrap=$("itemsEditor"); wrap.innerHTML="";
+    S.items.forEach(function(it,i){
+      var row=document.createElement("div");
+      row.style.cssText="border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px;background:#fafbfc";
+      row.innerHTML =
+        '<div class="field" style="margin-bottom:6px"><input placeholder="'+esc(t("itemDesc"))+'" value="'+esc(it.desc)+'" data-i="'+i+'" data-k="desc"></div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center">'+
+          '<input type="number" step="any" placeholder="'+esc(t("qty"))+'" value="'+(it.qty)+'" data-i="'+i+'" data-k="qty">'+
+          '<input type="number" step="any" placeholder="'+esc(t("price"))+'" value="'+(it.price)+'" data-i="'+i+'" data-k="price">'+
+          '<button class="linkbtn" data-del="'+i+'" title="remove" style="color:#dc2626;font-size:18px;padding:0 4px">×</button>'+
+        '</div>';
+      wrap.appendChild(row);
+    });
+    wrap.querySelectorAll("input").forEach(function(inp){
+      inp.addEventListener("input",function(){
+        var i=+inp.getAttribute("data-i"), k=inp.getAttribute("data-k");
+        S.items[i][k] = (k==="desc")?inp.value:inp.value;
+        renderPreview(); save();
+      });
+    });
+    wrap.querySelectorAll("[data-del]").forEach(function(b){
+      b.onclick=function(){
+        var i=+b.getAttribute("data-del");
+        if(S.items.length>1) S.items.splice(i,1); else S.items[0]={desc:"",qty:1,price:0};
+        renderItemsEditor(); renderPreview(); save();
+      };
+    });
+  }
+
+  function renderPreview(){
+    document.documentElement.style.setProperty("--accent",S.accent);
+
+    // logo
+    var pv=$("pvLogo");
+    if(S.logo){ pv.src=S.logo; pv.style.display=""; } else { pv.style.display="none"; }
+
+    $("pvFromName").textContent=S.fromName;
+    $("pvFromInfo").innerHTML=nl2br(S.fromInfo);
+    $("pvTitle").textContent = S.type==="quote" ? t("titleQuote") : t("titleInvoice");
+
+    var meta="";
+    meta+='<div><b>'+esc(t("docNumber"))+':</b> '+esc(S.number)+'</div>';
+    meta+='<div><b>'+esc(t("issueDate"))+':</b> '+esc(S.issueDate)+'</div>';
+    if(S.dueDate) meta+='<div><b>'+esc(S.type==="quote"?t("validUntil"):t("dueDate"))+':</b> '+esc(S.dueDate)+'</div>';
+    $("pvMeta").innerHTML=meta;
+
+    $("pvBillToLbl").textContent=t("billTo");
+    $("pvToName").textContent=S.toName;
+    $("pvToInfo").innerHTML=nl2br(S.toInfo);
+
+    // table headers
+    $("thDesc").textContent=t("desc"); $("thQty").textContent=t("qty");
+    $("thPrice").textContent=t("price"); $("thAmt").textContent=t("amount");
+
+    var rows="";
+    S.items.forEach(function(it){
+      if(!it.desc && !Number(it.qty) && !Number(it.price)) return;
+      var amt=(Number(it.qty)||0)*(Number(it.price)||0);
+      rows+='<tr><td>'+nl2br(it.desc)+'</td><td class="num">'+(Number(it.qty)||0)+
+            '</td><td class="num">'+money(it.price)+'</td><td class="num">'+money(amt)+'</td></tr>';
+    });
+    $("pvItems").innerHTML=rows;
+
+    $("pvSubLbl").textContent=t("subtotal"); $("pvSub").textContent=money(subtotal());
+    if(discountVal()>0){ $("pvDiscRow").style.display=""; $("pvDiscLbl").textContent=t("discount"); $("pvDisc").textContent="−"+money(discountVal()); }
+    else $("pvDiscRow").style.display="none";
+    if((Number(S.taxRate)||0)>0){ $("pvTaxRow").style.display="";
+      $("pvTaxLbl").textContent=(S.taxName||t("taxLabel"))+" ("+(Number(S.taxRate)||0)+"%)"; $("pvTax").textContent=money(taxVal()); }
+    else $("pvTaxRow").style.display="none";
+    $("pvTotalLbl").textContent=t("total")+" ("+S.currency+")"; $("pvTotal").textContent=money(grandTotal());
+
+    var nB=$("pvNotesBlk"), tB=$("pvTermsBlk");
+    if(S.notes){ nB.style.display=""; $("pvNotesLbl").textContent=t("notes"); $("pvNotes").textContent=S.notes; } else nB.style.display="none";
+    if(S.terms){ tB.style.display=""; $("pvTermsLbl").textContent=t("terms"); $("pvTerms").textContent=S.terms; } else tB.style.display="none";
+
+    $("paper").className = "paper tpl-"+(S.template||"modern") +
+      ((S.type==="invoice" && S.paid) ? " is-paid" : "");
+
+    // doc type segment
+    document.querySelectorAll("#docTypeSeg button").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-type")===S.type);
+    });
+  }
+
+  function renderLogoPrev(){
+    var p=$("logoPrev");
+    if(S.logo){ p.innerHTML='<img src="'+S.logo+'">'; $("logoClear").style.display=""; }
+    else { p.innerHTML='<span style="font-size:11px;color:#94a3b8">'+t("logo")+'</span>'; $("logoClear").style.display="none"; }
+  }
+
+  /* ---------- bind simple fields ---------- */
+  function bindFields(){
+    document.querySelectorAll("[data-bind]").forEach(function(el){
+      var key=el.getAttribute("data-bind");
+      // initialise value
+      if(el.type==="checkbox") el.checked=!!S[key];
+      else el.value = S[key]!=null ? S[key] : "";
+      var ev=(el.tagName==="SELECT"||el.type==="date"||el.type==="checkbox")?"change":"input";
+      el.addEventListener(ev,function(){
+        S[key] = el.type==="checkbox" ? el.checked : el.value;
+        applyI18n(); renderPreview(); save();
+      });
+    });
+  }
+
+  /* ---------- full refresh ---------- */
+  function refreshAll(){
+    applyI18n(); renderSwatches(); renderCurrency();
+    // sync inputs to state
+    document.querySelectorAll("[data-bind]").forEach(function(el){
+      var key=el.getAttribute("data-bind");
+      if(el.type==="checkbox") el.checked=!!S[key]; else el.value=S[key]!=null?S[key]:"";
+    });
+    $("tplSel").value = S.template||"modern";
+    // Lite: wire upgrade links + footer (language-aware)
+    var ub=$("upgradeBtn"); if(ub) ub.href=PRO_URL;
+    var pb=$("promoBanner"); if(pb) pb.href=PRO_URL;
+    var lf=$("liteFoot"); if(lf) lf.innerHTML='<a href="'+PRO_URL+'" target="_blank" rel="noopener">'+t("liteFoot")+'</a>';
+    renderItemsEditor(); renderLogoPrev(); renderPreview();
+  }
+
+  /* ============================================================
+     EVENTS
+     ============================================================ */
+  // doc type
+  document.querySelectorAll("#docTypeSeg button").forEach(function(b){
+    b.onclick=function(){ S.type=b.getAttribute("data-type"); applyI18n(); renderPreview(); save(); };
+  });
+  // language
+  $("langSel").onchange=function(){ S.lang=$("langSel").value; refreshAll(); save(); };
+  // template
+  $("tplSel").onchange=function(){ S.template=$("tplSel").value; renderPreview(); save(); };
+  // add item
+  $("addItem").onclick=function(){ S.items.push({desc:"",qty:1,price:0}); renderItemsEditor(); renderPreview(); save(); };
+  // logo
+  $("logoBtn").onclick=function(){ $("logoInput").click(); };
+  $("logoInput").onchange=function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var r=new FileReader(); r.onload=function(){ S.logo=r.result; renderLogoPrev(); renderPreview(); save(); }; r.readAsDataURL(f);
+  };
+  $("logoClear").onclick=function(){ S.logo=""; $("logoInput").value=""; renderLogoPrev(); renderPreview(); save(); };
+  // print
+  $("printBtn").onclick=function(){ window.print(); };
+  // new
+  $("newBtn").onclick=function(){
+    if(confirm(t("confirmNew"))){ var lang=S.lang,acc=S.accent; S=blankState(); S.lang=lang; S.accent=acc; refreshAll(); save(); }
+  };
+  // sample
+  $("sampleBtn").onclick=function(){
+    var lang=S.lang, acc=S.accent;
+    S=blankState(); S.lang=lang; S.accent=acc;
+    if(lang==="zh"){
+      S.fromName="星辰設計工作室";
+      S.fromInfo="台北市信義區松高路 1 號\nhello@studio.example\n統一編號 12345678";
+      S.toName="宏圖科技股份有限公司";
+      S.toInfo="新北市板橋區文化路二段 100 號\n聯絡人：王經理";
+      S.currency="TWD"; S.taxName="營業稅"; S.taxRate=5;
+      S.items=[
+        {desc:"品牌識別設計（Logo + 規範手冊）",qty:1,price:45000},
+        {desc:"官方網站首頁設計",qty:3,price:8000},
+        {desc:"社群貼文模板",qty:10,price:1200}
+      ];
+      S.notes="感謝您的合作！如有任何問題歡迎來信。";
+      S.terms="請於收到發票後 14 天內付款。\n匯款帳號：123-456-789012";
+    } else {
+      S.fromName="Stellar Design Studio";
+      S.fromInfo="1 Market Street, Suite 200\nSan Francisco, CA 94105\nhello@stellar.example";
+      S.toName="Horizon Tech Inc.";
+      S.toInfo="500 Innovation Way\nAustin, TX 78701\nAttn: Accounts Payable";
+      S.currency="USD"; S.taxName="Sales Tax"; S.taxRate=8.25;
+      S.items=[
+        {desc:"Brand identity design (logo + guidelines)",qty:1,price:3200},
+        {desc:"Website homepage design",qty:3,price:650},
+        {desc:"Social media post templates",qty:10,price:95}
+      ];
+      S.discount=200;
+      S.notes="Thank you for your business! Reach out with any questions.";
+      S.terms="Payment due within 14 days of invoice date.\nBank transfer: Acct 123-456-789012";
+    }
+    refreshAll(); save();
+  };
+
+  /* ---------- init ---------- */
+  bindFields();
+  refreshAll();
+
+})();
+</script>
+</body>
+</html>
