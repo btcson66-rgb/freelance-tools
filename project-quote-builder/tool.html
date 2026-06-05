@@ -1,0 +1,1391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Project Quote Builder for Freelancers - Estimate Work Before You Bid</title>
+  <meta name="description" content="A free project quote builder for freelancers to estimate project work, line items, discounts, tax, and printable client quotes before bidding.">
+  <style>
+    :root {
+      --accent: #0284c7;
+      --accent-dark: #0369a1;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --soft: #e0f2fe;
+      --danger: #be123c;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .topbar {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 20px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .title-block {
+      max-width: 720px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--accent-dark);
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+      min-width: 250px;
+    }
+
+    .shell {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 14px 20px 30px;
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-pad {
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 750;
+      color: #1e293b;
+    }
+
+    .field-label {
+      font-size: 0.88rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 9px 11px;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus-visible {
+      outline: 3px solid rgba(2, 132, 199, 0.24);
+      outline-offset: 2px;
+      border-color: var(--accent);
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: #475569;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      background: #f1f5f9;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .items-table input {
+      min-width: 96px;
+    }
+
+    .items-table .desc-input {
+      min-width: 190px;
+    }
+
+    .total-cell {
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      min-height: 40px;
+      padding: 9px 13px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    button:hover {
+      filter: brightness(0.98);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button.secondary {
+      background: var(--soft);
+      color: #075985;
+      border-color: #bae6fd;
+    }
+
+    button.ghost {
+      background: #fff;
+      border-color: #cbd5e1;
+    }
+
+    button.danger {
+      background: #fff1f2;
+      color: var(--danger);
+      border-color: #fecdd3;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+    }
+
+    .segmented {
+      display: inline-flex;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .segmented button {
+      border: 0;
+      border-radius: 0;
+      background: #fff;
+      min-height: 42px;
+    }
+
+    .segmented button.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .inline-select {
+      min-width: 170px;
+    }
+
+    .sidebar-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .saved-empty {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.93rem;
+    }
+
+    .saved-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #f8fafc;
+      display: grid;
+      gap: 8px;
+    }
+
+    .saved-item.active {
+      border-color: var(--accent);
+      background: #e0f2fe;
+    }
+
+    .saved-title {
+      margin: 0;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .saved-meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .saved-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .saved-actions button {
+      min-height: 34px;
+      padding: 6px 9px;
+      font-size: 0.82rem;
+    }
+
+    .summary-box {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: #334155;
+    }
+
+    .summary-line strong {
+      color: var(--text);
+    }
+
+    .summary-line.total {
+      border-top: 1px solid var(--line);
+      padding-top: 9px;
+      font-size: 1.16rem;
+      color: var(--text);
+    }
+
+    .quote-doc {
+      padding: 24px;
+    }
+
+    .quote-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+
+    .quote-label {
+      margin: 0 0 6px;
+      color: var(--accent-dark);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    .quote-top h2 {
+      margin: 0;
+      font-size: 1.65rem;
+      overflow-wrap: anywhere;
+    }
+
+    .quote-meta {
+      min-width: 180px;
+      display: grid;
+      gap: 6px;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
+    .quote-meta div {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .quote-meta span:first-child {
+      color: var(--muted);
+    }
+
+    .quote-table th,
+    .quote-table td {
+      padding: 11px 8px;
+    }
+
+    .quote-table td:nth-child(2),
+    .quote-table td:nth-child(3),
+    .quote-table td:nth-child(4),
+    .quote-table th:nth-child(2),
+    .quote-table th:nth-child(3),
+    .quote-table th:nth-child(4) {
+      text-align: right;
+    }
+
+    .quote-summary {
+      width: min(100%, 360px);
+      margin: 16px 0 0 auto;
+      display: grid;
+      gap: 7px;
+    }
+
+    .note-box {
+      margin-top: 18px;
+      border-left: 4px solid var(--accent);
+      background: #f8fafc;
+      padding: 11px 13px;
+    }
+
+    .note-box h3 {
+      margin: 0 0 5px;
+      font-size: 0.95rem;
+    }
+
+    .note-box p {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .disclaimer {
+      margin: 18px 0 0;
+      color: #475569;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 0 20px 28px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 1040px) {
+      .shell,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+      }
+
+      .top-controls {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar,
+      .shell,
+      .footer {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quote-top {
+        display: grid;
+      }
+
+      .quote-meta {
+        width: 100%;
+      }
+
+      .quote-doc {
+        padding: 16px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .no-print,
+      .no-print * {
+        display: none !important;
+      }
+
+      .shell {
+        display: block;
+        max-width: none;
+        padding: 0;
+      }
+
+      .workspace {
+        display: block;
+      }
+
+      .panel {
+        border: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .print-area {
+        width: 100%;
+      }
+
+      .quote-doc {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar no-print">
+    <div class="title-block">
+      <p class="eyebrow" data-i18n="keywordLine">Freelance project estimate</p>
+      <h1 data-i18n="appTitle">Project Quote Builder</h1>
+      <p class="subtitle" data-i18n="subtitle">Break project work into clear line items, price the scope, and print a clean estimate before you bid.</p>
+    </div>
+    <div class="top-controls" aria-label="Tool controls">
+      <label class="inline-select">
+        <span class="field-label" data-i18n="currency">Currency</span>
+        <select id="currencySelect">
+          <option value="USD">$ USD</option>
+          <option value="TWD">NT$ TWD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="AUD">A$ AUD</option>
+          <option value="CAD">C$ CAD</option>
+          <option value="JPY">JP¥ JPY</option>
+        </select>
+      </label>
+      <div class="segmented" role="group" aria-label="Language">
+        <button type="button" id="langEn">EN</button>
+        <button type="button" id="langZh">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <aside class="panel panel-pad no-print">
+      <div class="panel-head">
+        <h2 data-i18n="savedQuotes">Saved quotes</h2>
+      </div>
+      <div class="button-row" style="margin-top: 0; margin-bottom: 12px;">
+        <button type="button" class="secondary" id="newQuoteBtn" data-i18n="newQuote">New</button>
+      </div>
+      <div class="sidebar-list" id="savedList"></div>
+    </aside>
+
+    <div class="workspace">
+      <section class="panel panel-pad no-print" aria-labelledby="builderHeading">
+        <div class="panel-head">
+          <h2 id="builderHeading" data-i18n="builder">Estimate builder</h2>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            <span class="field-label" data-i18n="projectName">Project name</span>
+            <input id="projectName" type="text" autocomplete="off" data-i18n-placeholder="projectNamePh" placeholder="Website redesign">
+          </label>
+          <label>
+            <span class="field-label" data-i18n="clientName">Client name</span>
+            <input id="clientName" type="text" autocomplete="off" data-i18n-placeholder="clientNamePh" placeholder="Client or company">
+          </label>
+        </div>
+
+        <div class="panel-head" style="margin-top: 18px;">
+          <h2 data-i18n="lineItems">Line items</h2>
+          <button type="button" class="secondary" id="addRowBtn" data-i18n="addRow">Add row</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th data-i18n="description">Description</th>
+                <th data-i18n="quantity">Qty</th>
+                <th data-i18n="unitPrice">Unit price</th>
+                <th data-i18n="lineTotal">Line total</th>
+                <th data-i18n="remove">Remove</th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="form-grid" style="margin-top: 14px;">
+          <label>
+            <span class="field-label" data-i18n="discount">Discount %</span>
+            <input id="discount" type="number" min="0" max="100" step="0.01" inputmode="decimal">
+          </label>
+          <label>
+            <span class="field-label" data-i18n="tax">Tax %</span>
+            <input id="tax" type="number" min="0" step="0.01" inputmode="decimal">
+          </label>
+          <label class="wide">
+            <span class="field-label" data-i18n="noteToClient">Note to client</span>
+            <textarea id="note" data-i18n-placeholder="notePh" placeholder="Optional scope notes, timing, or assumptions"></textarea>
+          </label>
+        </div>
+
+        <div class="summary-box" aria-live="polite">
+          <div class="summary-line"><span data-i18n="subtotal">Subtotal</span><strong id="subtotalText">$ 0.00</strong></div>
+          <div class="summary-line"><span data-i18n="discountAmount">Discount</span><strong id="discountText">$ 0.00</strong></div>
+          <div class="summary-line"><span data-i18n="taxAmount">Tax</span><strong id="taxText">$ 0.00</strong></div>
+          <div class="summary-line total"><span data-i18n="totalEstimate">Total project estimate</span><strong id="totalText">$ 0.00</strong></div>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="primary" id="saveQuoteBtn" data-i18n="saveQuote">Save quote</button>
+          <button type="button" class="secondary" id="duplicateCurrentBtn" data-i18n="duplicateCurrent">Duplicate current</button>
+          <button type="button" class="ghost" id="sampleBtn" data-i18n="sampleData">Sample data</button>
+          <button type="button" class="ghost" id="printBtn" data-i18n="printPdf">Print / Save PDF</button>
+        </div>
+      </section>
+
+      <section class="panel print-area" aria-labelledby="outputHeading">
+        <div class="quote-doc">
+          <div class="quote-top">
+            <div>
+              <p class="quote-label" data-i18n="quoteLabel">Quote</p>
+              <h2 id="outProjectName">Untitled project</h2>
+            </div>
+            <div class="quote-meta">
+              <div><span data-i18n="date">Date</span><strong id="outDate">-</strong></div>
+              <div><span data-i18n="client">Client</span><strong id="outClient">-</strong></div>
+            </div>
+          </div>
+
+          <table class="quote-table">
+            <thead>
+              <tr>
+                <th data-i18n="description">Description</th>
+                <th data-i18n="quantity">Qty</th>
+                <th data-i18n="unitPrice">Unit price</th>
+                <th data-i18n="lineTotal">Line total</th>
+              </tr>
+            </thead>
+            <tbody id="outItems"></tbody>
+          </table>
+
+          <div class="quote-summary">
+            <div class="summary-line"><span data-i18n="subtotal">Subtotal</span><strong id="outSubtotal">$ 0.00</strong></div>
+            <div class="summary-line"><span data-i18n="discountAmount">Discount</span><strong id="outDiscount">$ 0.00</strong></div>
+            <div class="summary-line"><span data-i18n="taxAmount">Tax</span><strong id="outTax">$ 0.00</strong></div>
+            <div class="summary-line total"><span data-i18n="totalEstimate">Total project estimate</span><strong id="outTotal">$ 0.00</strong></div>
+          </div>
+
+          <div class="note-box" id="outNoteWrap" hidden>
+            <h3 data-i18n="noteToClient">Note to client</h3>
+            <p id="outNote"></p>
+          </div>
+
+          <p class="disclaimer" data-i18n="disclaimer">This is an estimate, not a binding quote. Confirm scope and terms in a signed contract.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer no-print">
+    <span data-i18n="footerLead">Need more freelance tools?</span>
+    <a href="https://btcson66-rgb.github.io/freelance-tools/" data-i18n="footerLink">Open the free freelance tools hub</a>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var STORE_KEY = "quotebuilder_v1";
+      var currencies = {
+        USD: { symbol: "$", decimals: 2 },
+        TWD: { symbol: "NT$", decimals: 0 },
+        EUR: { symbol: "€", decimals: 2 },
+        GBP: { symbol: "£", decimals: 2 },
+        AUD: { symbol: "A$", decimals: 2 },
+        CAD: { symbol: "C$", decimals: 2 },
+        JPY: { symbol: "¥", decimals: 0 }
+      };
+
+      var text = {
+        en: {
+          keywordLine: "Freelance project estimate",
+          appTitle: "Project Quote Builder",
+          subtitle: "Break project work into clear line items, price the scope, and print a clean estimate before you bid.",
+          currency: "Currency",
+          savedQuotes: "Saved quotes",
+          newQuote: "New",
+          builder: "Estimate builder",
+          projectName: "Project name",
+          projectNamePh: "Website redesign",
+          clientName: "Client name",
+          clientNamePh: "Client or company",
+          lineItems: "Line items",
+          addRow: "Add row",
+          description: "Description",
+          quantity: "Qty",
+          unitPrice: "Unit price",
+          lineTotal: "Line total",
+          remove: "Remove",
+          discount: "Discount %",
+          tax: "Tax %",
+          noteToClient: "Note to client",
+          notePh: "Optional scope notes, timing, or assumptions",
+          subtotal: "Subtotal",
+          discountAmount: "Discount",
+          taxAmount: "Tax",
+          totalEstimate: "Total project estimate",
+          saveQuote: "Save quote",
+          duplicateCurrent: "Duplicate current",
+          sampleData: "Sample data",
+          printPdf: "Print / Save PDF",
+          quoteLabel: "Quote",
+          date: "Date",
+          client: "Client",
+          disclaimer: "This is an estimate, not a binding quote. Confirm scope and terms in a signed contract.",
+          footerLead: "Need more freelance tools?",
+          footerLink: "Open the free freelance tools hub",
+          untitled: "Untitled project",
+          noClient: "Client not set",
+          blankItem: "Line item",
+          emptySaved: "No saved quotes yet.",
+          load: "Load",
+          duplicate: "Duplicate",
+          delete: "Delete",
+          saved: "Saved",
+          copySuffix: "copy"
+        },
+        zh: {
+          keywordLine: "自由工作專案估價",
+          appTitle: "專案報價建立器",
+          subtitle: "把工作拆成明確項目，估算範圍成本，並在提案前列印乾淨的估價單。",
+          currency: "幣別",
+          savedQuotes: "已儲存報價",
+          newQuote: "新增",
+          builder: "估價編輯",
+          projectName: "專案名稱",
+          projectNamePh: "網站改版",
+          clientName: "客戶名稱",
+          clientNamePh: "客戶或公司",
+          lineItems: "項目明細",
+          addRow: "新增列",
+          description: "描述",
+          quantity: "數量",
+          unitPrice: "單價",
+          lineTotal: "小計",
+          remove: "移除",
+          discount: "折扣 %",
+          tax: "稅率 %",
+          noteToClient: "給客戶的備註",
+          notePh: "選填範圍、時程或假設條件",
+          subtotal: "小計",
+          discountAmount: "折扣",
+          taxAmount: "稅金",
+          totalEstimate: "專案估價總額",
+          saveQuote: "儲存報價",
+          duplicateCurrent: "複製目前報價",
+          sampleData: "範例資料",
+          printPdf: "列印 / 儲存 PDF",
+          quoteLabel: "報價單",
+          date: "日期",
+          client: "客戶",
+          disclaimer: "這是估價，不是具約束力的報價。請在簽署合約中確認範圍與條款。",
+          footerLead: "需要更多自由工作工具？",
+          footerLink: "開啟免費自由工作工具集",
+          untitled: "未命名專案",
+          noClient: "未填客戶",
+          blankItem: "項目",
+          emptySaved: "尚未儲存報價。",
+          load: "載入",
+          duplicate: "複製",
+          delete: "刪除",
+          saved: "已儲存",
+          copySuffix: "副本"
+        }
+      };
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      var els = {
+        currency: byId("currencySelect"),
+        langEn: byId("langEn"),
+        langZh: byId("langZh"),
+        savedList: byId("savedList"),
+        newQuote: byId("newQuoteBtn"),
+        projectName: byId("projectName"),
+        clientName: byId("clientName"),
+        itemsBody: byId("itemsBody"),
+        addRow: byId("addRowBtn"),
+        discount: byId("discount"),
+        tax: byId("tax"),
+        note: byId("note"),
+        subtotalText: byId("subtotalText"),
+        discountText: byId("discountText"),
+        taxText: byId("taxText"),
+        totalText: byId("totalText"),
+        saveQuote: byId("saveQuoteBtn"),
+        duplicateCurrent: byId("duplicateCurrentBtn"),
+        sample: byId("sampleBtn"),
+        print: byId("printBtn"),
+        outProjectName: byId("outProjectName"),
+        outDate: byId("outDate"),
+        outClient: byId("outClient"),
+        outItems: byId("outItems"),
+        outSubtotal: byId("outSubtotal"),
+        outDiscount: byId("outDiscount"),
+        outTax: byId("outTax"),
+        outTotal: byId("outTotal"),
+        outNoteWrap: byId("outNoteWrap"),
+        outNote: byId("outNote")
+      };
+
+      function makeId() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+        return "q_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+      }
+
+      function blankRow() {
+        return { id: makeId(), desc: "", qty: 1, price: 0 };
+      }
+
+      function defaults() {
+        return {
+          lang: "en",
+          currency: "USD",
+          activeQuoteId: null,
+          projectName: "",
+          clientName: "",
+          discount: 0,
+          tax: 0,
+          note: "",
+          rows: [blankRow()],
+          quotes: []
+        };
+      }
+
+      function toNumber(value) {
+        var number = Number.parseFloat(value);
+        return Number.isFinite(number) ? number : 0;
+      }
+
+      function nonNegative(value) {
+        return Math.max(0, toNumber(value));
+      }
+
+      function cleanRow(row) {
+        var source = row && typeof row === "object" ? row : {};
+        return {
+          id: typeof source.id === "string" && source.id ? source.id : makeId(),
+          desc: typeof source.desc === "string" ? source.desc : "",
+          qty: nonNegative(source.qty),
+          price: nonNegative(source.price)
+        };
+      }
+
+      function cleanRows(rows) {
+        var list = Array.isArray(rows) ? rows.map(cleanRow) : [];
+        return list.length ? list : [blankRow()];
+      }
+
+      function cleanQuote(quote) {
+        var source = quote && typeof quote === "object" ? quote : {};
+        var now = new Date().toISOString();
+        return {
+          id: typeof source.id === "string" && source.id ? source.id : makeId(),
+          projectName: typeof source.projectName === "string" ? source.projectName : "",
+          clientName: typeof source.clientName === "string" ? source.clientName : "",
+          currency: currencies[source.currency] ? source.currency : "USD",
+          discount: nonNegative(source.discount),
+          tax: nonNegative(source.tax),
+          note: typeof source.note === "string" ? source.note : "",
+          rows: cleanRows(source.rows),
+          createdAt: typeof source.createdAt === "string" ? source.createdAt : now,
+          updatedAt: typeof source.updatedAt === "string" ? source.updatedAt : now
+        };
+      }
+
+      function normalize(data) {
+        var base = defaults();
+        var source = data && typeof data === "object" ? data : {};
+        base.lang = source.lang === "zh" ? "zh" : "en";
+        base.currency = currencies[source.currency] ? source.currency : "USD";
+        base.activeQuoteId = typeof source.activeQuoteId === "string" ? source.activeQuoteId : null;
+        base.projectName = typeof source.projectName === "string" ? source.projectName : "";
+        base.clientName = typeof source.clientName === "string" ? source.clientName : "";
+        base.discount = nonNegative(source.discount);
+        base.tax = nonNegative(source.tax);
+        base.note = typeof source.note === "string" ? source.note : "";
+        base.rows = cleanRows(source.rows);
+        base.quotes = Array.isArray(source.quotes) ? source.quotes.map(cleanQuote) : [];
+        if (!base.quotes.some(function (quote) { return quote.id === base.activeQuoteId; })) {
+          base.activeQuoteId = null;
+        }
+        return base;
+      }
+
+      function loadState() {
+        try {
+          return normalize(JSON.parse(localStorage.getItem(STORE_KEY) || "{}"));
+        } catch (error) {
+          return defaults();
+        }
+      }
+
+      var state = loadState();
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify(state));
+        } catch (error) {
+          return false;
+        }
+        return true;
+      }
+
+      function tr(key) {
+        var lang = text[state.lang] ? state.lang : "en";
+        return text[lang][key] || text.en[key] || key;
+      }
+
+      function formatMoney(value) {
+        if (!Number.isFinite(value)) {
+          return "-";
+        }
+        var info = currencies[state.currency] || currencies.USD;
+        var decimals = info.decimals;
+        var numberText = value.toLocaleString(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        });
+        return info.symbol + " " + numberText;
+      }
+
+      function formatQty(value) {
+        var number = toNumber(value);
+        if (!Number.isFinite(number)) {
+          return "-";
+        }
+        return number.toLocaleString(state.lang === "zh" ? "zh-TW" : "en-US", {
+          maximumFractionDigits: 2
+        });
+      }
+
+      function formatDate(date) {
+        if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+          return "-";
+        }
+        return new Intl.DateTimeFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }).format(date);
+      }
+
+      function lineTotal(row) {
+        return nonNegative(row.qty) * nonNegative(row.price);
+      }
+
+      function totals() {
+        var subtotal = state.rows.reduce(function (sum, row) {
+          return sum + lineTotal(row);
+        }, 0);
+        var discountRate = Math.min(100, nonNegative(state.discount));
+        var taxRate = nonNegative(state.tax);
+        var discount = subtotal * discountRate / 100;
+        var taxable = Math.max(0, subtotal - discount);
+        var tax = taxable * taxRate / 100;
+        return {
+          subtotal: subtotal,
+          discount: discount,
+          tax: tax,
+          total: taxable + tax
+        };
+      }
+
+      function syncForm() {
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+        els.currency.value = state.currency;
+        els.projectName.value = state.projectName;
+        els.clientName.value = state.clientName;
+        els.discount.value = state.discount || "";
+        els.tax.value = state.tax || "";
+        els.note.value = state.note;
+        els.langEn.classList.toggle("active", state.lang === "en");
+        els.langZh.classList.toggle("active", state.lang === "zh");
+      }
+
+      function applyLanguage() {
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          node.textContent = tr(node.getAttribute("data-i18n"));
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(function (node) {
+          node.setAttribute("placeholder", tr(node.getAttribute("data-i18n-placeholder")));
+        });
+        els.langEn.classList.toggle("active", state.lang === "en");
+        els.langZh.classList.toggle("active", state.lang === "zh");
+      }
+
+      function renderRows() {
+        els.itemsBody.innerHTML = "";
+        state.rows.forEach(function (row) {
+          var trNode = document.createElement("tr");
+          trNode.innerHTML =
+            '<td><input class="desc-input" type="text" data-field="desc" data-id="' + row.id + '"></td>' +
+            '<td><input type="number" min="0" step="0.01" inputmode="decimal" data-field="qty" data-id="' + row.id + '"></td>' +
+            '<td><input type="number" min="0" step="0.01" inputmode="decimal" data-field="price" data-id="' + row.id + '"></td>' +
+            '<td class="total-cell"><span data-line-total="' + row.id + '"></span></td>' +
+            '<td><button type="button" class="danger" data-remove="' + row.id + '">' + tr("remove") + '</button></td>';
+          trNode.querySelector('[data-field="desc"]').value = row.desc;
+          trNode.querySelector('[data-field="qty"]').value = row.qty || "";
+          trNode.querySelector('[data-field="price"]').value = row.price || "";
+          trNode.querySelector("[data-remove]").disabled = state.rows.length <= 1;
+          els.itemsBody.appendChild(trNode);
+        });
+        renderLineTotals();
+      }
+
+      function renderLineTotals() {
+        state.rows.forEach(function (row) {
+          var node = document.querySelector('[data-line-total="' + row.id + '"]');
+          if (node) {
+            node.textContent = formatMoney(lineTotal(row));
+          }
+        });
+      }
+
+      function renderTotals() {
+        var sum = totals();
+        els.subtotalText.textContent = formatMoney(sum.subtotal);
+        els.discountText.textContent = formatMoney(sum.discount);
+        els.taxText.textContent = formatMoney(sum.tax);
+        els.totalText.textContent = formatMoney(sum.total);
+        els.outSubtotal.textContent = formatMoney(sum.subtotal);
+        els.outDiscount.textContent = formatMoney(sum.discount);
+        els.outTax.textContent = formatMoney(sum.tax);
+        els.outTotal.textContent = formatMoney(sum.total);
+      }
+
+      function renderOutput() {
+        els.outProjectName.textContent = state.projectName.trim() || tr("untitled");
+        els.outDate.textContent = formatDate(new Date());
+        els.outClient.textContent = state.clientName.trim() || tr("noClient");
+        els.outItems.innerHTML = "";
+        state.rows.forEach(function (row) {
+          var outRow = document.createElement("tr");
+          var desc = document.createElement("td");
+          var qty = document.createElement("td");
+          var price = document.createElement("td");
+          var total = document.createElement("td");
+          desc.textContent = row.desc.trim() || tr("blankItem");
+          qty.textContent = formatQty(row.qty);
+          price.textContent = formatMoney(nonNegative(row.price));
+          total.textContent = formatMoney(lineTotal(row));
+          outRow.appendChild(desc);
+          outRow.appendChild(qty);
+          outRow.appendChild(price);
+          outRow.appendChild(total);
+          els.outItems.appendChild(outRow);
+        });
+        var note = state.note.trim();
+        els.outNoteWrap.hidden = !note;
+        els.outNote.textContent = note;
+        renderTotals();
+      }
+
+      function renderSidebar() {
+        els.savedList.innerHTML = "";
+        if (!state.quotes.length) {
+          var empty = document.createElement("p");
+          empty.className = "saved-empty";
+          empty.textContent = tr("emptySaved");
+          els.savedList.appendChild(empty);
+          return;
+        }
+        state.quotes.slice().reverse().forEach(function (quote) {
+          var item = document.createElement("div");
+          item.className = "saved-item";
+          item.classList.toggle("active", quote.id === state.activeQuoteId);
+
+          var title = document.createElement("p");
+          title.className = "saved-title";
+          title.textContent = quote.projectName.trim() || tr("untitled");
+
+          var meta = document.createElement("p");
+          meta.className = "saved-meta";
+          var savedDate = formatDate(new Date(quote.updatedAt));
+          meta.textContent = (quote.clientName.trim() || tr("noClient")) + " · " + tr("saved") + " " + savedDate;
+
+          var actions = document.createElement("div");
+          actions.className = "saved-actions";
+
+          var load = document.createElement("button");
+          load.type = "button";
+          load.className = "secondary";
+          load.textContent = tr("load");
+          load.setAttribute("data-load", quote.id);
+
+          var duplicate = document.createElement("button");
+          duplicate.type = "button";
+          duplicate.className = "ghost";
+          duplicate.textContent = tr("duplicate");
+          duplicate.setAttribute("data-duplicate", quote.id);
+
+          var del = document.createElement("button");
+          del.type = "button";
+          del.className = "danger";
+          del.textContent = tr("delete");
+          del.setAttribute("data-delete", quote.id);
+
+          actions.appendChild(load);
+          actions.appendChild(duplicate);
+          actions.appendChild(del);
+          item.appendChild(title);
+          item.appendChild(meta);
+          item.appendChild(actions);
+          els.savedList.appendChild(item);
+        });
+      }
+
+      function renderAll() {
+        syncForm();
+        applyLanguage();
+        renderRows();
+        renderOutput();
+        renderSidebar();
+      }
+
+      function snapshotWithId(id) {
+        var now = new Date().toISOString();
+        return {
+          id: id || makeId(),
+          projectName: state.projectName,
+          clientName: state.clientName,
+          currency: state.currency,
+          discount: nonNegative(state.discount),
+          tax: nonNegative(state.tax),
+          note: state.note,
+          rows: cleanRows(state.rows),
+          createdAt: now,
+          updatedAt: now
+        };
+      }
+
+      function applyQuote(quote) {
+        var clean = cleanQuote(quote);
+        state.activeQuoteId = clean.id;
+        state.projectName = clean.projectName;
+        state.clientName = clean.clientName;
+        state.currency = clean.currency;
+        state.discount = clean.discount;
+        state.tax = clean.tax;
+        state.note = clean.note;
+        state.rows = cleanRows(clean.rows);
+        saveState();
+        renderAll();
+      }
+
+      function saveCurrentQuote() {
+        var existingIndex = state.quotes.findIndex(function (quote) {
+          return quote.id === state.activeQuoteId;
+        });
+        var quote = snapshotWithId(existingIndex >= 0 ? state.activeQuoteId : makeId());
+        if (existingIndex >= 0) {
+          quote.createdAt = state.quotes[existingIndex].createdAt;
+          state.quotes[existingIndex] = quote;
+        } else {
+          state.activeQuoteId = quote.id;
+          state.quotes.push(quote);
+        }
+        saveState();
+        renderSidebar();
+      }
+
+      function duplicateQuote(quote) {
+        var copy = cleanQuote(quote);
+        var now = new Date().toISOString();
+        copy.id = makeId();
+        copy.projectName = (copy.projectName.trim() || tr("untitled")) + " " + tr("copySuffix");
+        copy.createdAt = now;
+        copy.updatedAt = now;
+        state.quotes.push(copy);
+        state.activeQuoteId = copy.id;
+        applyQuote(copy);
+      }
+
+      function resetCurrent() {
+        var keepLang = state.lang;
+        var keepCurrency = state.currency;
+        var keepQuotes = state.quotes;
+        state = defaults();
+        state.lang = keepLang;
+        state.currency = keepCurrency;
+        state.quotes = keepQuotes;
+        saveState();
+        renderAll();
+      }
+
+      function setSample() {
+        state.activeQuoteId = null;
+        state.projectName = state.lang === "zh" ? "品牌網站改版" : "Brand website refresh";
+        state.clientName = state.lang === "zh" ? "晨星設計有限公司" : "Northstar Studio";
+        state.discount = 5;
+        state.tax = 0;
+        state.note = state.lang === "zh"
+          ? "估價包含兩輪修改。額外頁面、急件或第三方付費服務另行報價。"
+          : "Estimate includes two revision rounds. Extra pages, rush timing, or paid third-party services are quoted separately.";
+        state.rows = [
+          { id: makeId(), desc: state.lang === "zh" ? "需求訪談與範圍整理" : "Discovery and scope planning", qty: 3, price: 85 },
+          { id: makeId(), desc: state.lang === "zh" ? "首頁與版型設計" : "Homepage and layout design", qty: 12, price: 85 },
+          { id: makeId(), desc: state.lang === "zh" ? "內容上架與測試" : "Content setup and testing", qty: 6, price: 75 }
+        ];
+        saveState();
+        renderAll();
+      }
+
+      els.currency.addEventListener("change", function (event) {
+        state.currency = currencies[event.target.value] ? event.target.value : "USD";
+        saveState();
+        renderLineTotals();
+        renderOutput();
+      });
+
+      els.langEn.addEventListener("click", function () {
+        state.lang = "en";
+        saveState();
+        renderAll();
+      });
+
+      els.langZh.addEventListener("click", function () {
+        state.lang = "zh";
+        saveState();
+        renderAll();
+      });
+
+      els.projectName.addEventListener("input", function (event) {
+        state.projectName = event.target.value;
+        saveState();
+        renderOutput();
+      });
+
+      els.clientName.addEventListener("input", function (event) {
+        state.clientName = event.target.value;
+        saveState();
+        renderOutput();
+      });
+
+      els.discount.addEventListener("input", function (event) {
+        state.discount = nonNegative(event.target.value);
+        saveState();
+        renderOutput();
+      });
+
+      els.tax.addEventListener("input", function (event) {
+        state.tax = nonNegative(event.target.value);
+        saveState();
+        renderOutput();
+      });
+
+      els.note.addEventListener("input", function (event) {
+        state.note = event.target.value;
+        saveState();
+        renderOutput();
+      });
+
+      els.itemsBody.addEventListener("input", function (event) {
+        var id = event.target.getAttribute("data-id");
+        var field = event.target.getAttribute("data-field");
+        var row = state.rows.find(function (candidate) {
+          return candidate.id === id;
+        });
+        if (!row || !field) {
+          return;
+        }
+        row[field] = field === "desc" ? event.target.value : nonNegative(event.target.value);
+        saveState();
+        renderLineTotals();
+        renderOutput();
+      });
+
+      els.itemsBody.addEventListener("click", function (event) {
+        var id = event.target.getAttribute("data-remove");
+        if (!id || state.rows.length <= 1) {
+          return;
+        }
+        state.rows = state.rows.filter(function (row) {
+          return row.id !== id;
+        });
+        if (!state.rows.length) {
+          state.rows = [blankRow()];
+        }
+        saveState();
+        renderRows();
+        renderOutput();
+      });
+
+      els.addRow.addEventListener("click", function () {
+        state.rows.push(blankRow());
+        saveState();
+        renderRows();
+        renderOutput();
+      });
+
+      els.saveQuote.addEventListener("click", saveCurrentQuote);
+
+      els.duplicateCurrent.addEventListener("click", function () {
+        duplicateQuote(snapshotWithId(makeId()));
+      });
+
+      els.sample.addEventListener("click", setSample);
+
+      els.print.addEventListener("click", function () {
+        window.print();
+      });
+
+      els.newQuote.addEventListener("click", resetCurrent);
+
+      els.savedList.addEventListener("click", function (event) {
+        var loadId = event.target.getAttribute("data-load");
+        var duplicateId = event.target.getAttribute("data-duplicate");
+        var deleteId = event.target.getAttribute("data-delete");
+        if (loadId) {
+          var quote = state.quotes.find(function (candidate) {
+            return candidate.id === loadId;
+          });
+          if (quote) {
+            applyQuote(quote);
+          }
+        }
+        if (duplicateId) {
+          var source = state.quotes.find(function (candidate) {
+            return candidate.id === duplicateId;
+          });
+          if (source) {
+            duplicateQuote(source);
+          }
+        }
+        if (deleteId) {
+          state.quotes = state.quotes.filter(function (quote) {
+            return quote.id !== deleteId;
+          });
+          if (state.activeQuoteId === deleteId) {
+            state.activeQuoteId = null;
+          }
+          saveState();
+          renderSidebar();
+        }
+      });
+
+      renderAll();
+    }());
+  </script>
+</body>
+</html>

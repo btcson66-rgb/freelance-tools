@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice Due Date Calculator - Net 15/30/45/60, Payment Timeline</title>
+  <meta name="description" content="Free invoice due date calculator for Net 7, Net 15, Net 30, Net 45, Net 60, Net 90, custom payment terms, early payment discounts, and payment timelines.">
+  <style>
+    :root {
+      --accent: #e11d48;
+      --accent-dark: #be123c;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --soft: #fff1f2;
+      --danger: #be123c;
+      --ok: #047857;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .topbar {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .title-block {
+      max-width: 760px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--accent-dark);
+      font-size: 0.76rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+      min-width: 250px;
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 20px 30px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(350px, 1.05fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-pad {
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 750;
+      color: #1e293b;
+    }
+
+    .field-label {
+      font-size: 0.88rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 9px 11px;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus-visible {
+      outline: 3px solid rgba(225, 29, 72, 0.22);
+      outline-offset: 2px;
+      border-color: var(--accent);
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .segmented {
+      display: inline-flex;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .segmented button {
+      border: 0;
+      border-radius: 0;
+      background: #fff;
+      min-height: 42px;
+    }
+
+    .segmented button.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .inline-select {
+      min-width: 170px;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      min-height: 40px;
+      padding: 9px 13px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    button:hover {
+      filter: brightness(0.98);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button.secondary {
+      background: var(--soft);
+      color: var(--accent-dark);
+      border-color: #fecdd3;
+    }
+
+    button.ghost {
+      background: #fff;
+      border-color: #cbd5e1;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .result-card {
+      padding: 20px;
+    }
+
+    .result-kicker {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .due-date {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.08;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 800;
+    }
+
+    .status.ok {
+      color: var(--ok);
+      background: #ecfdf5;
+    }
+
+    .status.warn {
+      color: var(--danger);
+      background: #fff1f2;
+    }
+
+    .facts {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .fact {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .fact span:first-child {
+      color: var(--muted);
+    }
+
+    .fact strong {
+      text-align: right;
+    }
+
+    .timeline {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .timeline h3 {
+      margin: 0;
+      padding: 12px 14px;
+      background: #f1f5f9;
+      font-size: 1rem;
+    }
+
+    .timeline-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .timeline-list li {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 12px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .timeline-list time {
+      color: var(--accent-dark);
+      font-weight: 850;
+    }
+
+    .timeline-list span {
+      overflow-wrap: anywhere;
+    }
+
+    .recent-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .recent-empty {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .recent-item {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #f8fafc;
+    }
+
+    .recent-title {
+      margin: 0;
+      font-weight: 850;
+    }
+
+    .recent-meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .recent-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .recent-actions button {
+      min-height: 34px;
+      padding: 6px 9px;
+      font-size: 0.82rem;
+    }
+
+    .footer {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px 28px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 1040px) {
+      .shell,
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+      }
+
+      .top-controls {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar,
+      .shell,
+      .footer {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .form-grid,
+      .timeline-list li {
+        grid-template-columns: 1fr;
+      }
+
+      .result-card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="title-block">
+      <p class="eyebrow" data-i18n="keywordLine">Net 30 due date</p>
+      <h1 data-i18n="appTitle">Invoice Due Date Calculator</h1>
+      <p class="subtitle" data-i18n="subtitle">Calculate invoice due dates, early-payment deadlines, and follow-up timing for freelance cash flow.</p>
+    </div>
+    <div class="top-controls" aria-label="Tool controls">
+      <label class="inline-select">
+        <span class="field-label" data-i18n="currency">Currency</span>
+        <select id="currencySelect">
+          <option value="USD">$ USD</option>
+          <option value="TWD">NT$ TWD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="AUD">A$ AUD</option>
+          <option value="CAD">C$ CAD</option>
+          <option value="JPY">JP¥ JPY</option>
+        </select>
+      </label>
+      <div class="segmented" role="group" aria-label="Language">
+        <button type="button" id="langEn">EN</button>
+        <button type="button" id="langZh">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="main-grid">
+      <section class="panel panel-pad" aria-labelledby="calcHeading">
+        <div class="panel-head">
+          <h2 id="calcHeading" data-i18n="calculator">Calculator</h2>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            <span class="field-label" data-i18n="invoiceDate">Invoice date</span>
+            <input id="invoiceDate" type="date">
+          </label>
+          <label>
+            <span class="field-label" data-i18n="paymentTerms">Payment terms</span>
+            <select id="terms">
+              <option value="7">Net 7</option>
+              <option value="15">Net 15</option>
+              <option value="30">Net 30</option>
+              <option value="45">Net 45</option>
+              <option value="60">Net 60</option>
+              <option value="90">Net 90</option>
+              <option value="custom" data-i18n="customDaysOption">Custom days</option>
+            </select>
+          </label>
+          <label id="customDaysWrap" hidden>
+            <span class="field-label" data-i18n="customDays">Custom days</span>
+            <input id="customDays" type="number" min="0" step="1" inputmode="numeric">
+          </label>
+          <label>
+            <span class="field-label" data-i18n="invoiceAmount">Invoice amount</span>
+            <input id="amount" type="number" min="0" step="0.01" inputmode="decimal">
+          </label>
+          <label>
+            <span class="field-label" data-i18n="earlyDiscount">Early payment discount %</span>
+            <input id="earlyDiscount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="2">
+          </label>
+          <label>
+            <span class="field-label" data-i18n="earlyDays">Early payment days</span>
+            <input id="earlyDays" type="number" min="0" step="1" inputmode="numeric" placeholder="10">
+          </label>
+          <label class="wide">
+            <span class="field-label" data-i18n="followNote">Add to follow-up</span>
+            <textarea id="note" data-i18n-placeholder="notePh" placeholder="Optional note to save with this calculation"></textarea>
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="primary" id="saveBtn" data-i18n="saveCalc">Save calculation</button>
+          <button type="button" class="ghost" id="todayBtn" data-i18n="useToday">Use today</button>
+        </div>
+      </section>
+
+      <section class="panel result-card" aria-live="polite" aria-labelledby="resultHeading">
+        <p class="result-kicker" id="resultHeading" data-i18n="dueDateLabel">Due date</p>
+        <h2 class="due-date" id="dueDateText">-</h2>
+        <p class="status" id="statusText">-</p>
+
+        <div class="facts">
+          <div class="fact"><span data-i18n="daysUntilDue">Days from today until due</span><strong id="daysText">-</strong></div>
+          <div class="fact" id="earlyDeadlineWrap"><span data-i18n="earlyDeadline">Early payment deadline</span><strong id="earlyDeadlineText">-</strong></div>
+          <div class="fact" id="savedAmountWrap"><span data-i18n="amountSaved">Amount saved</span><strong id="savedAmountText">-</strong></div>
+        </div>
+
+        <div class="timeline">
+          <h3 data-i18n="timelineTitle">Cash-flow mini-calendar</h3>
+          <ul class="timeline-list" id="timelineList"></ul>
+        </div>
+      </section>
+    </div>
+
+    <aside class="panel panel-pad" aria-labelledby="recentHeading">
+      <div class="panel-head">
+        <h2 id="recentHeading" data-i18n="recent">Recent calculations</h2>
+      </div>
+      <div class="recent-list" id="recentList"></div>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <span data-i18n="footerLead">Need more freelance tools?</span>
+    <a href="https://btcson66-rgb.github.io/freelance-tools/" data-i18n="footerLink">Open the free freelance tools hub</a>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var STORE_KEY = "duedatecalc_v1";
+      var dayMs = 24 * 60 * 60 * 1000;
+      var currencies = {
+        USD: { symbol: "$", decimals: 2 },
+        TWD: { symbol: "NT$", decimals: 0 },
+        EUR: { symbol: "€", decimals: 2 },
+        GBP: { symbol: "£", decimals: 2 },
+        AUD: { symbol: "A$", decimals: 2 },
+        CAD: { symbol: "C$", decimals: 2 },
+        JPY: { symbol: "¥", decimals: 0 }
+      };
+
+      var text = {
+        en: {
+          keywordLine: "Net 30 due date",
+          appTitle: "Invoice Due Date Calculator",
+          subtitle: "Calculate invoice due dates, early-payment deadlines, and follow-up timing for freelance cash flow.",
+          currency: "Currency",
+          calculator: "Calculator",
+          invoiceDate: "Invoice date",
+          paymentTerms: "Payment terms",
+          customDaysOption: "Custom days",
+          customDays: "Custom days",
+          invoiceAmount: "Invoice amount",
+          earlyDiscount: "Early payment discount %",
+          earlyDays: "Early payment days",
+          followNote: "Add to follow-up",
+          notePh: "Optional note to save with this calculation",
+          saveCalc: "Save calculation",
+          useToday: "Use today",
+          dueDateLabel: "Due date",
+          daysUntilDue: "Days from today until due",
+          earlyDeadline: "Early payment deadline",
+          amountSaved: "Amount saved",
+          timelineTitle: "Cash-flow mini-calendar",
+          recent: "Recent calculations",
+          footerLead: "Need more freelance tools?",
+          footerLink: "Open the free freelance tools hub",
+          future: "Due in {n} day(s).",
+          todayDue: "Due today.",
+          overdue: "Overdue by {n} day(s).",
+          invoiceSent: "Invoice sent",
+          earlyPay: "Early payment deadline",
+          due: "Invoice due",
+          followUp: "Follow up if unpaid",
+          load: "Load",
+          emptyRecent: "No recent calculations yet.",
+          termsLabel: "Net {n}",
+          customTerms: "{n} day terms",
+          saved: "saved"
+        },
+        zh: {
+          keywordLine: "Net 30 到期日",
+          appTitle: "發票到期日計算器",
+          subtitle: "計算發票到期日、提前付款期限與追蹤日期，協助自由工作現金流規劃。",
+          currency: "幣別",
+          calculator: "計算器",
+          invoiceDate: "發票日期",
+          paymentTerms: "付款條件",
+          customDaysOption: "自訂天數",
+          customDays: "自訂天數",
+          invoiceAmount: "發票金額",
+          earlyDiscount: "提前付款折扣 %",
+          earlyDays: "提前付款天數",
+          followNote: "追蹤備註",
+          notePh: "選填，與這次計算一起儲存",
+          saveCalc: "儲存計算",
+          useToday: "使用今天",
+          dueDateLabel: "到期日",
+          daysUntilDue: "距離到期天數",
+          earlyDeadline: "提前付款期限",
+          amountSaved: "可省金額",
+          timelineTitle: "現金流小日曆",
+          recent: "最近計算",
+          footerLead: "需要更多自由工作工具？",
+          footerLink: "開啟免費自由工作工具集",
+          future: "距離到期還有 {n} 天。",
+          todayDue: "今天到期。",
+          overdue: "已逾期 {n} 天。",
+          invoiceSent: "發票寄出",
+          earlyPay: "提前付款期限",
+          due: "發票到期",
+          followUp: "未付款追蹤",
+          load: "載入",
+          emptyRecent: "尚無最近計算。",
+          termsLabel: "Net {n}",
+          customTerms: "{n} 天付款條件",
+          saved: "已儲存"
+        }
+      };
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      var els = {
+        currency: byId("currencySelect"),
+        langEn: byId("langEn"),
+        langZh: byId("langZh"),
+        invoiceDate: byId("invoiceDate"),
+        terms: byId("terms"),
+        customDaysWrap: byId("customDaysWrap"),
+        customDays: byId("customDays"),
+        amount: byId("amount"),
+        earlyDiscount: byId("earlyDiscount"),
+        earlyDays: byId("earlyDays"),
+        note: byId("note"),
+        save: byId("saveBtn"),
+        today: byId("todayBtn"),
+        dueDateText: byId("dueDateText"),
+        statusText: byId("statusText"),
+        daysText: byId("daysText"),
+        earlyDeadlineWrap: byId("earlyDeadlineWrap"),
+        earlyDeadlineText: byId("earlyDeadlineText"),
+        savedAmountWrap: byId("savedAmountWrap"),
+        savedAmountText: byId("savedAmountText"),
+        timelineList: byId("timelineList"),
+        recentList: byId("recentList")
+      };
+
+      function todayIso() {
+        var now = new Date();
+        return [now.getFullYear(), pad(now.getMonth() + 1), pad(now.getDate())].join("-");
+      }
+
+      function pad(number) {
+        return String(number).padStart(2, "0");
+      }
+
+      function parseDate(value) {
+        if (typeof value !== "string") {
+          return parseDate(todayIso());
+        }
+        var parts = value.split("-").map(function (part) {
+          return Number.parseInt(part, 10);
+        });
+        if (parts.length !== 3 || parts.some(function (part) { return !Number.isFinite(part); })) {
+          return parseDate(todayIso());
+        }
+        var date = new Date(parts[0], parts[1] - 1, parts[2]);
+        if (Number.isNaN(date.getTime())) {
+          return parseDate(todayIso());
+        }
+        return date;
+      }
+
+      function isoDate(date) {
+        if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+          return todayIso();
+        }
+        return [date.getFullYear(), pad(date.getMonth() + 1), pad(date.getDate())].join("-");
+      }
+
+      function addDays(date, days) {
+        var copy = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        copy.setDate(copy.getDate() + Math.max(0, Number.isFinite(days) ? days : 0));
+        return copy;
+      }
+
+      function startOfDay(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      }
+
+      function toNumber(value) {
+        var number = Number.parseFloat(value);
+        return Number.isFinite(number) ? number : 0;
+      }
+
+      function wholeDays(value) {
+        return Math.max(0, Math.floor(toNumber(value)));
+      }
+
+      function nonNegative(value) {
+        return Math.max(0, toNumber(value));
+      }
+
+      function defaults() {
+        return {
+          lang: "en",
+          currency: "USD",
+          invoiceDate: todayIso(),
+          terms: "30",
+          customDays: 30,
+          amount: 0,
+          earlyDiscount: 0,
+          earlyDays: 10,
+          note: "",
+          recents: []
+        };
+      }
+
+      function cleanEntry(entry) {
+        var source = entry && typeof entry === "object" ? entry : {};
+        return {
+          id: typeof source.id === "string" && source.id ? source.id : makeId(),
+          currency: currencies[source.currency] ? source.currency : "USD",
+          invoiceDate: isoDate(parseDate(source.invoiceDate)),
+          terms: source.terms === "custom" ? "custom" : String([7, 15, 30, 45, 60, 90].indexOf(Number.parseInt(source.terms, 10)) >= 0 ? Number.parseInt(source.terms, 10) : 30),
+          customDays: wholeDays(source.customDays || 30),
+          amount: nonNegative(source.amount),
+          earlyDiscount: nonNegative(source.earlyDiscount),
+          earlyDays: wholeDays(source.earlyDays || 0),
+          note: typeof source.note === "string" ? source.note : "",
+          savedAt: typeof source.savedAt === "string" ? source.savedAt : new Date().toISOString()
+        };
+      }
+
+      function normalize(data) {
+        var base = defaults();
+        var source = data && typeof data === "object" ? data : {};
+        base.lang = source.lang === "zh" ? "zh" : "en";
+        base.currency = currencies[source.currency] ? source.currency : "USD";
+        base.invoiceDate = isoDate(parseDate(source.invoiceDate));
+        base.terms = source.terms === "custom" ? "custom" : String([7, 15, 30, 45, 60, 90].indexOf(Number.parseInt(source.terms, 10)) >= 0 ? Number.parseInt(source.terms, 10) : 30);
+        base.customDays = wholeDays(source.customDays || 30);
+        base.amount = nonNegative(source.amount);
+        base.earlyDiscount = nonNegative(source.earlyDiscount);
+        base.earlyDays = wholeDays(source.earlyDays || 10);
+        base.note = typeof source.note === "string" ? source.note : "";
+        base.recents = Array.isArray(source.recents) ? source.recents.map(cleanEntry).slice(0, 5) : [];
+        return base;
+      }
+
+      function loadState() {
+        try {
+          return normalize(JSON.parse(localStorage.getItem(STORE_KEY) || "{}"));
+        } catch (error) {
+          return defaults();
+        }
+      }
+
+      var state = loadState();
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify(state));
+        } catch (error) {
+          return false;
+        }
+        return true;
+      }
+
+      function makeId() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+        return "d_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+      }
+
+      function tr(key, replacements) {
+        var lang = text[state.lang] ? state.lang : "en";
+        var value = text[lang][key] || text.en[key] || key;
+        Object.keys(replacements || {}).forEach(function (name) {
+          value = value.replace("{" + name + "}", replacements[name]);
+        });
+        return value;
+      }
+
+      function formatDate(date) {
+        if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+          return "-";
+        }
+        if (state.lang === "zh") {
+          return new Intl.DateTimeFormat("zh-TW", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          }).format(date);
+        }
+        var weekday = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date);
+        var month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
+        return weekday + " " + date.getDate() + " " + month + " " + date.getFullYear();
+      }
+
+      function formatMoney(value) {
+        if (!Number.isFinite(value)) {
+          return "-";
+        }
+        var info = currencies[state.currency] || currencies.USD;
+        var numberText = value.toLocaleString(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: info.decimals,
+          maximumFractionDigits: info.decimals
+        });
+        return info.symbol + " " + numberText;
+      }
+
+      function termDays() {
+        if (state.terms === "custom") {
+          return wholeDays(state.customDays);
+        }
+        return wholeDays(state.terms);
+      }
+
+      function currentCalc() {
+        var invoice = parseDate(state.invoiceDate);
+        var days = termDays();
+        var due = addDays(invoice, days);
+        var today = startOfDay(new Date());
+        var diff = Math.round((startOfDay(due).getTime() - today.getTime()) / dayMs);
+        var discountRate = nonNegative(state.earlyDiscount);
+        var earlyDays = wholeDays(state.earlyDays);
+        var hasEarly = discountRate > 0 && earlyDays > 0;
+        var earlyDeadline = addDays(invoice, earlyDays);
+        var amountSaved = nonNegative(state.amount) * discountRate / 100;
+        return {
+          invoice: invoice,
+          due: due,
+          diff: diff,
+          hasEarly: hasEarly,
+          earlyDeadline: earlyDeadline,
+          amountSaved: amountSaved,
+          followUp: addDays(due, 30)
+        };
+      }
+
+      function syncForm() {
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+        els.currency.value = state.currency;
+        els.invoiceDate.value = state.invoiceDate;
+        els.terms.value = state.terms;
+        els.customDays.value = state.customDays || "";
+        els.amount.value = state.amount || "";
+        els.earlyDiscount.value = state.earlyDiscount || "";
+        els.earlyDays.value = state.earlyDays || "";
+        els.note.value = state.note;
+        els.customDaysWrap.hidden = state.terms !== "custom";
+        els.langEn.classList.toggle("active", state.lang === "en");
+        els.langZh.classList.toggle("active", state.lang === "zh");
+      }
+
+      function applyLanguage() {
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          node.textContent = tr(node.getAttribute("data-i18n"));
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(function (node) {
+          node.setAttribute("placeholder", tr(node.getAttribute("data-i18n-placeholder")));
+        });
+        els.langEn.classList.toggle("active", state.lang === "en");
+        els.langZh.classList.toggle("active", state.lang === "zh");
+      }
+
+      function renderOutput() {
+        var calc = currentCalc();
+        els.dueDateText.textContent = formatDate(calc.due);
+        els.daysText.textContent = String(calc.diff);
+        els.statusText.classList.remove("ok", "warn");
+        if (calc.diff > 0) {
+          els.statusText.textContent = tr("future", { n: calc.diff });
+          els.statusText.classList.add("ok");
+        } else if (calc.diff === 0) {
+          els.statusText.textContent = tr("todayDue");
+          els.statusText.classList.add("ok");
+        } else {
+          els.statusText.textContent = tr("overdue", { n: Math.abs(calc.diff) });
+          els.statusText.classList.add("warn");
+        }
+
+        els.earlyDeadlineWrap.hidden = !calc.hasEarly;
+        els.savedAmountWrap.hidden = !calc.hasEarly;
+        if (calc.hasEarly) {
+          els.earlyDeadlineText.textContent = formatDate(calc.earlyDeadline);
+          els.savedAmountText.textContent = formatMoney(calc.amountSaved);
+        } else {
+          els.earlyDeadlineText.textContent = "-";
+          els.savedAmountText.textContent = "-";
+        }
+
+        els.timelineList.innerHTML = "";
+        addTimelineItem(calc.invoice, tr("invoiceSent"));
+        if (calc.hasEarly) {
+          addTimelineItem(calc.earlyDeadline, tr("earlyPay") + " · " + formatMoney(calc.amountSaved));
+        }
+        addTimelineItem(calc.due, tr("due"));
+        addTimelineItem(calc.followUp, tr("followUp"));
+      }
+
+      function addTimelineItem(date, label) {
+        var item = document.createElement("li");
+        var time = document.createElement("time");
+        var textNode = document.createElement("span");
+        time.textContent = formatDate(date);
+        textNode.textContent = label;
+        item.appendChild(time);
+        item.appendChild(textNode);
+        els.timelineList.appendChild(item);
+      }
+
+      function termLabel(entry) {
+        var days = entry.terms === "custom" ? wholeDays(entry.customDays) : wholeDays(entry.terms);
+        return entry.terms === "custom" ? tr("customTerms", { n: days }) : tr("termsLabel", { n: days });
+      }
+
+      function renderRecents() {
+        els.recentList.innerHTML = "";
+        if (!state.recents.length) {
+          var empty = document.createElement("p");
+          empty.className = "recent-empty";
+          empty.textContent = tr("emptyRecent");
+          els.recentList.appendChild(empty);
+          return;
+        }
+        state.recents.forEach(function (entry) {
+          var calc = calcForEntry(entry);
+          var item = document.createElement("div");
+          item.className = "recent-item";
+
+          var title = document.createElement("p");
+          title.className = "recent-title";
+          title.textContent = formatDate(calc.due);
+
+          var meta = document.createElement("p");
+          meta.className = "recent-meta";
+          meta.textContent = termLabel(entry) + " · " + formatMoneyFor(entry.amount, entry.currency) + " · " + tr("saved");
+
+          var actions = document.createElement("div");
+          actions.className = "recent-actions";
+          var load = document.createElement("button");
+          load.type = "button";
+          load.className = "secondary";
+          load.textContent = tr("load");
+          load.setAttribute("data-load", entry.id);
+          actions.appendChild(load);
+
+          if (entry.note.trim()) {
+            var note = document.createElement("p");
+            note.className = "recent-meta";
+            note.textContent = entry.note;
+            item.appendChild(title);
+            item.appendChild(meta);
+            item.appendChild(note);
+          } else {
+            item.appendChild(title);
+            item.appendChild(meta);
+          }
+          item.appendChild(actions);
+          els.recentList.appendChild(item);
+        });
+      }
+
+      function formatMoneyFor(value, currency) {
+        var previous = state.currency;
+        state.currency = currencies[currency] ? currency : previous;
+        var formatted = formatMoney(nonNegative(value));
+        state.currency = previous;
+        return formatted;
+      }
+
+      function calcForEntry(entry) {
+        var previous = {
+          invoiceDate: state.invoiceDate,
+          terms: state.terms,
+          customDays: state.customDays,
+          amount: state.amount,
+          earlyDiscount: state.earlyDiscount,
+          earlyDays: state.earlyDays
+        };
+        state.invoiceDate = entry.invoiceDate;
+        state.terms = entry.terms;
+        state.customDays = entry.customDays;
+        state.amount = entry.amount;
+        state.earlyDiscount = entry.earlyDiscount;
+        state.earlyDays = entry.earlyDays;
+        var calc = currentCalc();
+        state.invoiceDate = previous.invoiceDate;
+        state.terms = previous.terms;
+        state.customDays = previous.customDays;
+        state.amount = previous.amount;
+        state.earlyDiscount = previous.earlyDiscount;
+        state.earlyDays = previous.earlyDays;
+        return calc;
+      }
+
+      function renderAll() {
+        syncForm();
+        applyLanguage();
+        renderOutput();
+        renderRecents();
+      }
+
+      function saveCurrent() {
+        var entry = cleanEntry({
+          id: makeId(),
+          currency: state.currency,
+          invoiceDate: state.invoiceDate,
+          terms: state.terms,
+          customDays: state.customDays,
+          amount: state.amount,
+          earlyDiscount: state.earlyDiscount,
+          earlyDays: state.earlyDays,
+          note: state.note,
+          savedAt: new Date().toISOString()
+        });
+        state.recents = [entry].concat(state.recents.filter(function (oldEntry) {
+          return oldEntry.id !== entry.id;
+        })).slice(0, 5);
+        saveState();
+        renderRecents();
+      }
+
+      function applyEntry(entry) {
+        var clean = cleanEntry(entry);
+        state.currency = clean.currency;
+        state.invoiceDate = clean.invoiceDate;
+        state.terms = clean.terms;
+        state.customDays = clean.customDays;
+        state.amount = clean.amount;
+        state.earlyDiscount = clean.earlyDiscount;
+        state.earlyDays = clean.earlyDays;
+        state.note = clean.note;
+        saveState();
+        renderAll();
+      }
+
+      function updateField(field, value) {
+        state[field] = value;
+        saveState();
+        renderAll();
+      }
+
+      els.currency.addEventListener("change", function (event) {
+        updateField("currency", currencies[event.target.value] ? event.target.value : "USD");
+      });
+
+      els.langEn.addEventListener("click", function () {
+        updateField("lang", "en");
+      });
+
+      els.langZh.addEventListener("click", function () {
+        updateField("lang", "zh");
+      });
+
+      els.invoiceDate.addEventListener("change", function (event) {
+        updateField("invoiceDate", isoDate(parseDate(event.target.value)));
+      });
+
+      els.terms.addEventListener("change", function (event) {
+        updateField("terms", event.target.value === "custom" ? "custom" : String(wholeDays(event.target.value)));
+      });
+
+      els.customDays.addEventListener("input", function (event) {
+        updateField("customDays", wholeDays(event.target.value));
+      });
+
+      els.amount.addEventListener("input", function (event) {
+        updateField("amount", nonNegative(event.target.value));
+      });
+
+      els.earlyDiscount.addEventListener("input", function (event) {
+        updateField("earlyDiscount", nonNegative(event.target.value));
+      });
+
+      els.earlyDays.addEventListener("input", function (event) {
+        updateField("earlyDays", wholeDays(event.target.value));
+      });
+
+      els.note.addEventListener("input", function (event) {
+        state.note = event.target.value;
+        saveState();
+        renderOutput();
+      });
+
+      els.save.addEventListener("click", saveCurrent);
+
+      els.today.addEventListener("click", function () {
+        updateField("invoiceDate", todayIso());
+      });
+
+      els.recentList.addEventListener("click", function (event) {
+        var id = event.target.getAttribute("data-load");
+        if (!id) {
+          return;
+        }
+        var entry = state.recents.find(function (candidate) {
+          return candidate.id === id;
+        });
+        if (entry) {
+          applyEntry(entry);
+        }
+      });
+
+      renderAll();
+    }());
+  </script>
+</body>
+</html>
