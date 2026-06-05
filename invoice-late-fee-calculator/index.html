@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Invoice Late Fee Calculator — Work Out What an Overdue Client Owes</title>
+<meta name="description" content="A free invoice late fee calculator for freelancers: enter an overdue invoice and get the late fee, total now due, and a ready-to-copy payment reminder. Flat fee, % per month or annual interest. Runs offline, nothing uploaded.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/invoice-late-fee-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Invoice Late Fee Calculator — Overdue Invoice Tool">
+<meta property="og:description" content="Enter an overdue invoice and get the late fee, total due and a ready-to-copy reminder. Flat, % per month or annual interest. Free, offline.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/invoice-late-fee-calculator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/invoicepro.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Invoice Late Fee Calculator">
+<meta name="twitter:description" content="Work out the late fee and total due on an overdue invoice, with a copy-paste reminder. Free, offline.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/invoicepro.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Invoice Late Fee Calculator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline invoice late fee calculator for freelancers. Enter an overdue invoice and get the late fee, total now due and a ready-to-copy payment reminder, using a flat fee, percentage per month or annual interest rate. Runs in your browser with no account.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/invoice-late-fee-calculator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Days-overdue calculation with grace period",
+    "Flat, percentage-per-month or annual-interest late fees",
+    "Total now due",
+    "Copy-ready payment reminder message",
+    "Multiple currencies",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this late fee calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. It runs in your browser with no account and no sign-up, and nothing is uploaded." } },
+    { "@type": "Question", "name": "How much late fee can a freelancer charge?", "acceptedAnswer": { "@type": "Answer", "text": "Common approaches are a flat fee, a percentage per month (often 1 to 2 percent), or an annual interest rate applied for the days overdue. What you can actually charge depends on your contract and local law, which sometimes caps or regulates late fees, so set the terms in your agreement first and confirm what is allowed where you are." } },
+    { "@type": "Question", "name": "How are days overdue calculated?", "acceptedAnswer": { "@type": "Answer", "text": "The calculator counts the days between the invoice due date and today (or a date you choose), minus any grace period you set. If the invoice is not past due yet, the fee is zero." } },
+    { "@type": "Question", "name": "Can I send the client a reminder?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The tool generates a polite, professional payment-reminder message with the amount, days overdue, late fee and total due, which you can copy and send." } },
+    { "@type": "Question", "name": "Is this legal or financial advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. It is an estimate to help you apply the late-fee terms in your own contract. Many places regulate late fees and interest, so confirm what is enforceable with a qualified professional." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#d97706}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#fef3c7,transparent),linear-gradient(180deg,#fff,#f8fafc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#b45309;background:#fef3c7;border:1px solid #fde68a;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:39px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:700px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#cbd5e1}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#1f2937}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#374151}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#cbd5e1}
+  .endcta{background:#0f172a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#cbd5e1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#334155;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free invoice late fee calculator</h1>
+    <p class="sub">A client is past due. Enter the invoice and your late-fee terms — flat fee, percentage per month or annual interest — and get the fee, the total now owed, and a polite reminder you can copy and send. Runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the calculator →</a>
+      <a class="btn buy" href="../free-invoice-generator/">Make the invoice →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Flat, %/month or interest</span>
+      <span><span class="dotg">●</span> Copy-ready reminder</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Charge for late payment without the awkward math</h2>
+    <p>Late payment is one of the most common freelance headaches, and a late fee — agreed up front in your contract — is the polite, professional way to discourage it. The hard part is usually the arithmetic and the wording: how many days overdue is it, what does that work out to, and how do you ask for it without sounding aggressive? This calculator does both.</p>
+    <p>Enter the invoice amount and due date, choose how your contract charges late fees, and the tool shows the days overdue (after any grace period), the late fee, and the total now due. It also drafts a short, courteous reminder message with those numbers filled in, ready to copy into an email.</p>
+
+    <h2>What it works out</h2>
+    <div class="feat">
+      <div><h4>Days overdue</h4><p>Counts from the due date to today (or a date you pick), minus your grace period.</p></div>
+      <div><h4>Three fee methods</h4><p>Flat fee, percentage per month, or an annual interest rate applied over the days overdue.</p></div>
+      <div><h4>Total now due</h4><p>Invoice amount plus the late fee, in your currency.</p></div>
+      <div><h4>Copy-ready reminder</h4><p>A polite, professional message with the amount, days overdue and total — one click to copy.</p></div>
+      <div><h4>Grace period</h4><p>Set a few days of grace so a fee only applies once it is genuinely overdue.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Runs entirely in your browser. The invoice details never leave your computer.</p></div>
+    </div>
+
+    <h2>How to calculate a late fee in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Enter the invoice amount and due date</strong> (and today, or the date you are charging from).</li>
+      <li><strong>Pick your fee method</strong> — flat, percentage per month, or annual interest — and any grace period.</li>
+      <li><strong>Read the total and copy the reminder</strong> to send your client.</li>
+    </ol>
+
+    <h2>A note on what you can charge</h2>
+    <p>Late fees work best when they are written into the contract you agreed before starting — which is exactly what <a href="../free-freelance-contract/">ProposalPro</a> helps you set up. Many places also regulate or cap late fees and interest, so treat this as an estimate, not legal advice, and confirm what is enforceable where you are. Once you know the figure, you can reissue the bill with <a href="../free-invoice-generator/">InvoicePro</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this late fee calculator free?</dt>
+      <dd>Yes, completely. It runs in your browser with no account and nothing uploaded.</dd>
+      <dt>How much late fee can a freelancer charge?</dt>
+      <dd>Commonly a flat fee, a percentage per month (often 1–2%), or an annual interest rate. What you can actually charge depends on your contract and local law — set the terms in your agreement and confirm what is allowed.</dd>
+      <dt>How are days overdue calculated?</dt>
+      <dd>From the due date to today (or a date you choose), minus any grace period. If it is not past due yet, the fee is zero.</dd>
+      <dt>Can I send the client a reminder?</dt>
+      <dd>Yes — the tool generates a polite reminder with the amount, days overdue, fee and total, ready to copy.</dd>
+      <dt>Is this legal or financial advice?</dt>
+      <dd>No. It is an estimate to help you apply your own contract terms. Confirm what is enforceable with a professional.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of offline, no-subscription tools for the whole freelance workflow:</p>
+    <div class="related">
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+      <a href="../free-freelance-contract/">✒ Free contract maker</a>
+      <a href="../freelance-rate-calculator/">🧮 Rate calculator</a>
+      <a href="../free-expense-tracker/">$ Free expense tracker</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Get that invoice paid</h2>
+      <p>Work out the fee and send a polite nudge in two minutes. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the calculator →</a>
+        <a class="btn buy" href="../">See all the tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>

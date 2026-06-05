@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice Late Fee Calculator - Work Out What an Overdue Client Owes</title>
+  <meta name="description" content="Free invoice late fee calculator for freelancers. Estimate overdue invoice fees, total now due, and generate a polite payment reminder.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #fff7ed;
+      --accent: #d97706;
+      --accent-dark: #b45309;
+      --danger: #b91c1c;
+      --ok: #047857;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "PingFang TC", "Microsoft JhengHei";
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--accent-dark);
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      max-width: 760px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 66ch;
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--card);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+      flex: 0 0 auto;
+    }
+
+    .lang-toggle button {
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label,
+    .field-label {
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      font: inherit;
+      padding: 11px 12px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.16);
+    }
+
+    input[disabled] {
+      color: #94a3b8;
+      background: #f1f5f9;
+    }
+
+    textarea {
+      min-height: 190px;
+      resize: vertical;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 650;
+      min-height: 44px;
+    }
+
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .method-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .method-option {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr);
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .method-option:has(input:checked) {
+      border-color: var(--accent);
+      background: var(--soft);
+    }
+
+    .method-option input {
+      width: 18px;
+      height: 18px;
+      margin: 3px 0 0;
+      accent-color: var(--accent);
+    }
+
+    .method-title {
+      display: block;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .method-help {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .result-card {
+      overflow: hidden;
+    }
+
+    .result-top {
+      padding: 22px;
+      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .status {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.ok {
+      color: var(--ok);
+    }
+
+    .total-label {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 750;
+    }
+
+    .total-value {
+      margin: 2px 0 0;
+      color: var(--accent-dark);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px 22px 4px;
+    }
+
+    .metric {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 750;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.2rem;
+      overflow-wrap: anywhere;
+    }
+
+    .message-wrap {
+      padding: 18px 22px 22px;
+    }
+
+    .message-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .copy-btn {
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      font: inherit;
+      font-weight: 800;
+      padding: 10px 14px;
+      cursor: pointer;
+      min-width: 86px;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      header {
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        padding-top: 20px;
+      }
+
+      .field-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .panel,
+      .result-top,
+      .message-wrap {
+        padding: 18px;
+      }
+
+      .metrics {
+        padding: 14px 18px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance invoice tool</p>
+        <h1 data-i18n="title">Invoice late fee calculator</h1>
+        <p class="intro" data-i18n="intro">Estimate the overdue fee, total now due, and a polite payment reminder from one invoice.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" id="langEn" class="active">EN</button>
+        <button type="button" id="langZh">中文</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <div class="section-title">
+          <h2 id="inputsTitle" data-i18n="inputsTitle">Invoice details</h2>
+        </div>
+
+        <div class="field-grid">
+          <div class="field full">
+            <label for="amount" data-i18n="invoiceAmount">Invoice amount</label>
+            <div class="input-row">
+              <select id="currency" aria-label="Currency">
+                <option value="$ USD">$ USD</option>
+                <option value="NT$ TWD">NT$ TWD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="A$ AUD">A$ AUD</option>
+                <option value="C$ CAD">C$ CAD</option>
+                <option value="JP¥ JPY">JP¥ JPY</option>
+              </select>
+              <input id="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="2500">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="dueDate" data-i18n="dueDate">Invoice due date</label>
+            <input id="dueDate" type="date">
+          </div>
+
+          <div class="field">
+            <label for="asOfDate" data-i18n="asOfDate">As of date</label>
+            <input id="asOfDate" type="date">
+            <label class="check-row" for="useToday">
+              <input id="useToday" type="checkbox" checked>
+              <span data-i18n="useToday">Use today</span>
+            </label>
+          </div>
+
+          <div class="field">
+            <label for="graceDays" data-i18n="graceDays">Grace period (days)</label>
+            <input id="graceDays" type="number" min="0" step="1" inputmode="numeric" value="0">
+          </div>
+
+          <div class="field">
+            <label for="flatFee" data-i18n="flatFee">Flat fee amount</label>
+            <input id="flatFee" type="number" min="0" step="0.01" inputmode="decimal" value="25">
+          </div>
+
+          <div class="field">
+            <label for="monthlyRate" data-i18n="monthlyRate">Monthly rate (%)</label>
+            <input id="monthlyRate" type="number" min="0" step="0.01" inputmode="decimal" value="1.5">
+          </div>
+
+          <div class="field">
+            <label for="annualRate" data-i18n="annualRate">Annual interest (%)</label>
+            <input id="annualRate" type="number" min="0" step="0.01" inputmode="decimal" value="12">
+          </div>
+
+          <div class="field full">
+            <div class="field-label" data-i18n="methodLabel">Late fee method</div>
+            <div class="method-group" role="radiogroup" aria-label="Late fee method">
+              <label class="method-option">
+                <input type="radio" name="method" value="flat" checked>
+                <span>
+                  <span class="method-title" data-i18n="methodFlat">Flat fee</span>
+                  <span class="method-help" data-i18n="methodFlatHelp">One-time amount added after the grace period.</span>
+                </span>
+              </label>
+              <label class="method-option">
+                <input type="radio" name="method" value="monthly">
+                <span>
+                  <span class="method-title" data-i18n="methodMonthly">Percentage per month</span>
+                  <span class="method-help" data-i18n="methodMonthlyHelp">Prorated by overdue days beyond grace.</span>
+                </span>
+              </label>
+              <label class="method-option">
+                <input type="radio" name="method" value="annual">
+                <span>
+                  <span class="method-title" data-i18n="methodAnnual">Annual simple interest</span>
+                  <span class="method-help" data-i18n="methodAnnualHelp">Simple interest using overdue days beyond grace.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card result-card" aria-labelledby="resultsTitle">
+        <div class="result-top">
+          <p id="status" class="status">Enter an invoice amount and due date.</p>
+          <p class="total-label" data-i18n="totalLabel">Total now due</p>
+          <p id="totalDue" class="total-value">-</p>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span data-i18n="daysOverdue">Days overdue after grace</span>
+            <strong id="daysDue">0</strong>
+          </div>
+          <div class="metric">
+            <span data-i18n="lateFeeOwed">Late fee owed</span>
+            <strong id="lateFee">-</strong>
+          </div>
+        </div>
+        <div class="message-wrap">
+          <div class="message-head">
+            <h2 id="resultsTitle" data-i18n="messageTitle">Payment reminder</h2>
+            <button id="copyBtn" class="copy-btn" type="button" data-i18n="copy">Copy</button>
+          </div>
+          <textarea id="message" readonly></textarea>
+          <p class="note" data-i18n="legalNote">Check your contract and local law; many places cap or regulate late fees. This is an estimate, not legal advice.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More freelance calculators:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var storageKey = "latefee_v1";
+      var state = {
+        lang: "en",
+        currency: "$ USD",
+        amount: "",
+        dueDate: "",
+        asOfDate: todayIso(),
+        useToday: true,
+        graceDays: "0",
+        method: "flat",
+        flatFee: "25",
+        monthlyRate: "1.5",
+        annualRate: "12"
+      };
+
+      var copyTimer = 0;
+
+      var text = {
+        en: {
+          eyebrow: "Freelance invoice tool",
+          title: "Invoice late fee calculator",
+          intro: "Estimate the overdue fee, total now due, and a polite payment reminder from one invoice.",
+          inputsTitle: "Invoice details",
+          invoiceAmount: "Invoice amount",
+          dueDate: "Invoice due date",
+          asOfDate: "As of date",
+          useToday: "Use today",
+          graceDays: "Grace period (days)",
+          flatFee: "Flat fee amount",
+          monthlyRate: "Monthly rate (%)",
+          annualRate: "Annual interest (%)",
+          methodLabel: "Late fee method",
+          methodFlat: "Flat fee",
+          methodFlatHelp: "One-time amount added after the grace period.",
+          methodMonthly: "Percentage per month",
+          methodMonthlyHelp: "Prorated by overdue days beyond grace.",
+          methodAnnual: "Annual simple interest",
+          methodAnnualHelp: "Simple interest using overdue days beyond grace.",
+          totalLabel: "Total now due",
+          daysOverdue: "Days overdue after grace",
+          lateFeeOwed: "Late fee owed",
+          messageTitle: "Payment reminder",
+          copy: "Copy",
+          copied: "Copied",
+          copyFailed: "Select text",
+          legalNote: "Check your contract and local law; many places cap or regulate late fees. This is an estimate, not legal advice.",
+          footerText: "More freelance calculators:",
+          needInput: "Enter an invoice amount and due date.",
+          invalidAmount: "Enter a valid invoice amount.",
+          invalidDate: "Enter valid due and as-of dates.",
+          notOverdue: "This invoice is not overdue yet.",
+          withinGrace: "This invoice is overdue, but still inside the grace period.",
+          overdue: "Estimated late fee based on the selected method.",
+          messageStart: "Hello,",
+          messageBody: "I am following up on the overdue invoice for {amount}. It is {days} day(s) overdue after the grace period. Based on the agreed late fee terms, the estimated late fee is {fee}, making the total now due {total}.",
+          messageClose: "Please let me know when payment has been scheduled. Thank you."
+        },
+        zh: {
+          eyebrow: "自由工作者發票工具",
+          title: "逾期付款費用計算器",
+          intro: "快速估算逾期費用、目前應付總額，並產生禮貌的付款提醒訊息。",
+          inputsTitle: "發票資料",
+          invoiceAmount: "發票金額",
+          dueDate: "發票到期日",
+          asOfDate: "計算日期",
+          useToday: "使用今天",
+          graceDays: "寬限期（天）",
+          flatFee: "固定逾期費",
+          monthlyRate: "每月費率（%）",
+          annualRate: "年利率（%）",
+          methodLabel: "逾期費計算方式",
+          methodFlat: "固定費用",
+          methodFlatHelp: "超過寬限期後加收一次固定金額。",
+          methodMonthly: "每月百分比",
+          methodMonthlyHelp: "依超過寬限期的天數按比例計算。",
+          methodAnnual: "年利率單利",
+          methodAnnualHelp: "以超過寬限期的天數計算單利。",
+          totalLabel: "目前應付總額",
+          daysOverdue: "扣除寬限期後逾期天數",
+          lateFeeOwed: "逾期費用",
+          messageTitle: "付款提醒訊息",
+          copy: "複製",
+          copied: "已複製",
+          copyFailed: "請選取文字",
+          legalNote: "請確認合約與當地法律；許多地區會限制或規範逾期費用。此工具僅為估算，不是法律建議。",
+          footerText: "更多自由工作者工具：",
+          needInput: "請輸入發票金額與到期日。",
+          invalidAmount: "請輸入有效的發票金額。",
+          invalidDate: "請輸入有效的到期日與計算日期。",
+          notOverdue: "這張發票尚未逾期。",
+          withinGrace: "這張發票已逾期，但仍在寬限期內。",
+          overdue: "以下為依所選方式估算的逾期費用。",
+          messageStart: "您好：",
+          messageBody: "想提醒您，金額為 {amount} 的發票目前已逾期。扣除寬限期後已逾期 {days} 天。依約定的逾期費條件估算，逾期費為 {fee}，目前應付總額為 {total}。",
+          messageClose: "請您確認付款安排，謝謝。"
+        }
+      };
+
+      var ids = [
+        "currency",
+        "amount",
+        "dueDate",
+        "asOfDate",
+        "useToday",
+        "graceDays",
+        "flatFee",
+        "monthlyRate",
+        "annualRate"
+      ];
+
+      var el = {};
+      ids.forEach(function (id) {
+        el[id] = document.getElementById(id);
+      });
+      el.status = document.getElementById("status");
+      el.totalDue = document.getElementById("totalDue");
+      el.daysDue = document.getElementById("daysDue");
+      el.lateFee = document.getElementById("lateFee");
+      el.message = document.getElementById("message");
+      el.copyBtn = document.getElementById("copyBtn");
+      el.langEn = document.getElementById("langEn");
+      el.langZh = document.getElementById("langZh");
+
+      load();
+      bind();
+      render();
+
+      function bind() {
+        ids.forEach(function (id) {
+          var eventName = el[id].type === "checkbox" ? "change" : "input";
+          el[id].addEventListener(eventName, function () {
+            if (id === "useToday") {
+              state.useToday = el.useToday.checked;
+              if (state.useToday) {
+                state.asOfDate = todayIso();
+              }
+            } else {
+              state[id] = el[id].value;
+            }
+            render();
+            save();
+          });
+        });
+
+        document.querySelectorAll('input[name="method"]').forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            if (radio.checked) {
+              state.method = radio.value;
+              render();
+              save();
+            }
+          });
+        });
+
+        el.langEn.addEventListener("click", function () {
+          state.lang = "en";
+          render();
+          save();
+        });
+
+        el.langZh.addEventListener("click", function () {
+          state.lang = "zh";
+          render();
+          save();
+        });
+
+        el.copyBtn.addEventListener("click", copyMessage);
+      }
+
+      function load() {
+        try {
+          var raw = localStorage.getItem(storageKey);
+          if (!raw) {
+            return;
+          }
+          var saved = JSON.parse(raw);
+          if (!saved || typeof saved !== "object") {
+            return;
+          }
+          Object.keys(state).forEach(function (key) {
+            if (Object.prototype.hasOwnProperty.call(saved, key)) {
+              if (key === "useToday") {
+                state[key] = saved[key] === true;
+              } else if (key === "lang") {
+                state.lang = saved.lang === "zh" ? "zh" : "en";
+              } else if (typeof saved[key] === "string") {
+                state[key] = saved[key];
+              }
+            }
+          });
+        } catch (err) {
+          state.lang = "en";
+        }
+      }
+
+      function save() {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (err) {
+        }
+      }
+
+      function render() {
+        if (state.useToday) {
+          state.asOfDate = todayIso();
+        }
+
+        ids.forEach(function (id) {
+          if (id === "useToday") {
+            el[id].checked = state.useToday;
+          } else {
+            el[id].value = state[id];
+          }
+        });
+        el.asOfDate.disabled = state.useToday;
+
+        var methodRadio = document.querySelector('input[name="method"][value="' + cssEscape(state.method) + '"]');
+        if (methodRadio) {
+          methodRadio.checked = true;
+        }
+
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+        el.langEn.classList.toggle("active", state.lang === "en");
+        el.langZh.classList.toggle("active", state.lang === "zh");
+
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          node.textContent = t(key);
+        });
+
+        var result = calculate();
+        el.status.textContent = result.status;
+        el.status.classList.toggle("error", result.kind === "error");
+        el.status.classList.toggle("ok", result.kind === "ok");
+        el.daysDue.textContent = String(result.days);
+        el.lateFee.textContent = money(result.fee);
+        el.totalDue.textContent = money(result.total);
+        el.message.value = result.message;
+      }
+
+      function calculate() {
+        var amount = readNumber(state.amount);
+        var grace = Math.max(0, Math.floor(readNumber(state.graceDays) || 0));
+        var due = parseIsoDate(state.dueDate);
+        var asOf = parseIsoDate(state.asOfDate);
+        var emptyMessage = buildMessage(0, 0, 0);
+
+        if (state.amount.trim() === "" || state.dueDate.trim() === "") {
+          return result(t("needInput"), "neutral", 0, 0, null, emptyMessage);
+        }
+        if (!Number.isFinite(amount) || amount < 0) {
+          return result(t("invalidAmount"), "error", 0, 0, null, emptyMessage);
+        }
+        if (!due || !asOf) {
+          return result(t("invalidDate"), "error", 0, 0, null, emptyMessage);
+        }
+
+        var rawDays = Math.max(0, Math.floor((asOf.time - due.time) / 86400000));
+        var days = Math.max(0, rawDays - grace);
+        var fee = 0;
+
+        if (rawDays === 0) {
+          return result(t("notOverdue"), "ok", 0, 0, amount, buildMessage(amount, 0, 0));
+        }
+        if (days === 0) {
+          return result(t("withinGrace"), "ok", 0, 0, amount, buildMessage(amount, 0, 0));
+        }
+
+        if (state.method === "flat") {
+          fee = Math.max(0, readNumber(state.flatFee) || 0);
+        } else if (state.method === "monthly") {
+          var monthlyRate = Math.max(0, readNumber(state.monthlyRate) || 0);
+          fee = amount * (monthlyRate / 100) * (days / 30);
+        } else {
+          var annualRate = Math.max(0, readNumber(state.annualRate) || 0);
+          fee = amount * (annualRate / 100) * (days / 365);
+        }
+
+        if (!Number.isFinite(fee)) {
+          fee = 0;
+        }
+        return result(t("overdue"), "neutral", days, fee, amount, buildMessage(amount, days, fee));
+      }
+
+      function result(status, kind, days, fee, amount, message) {
+        var safeFee = Number.isFinite(fee) ? fee : 0;
+        var safeAmount = Number.isFinite(amount) ? amount : null;
+        var total = safeAmount === null ? null : safeAmount + safeFee;
+        return {
+          status: status,
+          kind: kind,
+          days: Number.isFinite(days) ? days : 0,
+          fee: safeFee,
+          total: total,
+          message: message
+        };
+      }
+
+      function buildMessage(amount, days, fee) {
+        var safeAmount = Number.isFinite(amount) ? amount : 0;
+        var safeDays = Number.isFinite(days) ? days : 0;
+        var safeFee = Number.isFinite(fee) ? fee : 0;
+        var total = safeAmount + safeFee;
+        return [
+          t("messageStart"),
+          "",
+          t("messageBody")
+            .replace("{amount}", money(safeAmount))
+            .replace("{days}", String(safeDays))
+            .replace("{fee}", money(safeFee))
+            .replace("{total}", money(total)),
+          "",
+          t("messageClose")
+        ].join("\n");
+      }
+
+      function copyMessage() {
+        var value = el.message.value || "";
+        var done = function (ok) {
+          window.clearTimeout(copyTimer);
+          el.copyBtn.textContent = ok ? t("copied") : t("copyFailed");
+          copyTimer = window.setTimeout(function () {
+            el.copyBtn.textContent = t("copy");
+          }, 1400);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(value).then(function () {
+            done(true);
+          }).catch(function () {
+            fallbackCopy(value, done);
+          });
+        } else {
+          fallbackCopy(value, done);
+        }
+      }
+
+      function fallbackCopy(value, done) {
+        var box = document.createElement("textarea");
+        box.value = value;
+        box.setAttribute("readonly", "");
+        box.style.position = "fixed";
+        box.style.left = "-9999px";
+        document.body.appendChild(box);
+        box.select();
+        var ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (err) {
+          ok = false;
+        }
+        document.body.removeChild(box);
+        done(ok);
+      }
+
+      function t(key) {
+        var pack = text[state.lang] || text.en;
+        return pack[key] || text.en[key] || "";
+      }
+
+      function readNumber(value) {
+        if (typeof value !== "string") {
+          return NaN;
+        }
+        var number = Number(value.replace(/,/g, "").trim());
+        return Number.isFinite(number) ? number : NaN;
+      }
+
+      function money(value) {
+        if (!Number.isFinite(value)) {
+          return "-";
+        }
+        var decimals = Math.abs(value) >= 1000 ? 2 : 2;
+        return state.currency + " " + value.toLocaleString(undefined, {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        });
+      }
+
+      function parseIsoDate(value) {
+        if (typeof value !== "string") {
+          return null;
+        }
+        var match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+        if (!match) {
+          return null;
+        }
+        var year = Number(match[1]);
+        var month = Number(match[2]);
+        var day = Number(match[3]);
+        if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+          return null;
+        }
+        var time = Date.UTC(year, month - 1, day);
+        var date = new Date(time);
+        if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+          return null;
+        }
+        return { time: time };
+      }
+
+      function todayIso() {
+        var now = new Date();
+        var tzOffset = now.getTimezoneOffset() * 60000;
+        return new Date(now.getTime() - tzOffset).toISOString().slice(0, 10);
+      }
+
+      function cssEscape(value) {
+        if (window.CSS && CSS.escape) {
+          return CSS.escape(value);
+        }
+        return String(value).replace(/"/g, "");
+      }
+    }());
+  </script>
+</body>
+</html>

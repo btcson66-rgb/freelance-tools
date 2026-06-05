@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hourly to Salary Calculator for Freelancers - Contract Rate vs Salary</title>
+  <meta name="description" content="Free hourly to salary calculator for freelancers. Convert contract hourly rates, annual salary, monthly pay, weekly pay, and suggested contract rates.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #ecfeff;
+      --accent: #0891b2;
+      --accent-dark: #0e7490;
+      --danger: #b91c1c;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "PingFang TC", "Microsoft JhengHei";
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--accent-dark);
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      max-width: 780px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 70ch;
+    }
+
+    .lang-toggle,
+    .mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--card);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+    }
+
+    .lang-toggle {
+      flex: 0 0 auto;
+    }
+
+    .lang-toggle button,
+    .mode-toggle button {
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .lang-toggle button.active,
+    .mode-toggle button.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.84fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      font: inherit;
+      padding: 11px 12px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.16);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .result-card {
+      overflow: hidden;
+    }
+
+    .result-top {
+      padding: 22px;
+      background: linear-gradient(180deg, #ecfeff 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .status {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .main-label {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 750;
+    }
+
+    .main-value {
+      margin: 2px 0 0;
+      color: var(--accent-dark);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px 22px 20px;
+    }
+
+    .metric {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .metric.wide {
+      grid-column: 1 / -1;
+      background: var(--soft);
+      border-color: #a5f3fc;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 750;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.2rem;
+      overflow-wrap: anywhere;
+    }
+
+    .reality {
+      padding: 20px 22px 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .reality p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (max-width: 850px) {
+      header {
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        padding-top: 20px;
+      }
+
+      .section-title {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .field-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .metric.wide {
+        grid-column: auto;
+      }
+
+      .panel,
+      .result-top,
+      .reality {
+        padding: 18px;
+      }
+
+      .metrics {
+        padding: 14px 18px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance rate tool</p>
+        <h1 data-i18n="title">Hourly to salary calculator</h1>
+        <p class="intro" data-i18n="intro">Convert freelance hourly rates and employee salaries, then add a practical contractor uplift.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" id="langEn" class="active">EN</button>
+        <button type="button" id="langZh">中文</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <div class="section-title">
+          <h2 id="inputsTitle" data-i18n="inputsTitle">Rate inputs</h2>
+          <div class="mode-toggle" aria-label="Conversion mode">
+            <button type="button" id="modeHourly" class="active" data-i18n="modeHourly">Hourly -> Annual</button>
+            <button type="button" id="modeSalary" data-i18n="modeSalary">Salary -> Hourly</button>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field full">
+            <label for="primaryAmount" id="primaryLabel">Hourly rate</label>
+            <div class="input-row">
+              <select id="currency" aria-label="Currency">
+                <option value="$ USD">$ USD</option>
+                <option value="NT$ TWD">NT$ TWD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="A$ AUD">A$ AUD</option>
+                <option value="C$ CAD">C$ CAD</option>
+                <option value="JP¥ JPY">JP¥ JPY</option>
+              </select>
+              <input id="primaryAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="75">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="hoursWeek" data-i18n="hoursWeek">Hours per week</label>
+            <input id="hoursWeek" type="number" min="0" step="0.25" inputmode="decimal" value="35">
+          </div>
+
+          <div class="field">
+            <label for="weeksYear" data-i18n="weeksYear">Weeks per year</label>
+            <input id="weeksYear" type="number" min="0" step="0.5" inputmode="decimal" value="46">
+          </div>
+
+          <div class="field full">
+            <label for="uplift" data-i18n="uplift">Freelance uplift (%)</label>
+            <input id="uplift" type="number" min="0" step="1" inputmode="decimal" value="30">
+          </div>
+        </div>
+      </section>
+
+      <section class="card result-card" aria-labelledby="resultsTitle">
+        <div class="result-top">
+          <p id="status" class="status">Enter a rate to start.</p>
+          <p id="mainLabel" class="main-label">Annual gross</p>
+          <p id="mainValue" class="main-value">-</p>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span id="metricOneLabel">Monthly</span>
+            <strong id="metricOne">-</strong>
+          </div>
+          <div class="metric">
+            <span id="metricTwoLabel">Weekly</span>
+            <strong id="metricTwo">-</strong>
+          </div>
+          <div class="metric wide">
+            <span data-i18n="contractRate">Suggested contract hourly to match salary</span>
+            <strong id="contractRate">-</strong>
+          </div>
+        </div>
+        <div class="reality">
+          <h2 id="resultsTitle" data-i18n="realityTitle">Freelance reality check</h2>
+          <p id="realityText">The uplift covers costs an employer may otherwise pay: taxes, benefits, paid leave, and unpaid time. It is a rough rule of thumb and varies by country and situation, not advice.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More freelance calculators:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var storageKey = "salaryconv_v1";
+      var state = {
+        lang: "en",
+        mode: "hourly",
+        currency: "$ USD",
+        primaryAmount: "",
+        hoursWeek: "35",
+        weeksYear: "46",
+        uplift: "30"
+      };
+
+      var text = {
+        en: {
+          eyebrow: "Freelance rate tool",
+          title: "Hourly to salary calculator",
+          intro: "Convert freelance hourly rates and employee salaries, then add a practical contractor uplift.",
+          inputsTitle: "Rate inputs",
+          modeHourly: "Hourly -> Annual",
+          modeSalary: "Salary -> Hourly",
+          hourlyLabel: "Hourly rate",
+          salaryLabel: "Annual salary",
+          hoursWeek: "Hours per week",
+          weeksYear: "Weeks per year",
+          uplift: "Freelance uplift (%)",
+          annualGross: "Annual gross",
+          hourlyEquivalent: "Equivalent hourly",
+          monthly: "Monthly",
+          weekly: "Weekly",
+          annual: "Annual",
+          contractRate: "Suggested contract hourly to match salary",
+          realityTitle: "Freelance reality check",
+          realityText: "The uplift covers costs an employer may otherwise pay: taxes, benefits, paid leave, and unpaid or non-billable time. It is a rough rule of thumb and varies by country and situation, not advice.",
+          needInput: "Enter a rate to start.",
+          invalidInput: "Enter valid positive numbers for amount, hours, and weeks.",
+          ready: "Calculated from your inputs.",
+          footerText: "More freelance calculators:"
+        },
+        zh: {
+          eyebrow: "自由工作者費率工具",
+          title: "時薪與年薪換算器",
+          intro: "換算接案時薪與員工年薪，並加入實務上的自由工作者加成。",
+          inputsTitle: "費率輸入",
+          modeHourly: "時薪 -> 年收入",
+          modeSalary: "年薪 -> 時薪",
+          hourlyLabel: "時薪",
+          salaryLabel: "年薪",
+          hoursWeek: "每週工時",
+          weeksYear: "每年工作週數",
+          uplift: "自由工作者加成（%）",
+          annualGross: "年收入總額",
+          hourlyEquivalent: "等效時薪",
+          monthly: "每月",
+          weekly: "每週",
+          annual: "每年",
+          contractRate: "為匹配員工薪資的建議接案時薪",
+          realityTitle: "自由工作者現實檢查",
+          realityText: "加成用來粗估雇主通常負擔的成本，例如稅務、福利、有薪休假，以及未付款或非可收費時間。這只是粗略經驗值，會依國家與個人情況不同而變動，並非建議。",
+          needInput: "請輸入費率開始計算。",
+          invalidInput: "請輸入有效且大於 0 的金額、工時與週數。",
+          ready: "已依照您的輸入完成計算。",
+          footerText: "更多自由工作者工具："
+        }
+      };
+
+      var ids = ["currency", "primaryAmount", "hoursWeek", "weeksYear", "uplift"];
+      var el = {};
+      ids.forEach(function (id) {
+        el[id] = document.getElementById(id);
+      });
+      el.langEn = document.getElementById("langEn");
+      el.langZh = document.getElementById("langZh");
+      el.modeHourly = document.getElementById("modeHourly");
+      el.modeSalary = document.getElementById("modeSalary");
+      el.primaryLabel = document.getElementById("primaryLabel");
+      el.status = document.getElementById("status");
+      el.mainLabel = document.getElementById("mainLabel");
+      el.mainValue = document.getElementById("mainValue");
+      el.metricOneLabel = document.getElementById("metricOneLabel");
+      el.metricOne = document.getElementById("metricOne");
+      el.metricTwoLabel = document.getElementById("metricTwoLabel");
+      el.metricTwo = document.getElementById("metricTwo");
+      el.contractRate = document.getElementById("contractRate");
+      el.realityText = document.getElementById("realityText");
+
+      load();
+      bind();
+      render();
+
+      function bind() {
+        ids.forEach(function (id) {
+          el[id].addEventListener("input", function () {
+            state[id] = el[id].value;
+            render();
+            save();
+          });
+        });
+
+        el.langEn.addEventListener("click", function () {
+          state.lang = "en";
+          render();
+          save();
+        });
+
+        el.langZh.addEventListener("click", function () {
+          state.lang = "zh";
+          render();
+          save();
+        });
+
+        el.modeHourly.addEventListener("click", function () {
+          setMode("hourly");
+        });
+
+        el.modeSalary.addEventListener("click", function () {
+          setMode("salary");
+        });
+      }
+
+      function load() {
+        try {
+          var raw = localStorage.getItem(storageKey);
+          if (!raw) {
+            return;
+          }
+          var saved = JSON.parse(raw);
+          if (!saved || typeof saved !== "object") {
+            return;
+          }
+          Object.keys(state).forEach(function (key) {
+            if (!Object.prototype.hasOwnProperty.call(saved, key)) {
+              return;
+            }
+            if (key === "lang") {
+              state.lang = saved.lang === "zh" ? "zh" : "en";
+            } else if (key === "mode") {
+              state.mode = saved.mode === "salary" ? "salary" : "hourly";
+            } else if (typeof saved[key] === "string") {
+              state[key] = saved[key];
+            }
+          });
+        } catch (err) {
+          state.lang = "en";
+          state.mode = "hourly";
+        }
+      }
+
+      function save() {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (err) {
+        }
+      }
+
+      function setMode(mode) {
+        state.mode = mode === "salary" ? "salary" : "hourly";
+        if (state.mode === "salary" && state.weeksYear === "46") {
+          state.weeksYear = "52";
+        }
+        if (state.mode === "hourly" && state.weeksYear === "52") {
+          state.weeksYear = "46";
+        }
+        render();
+        save();
+      }
+
+      function render() {
+        ids.forEach(function (id) {
+          el[id].value = state[id];
+        });
+
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+        el.langEn.classList.toggle("active", state.lang === "en");
+        el.langZh.classList.toggle("active", state.lang === "zh");
+        el.modeHourly.classList.toggle("active", state.mode === "hourly");
+        el.modeSalary.classList.toggle("active", state.mode === "salary");
+
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          node.textContent = t(key);
+        });
+
+        el.primaryLabel.textContent = state.mode === "hourly" ? t("hourlyLabel") : t("salaryLabel");
+        el.primaryAmount.placeholder = state.mode === "hourly" ? "75" : "120000";
+        el.realityText.textContent = t("realityText");
+
+        var output = calculate();
+        el.status.textContent = output.status;
+        el.status.classList.toggle("error", output.error);
+        el.mainLabel.textContent = output.mainLabel;
+        el.mainValue.textContent = output.mainValue;
+        el.metricOneLabel.textContent = output.metricOneLabel;
+        el.metricOne.textContent = output.metricOne;
+        el.metricTwoLabel.textContent = output.metricTwoLabel;
+        el.metricTwo.textContent = output.metricTwo;
+        el.contractRate.textContent = output.contractRate;
+      }
+
+      function calculate() {
+        var amount = readNumber(state.primaryAmount);
+        var hours = readNumber(state.hoursWeek);
+        var weeks = readNumber(state.weeksYear);
+        var uplift = Math.max(0, readNumber(state.uplift) || 0);
+
+        var empty = {
+          status: t("needInput"),
+          error: false,
+          mainLabel: state.mode === "hourly" ? t("annualGross") : t("hourlyEquivalent"),
+          mainValue: "-",
+          metricOneLabel: state.mode === "hourly" ? t("monthly") : t("annual"),
+          metricOne: "-",
+          metricTwoLabel: t("weekly"),
+          metricTwo: "-",
+          contractRate: "-"
+        };
+
+        if (state.primaryAmount.trim() === "") {
+          return empty;
+        }
+
+        if (!positive(amount) || !positive(hours) || !positive(weeks)) {
+          empty.status = t("invalidInput");
+          empty.error = true;
+          return empty;
+        }
+
+        if (state.mode === "hourly") {
+          var annual = amount * hours * weeks;
+          var naiveHourly = annual / (hours * weeks);
+          return {
+            status: t("ready"),
+            error: false,
+            mainLabel: t("annualGross"),
+            mainValue: money(annual),
+            metricOneLabel: t("monthly"),
+            metricOne: money(annual / 12),
+            metricTwoLabel: t("weekly"),
+            metricTwo: money(amount * hours),
+            contractRate: money(naiveHourly * (1 + uplift / 100))
+          };
+        }
+
+        var hourly = amount / (hours * weeks);
+        return {
+          status: t("ready"),
+          error: false,
+          mainLabel: t("hourlyEquivalent"),
+          mainValue: money(hourly),
+          metricOneLabel: t("annual"),
+          metricOne: money(amount),
+          metricTwoLabel: t("weekly"),
+          metricTwo: money(amount / weeks),
+          contractRate: money(hourly * (1 + uplift / 100))
+        };
+      }
+
+      function t(key) {
+        var pack = text[state.lang] || text.en;
+        return pack[key] || text.en[key] || "";
+      }
+
+      function readNumber(value) {
+        if (typeof value !== "string") {
+          return NaN;
+        }
+        var number = Number(value.replace(/,/g, "").trim());
+        return Number.isFinite(number) ? number : NaN;
+      }
+
+      function positive(value) {
+        return Number.isFinite(value) && value > 0;
+      }
+
+      function money(value) {
+        if (!Number.isFinite(value)) {
+          return "-";
+        }
+        return state.currency + " " + value.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+    }());
+  </script>
+</body>
+</html>
