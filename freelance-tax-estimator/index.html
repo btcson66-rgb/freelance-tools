@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Freelance Tax Estimator — How Much to Set Aside Each Quarter</title>
+<meta name="description" content="A free freelance tax estimator: enter your income and deductions and see how much to set aside each quarter, per invoice and each month. Illustrative estimate — not tax advice. Offline, no sign-up.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/freelance-tax-estimator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Freelance Tax Estimator — Set-Aside Calculator">
+<meta property="og:description" content="See how much to set aside for taxes per quarter, per invoice and per month. Illustrative planning estimate. Free, offline.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/freelance-tax-estimator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/cashflow.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Freelance Tax Estimator">
+<meta name="twitter:description" content="How much to set aside per quarter, per invoice, per month. Planning estimate. Free, offline.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/cashflow.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Freelance Tax Estimator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline freelance tax estimator. Enter your income and deductions and see how much to set aside each quarter, per invoice and per month. Illustrative planning estimate only — not tax advice.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/freelance-tax-estimator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Annual and quarterly estimate modes",
+    "Deductible expenses input",
+    "Quarterly and per-invoice set-aside",
+    "Monthly income tracker",
+    "Multiple currencies",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How much should a freelancer set aside for taxes?", "acceptedAnswer": { "@type": "Answer", "text": "A commonly used rule of thumb is to set aside 25 to 30 percent of your net income for taxes, though the right figure depends on your country, income level, deductions and personal situation. This tool helps you estimate a set-aside amount — confirm the right rate for your situation with a tax professional or your country's tax authority." } },
+    { "@type": "Question", "name": "Do freelancers pay quarterly taxes?", "acceptedAnswer": { "@type": "Answer", "text": "In many countries (including the US, UK and others) self-employed people are expected to make estimated tax payments during the year rather than paying everything at the end. The exact schedule varies by country. Check with your local tax authority for your obligations." } },
+    { "@type": "Question", "name": "Is this a tax calculator?", "acceptedAnswer": { "@type": "Answer", "text": "It is a planning estimator, not a tax calculator. It helps you set aside a budget for taxes so you are not caught short. Your actual tax will depend on your country's laws, your full income picture, allowed deductions and many other factors. Always use a qualified tax professional or your country's tax authority for actual figures." } },
+    { "@type": "Question", "name": "Is this free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. No account, nothing uploaded, runs offline. There is no paid version of this tool." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#ea580c}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#ffedd5,transparent),linear-gradient(180deg,#fff,#f8fafc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#c2410c;background:#ffedd5;border:1px solid #fed7aa;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:38px;line-height:1.14;letter-spacing:-1px;font-weight:850;max-width:700px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#cbd5e1}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  .warn{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;margin:24px 0;font-size:14px;color:#92400e}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  p{margin:10px 0;color:#1f2937}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#374151}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#cbd5e1}
+  .endcta{background:#0f172a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#cbd5e1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#334155;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · Planning estimate only</span>
+    <h1>Free freelance tax estimator</h1>
+    <p class="sub">Enter your income and deductible expenses and see how much to set aside for taxes per quarter, per invoice and per month. A planning estimate so you are never caught short at the end of the year. Runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the estimator →</a>
+      <a class="btn buy" href="../free-expense-tracker/">Track income &amp; expenses →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Quarterly + monthly set-aside</span>
+      <span><span class="dotg">●</span> Not tax advice</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+<section>
+  <div class="wrap">
+    <div class="warn">⚠️ <strong>This is a planning estimator, not tax advice.</strong> Tax rules vary by country, change yearly, and depend on your full income picture. Use a qualified tax professional or your country's tax authority for actual figures.</div>
+
+    <h2>Stop being surprised by the tax bill</h2>
+    <p>The most common freelance money mistake is not setting aside tax as you earn it. By the time the bill arrives — a quarterly estimated payment, or a year-end filing — the money has already been spent. The fix is a simple habit: every time income arrives, a percentage goes into a separate pot. This estimator tells you what percentage to use.</p>
+    <p>Enter your expected annual income and any deductible expenses. The estimator shows you an estimated taxable income, a rough total tax, and — most practically — how much to set aside per quarter, per invoice and each month. It is a budget, not a tax return. Use it to build the habit; use a professional to file accurately.</p>
+
+    <h2>What it estimates</h2>
+    <div class="feat">
+      <div><h4>Taxable income</h4><p>Gross income minus your deductible expenses — the base the tax is calculated on.</p></div>
+      <div><h4>Quarterly set-aside</h4><p>The amount to put away four times a year so you have it when the bill arrives.</p></div>
+      <div><h4>Per-invoice set-aside</h4><p>The percentage to reserve every time a client pays you.</p></div>
+      <div><h4>Monthly target</h4><p>A monthly savings goal to spread the set-aside evenly across the year.</p></div>
+      <div><h4>Monthly tracker</h4><p>Log actual income each month and see your running YTD set-aside requirement.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Zero network requests. Your income figures never leave your browser.</p></div>
+    </div>
+
+    <h2>How to use it</h2>
+    <ol class="steps">
+      <li><strong>Enter your expected annual income</strong> and deductible expenses.</li>
+      <li><strong>Choose your tax rate approach</strong> — your own flat rate, or one of the illustrative examples.</li>
+      <li><strong>Read the quarterly and per-invoice set-aside</strong> and start putting that percentage away each time you get paid.</li>
+    </ol>
+
+    <h2>Pair it with expense tracking</h2>
+    <p>The estimator works best when you know your actual income and expenses. Use <a href="../free-expense-tracker/">CashFlow</a> to track both in real time — the tax set-aside feature there works alongside this estimator for a complete money picture. All free, all offline.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>How much should a freelancer set aside for taxes?</dt>
+      <dd>A common rule of thumb is 25–30% of net income, but the right figure depends on your country, income level and deductions. This tool helps you estimate — confirm with a tax professional.</dd>
+      <dt>Do freelancers pay quarterly taxes?</dt>
+      <dd>In many countries, self-employed people make estimated payments during the year. The exact schedule varies — check your local tax authority for your obligations.</dd>
+      <dt>Is this a tax calculator?</dt>
+      <dd>It is a planning estimator. Your actual tax depends on your country's laws, full income picture and allowed deductions. Use a professional for actual figures.</dd>
+      <dt>Is this free?</dt>
+      <dd>Yes — no account, nothing uploaded, completely free. There is no paid version.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <div class="related">
+      <a href="../free-expense-tracker/">$ Free expense tracker</a>
+      <a href="../freelance-rate-calculator/">🧮 Rate calculator</a>
+      <a href="../blog/how-much-to-set-aside-for-taxes-freelance/">📘 Tax set-aside guide</a>
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+    </div>
+  </div>
+</section>
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Build the set-aside habit</h2>
+      <p>Know what percentage to park every time a client pays. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the estimator →</a>
+        <a class="btn buy" href="../">See all tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freelance Project Checklist - Offline Project Tracker</title>
+<meta name="description" content="Free offline freelance project checklist with named projects, four phases, progress tracking, custom items, archive, and text export.">
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--soft:#f5f3ff;--accent:#7c3aed;--accent-dark:#5b21b6;--ok:#15803d;--danger:#b91c1c;--shadow:0 18px 44px rgba(15,23,42,.08)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.5;letter-spacing:0}
+a{color:var(--accent-dark);text-underline-offset:.18em}
+button,input{font:inherit;letter-spacing:0}
+.page{width:min(1140px,calc(100% - 32px));margin:0 auto;padding:28px 0 26px}
+.top-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.top-nav a{color:var(--muted);font-size:.92rem;font-weight:750;text-decoration:none}
+.top-nav a:hover{color:var(--text)}
+.brand{color:var(--text)!important;font-weight:850!important}
+.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}
+.title-block{max-width:760px}
+.eyebrow{margin:0 0 7px;color:var(--accent-dark);font-size:.82rem;font-weight:850;text-transform:uppercase}
+h1{margin:0;font-size:clamp(2rem,4vw,3.2rem);line-height:1.06;font-weight:900}
+.intro{margin:12px 0 0;color:var(--muted);font-size:1.04rem;max-width:64ch}
+.lang-toggle{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--card);box-shadow:0 8px 20px rgba(15,23,42,.06);flex:0 0 auto}
+.lang-toggle button{border:0;border-radius:999px;background:transparent;color:var(--muted);cursor:pointer;font-weight:800;padding:8px 13px}
+.lang-toggle button.active{background:var(--accent);color:#fff}
+.layout{display:grid;grid-template-columns:minmax(260px,.38fr) minmax(0,1fr);gap:20px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow)}
+.panel{padding:20px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+h2{margin:0;font-size:1.12rem;font-weight:850}
+.small{color:var(--muted);font-size:.9rem}
+.create-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;margin-bottom:16px}
+input[type=text]{width:100%;min-height:42px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:var(--text);padding:10px 12px;outline:none}
+input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.16)}
+.btn{border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-weight:850;padding:10px 14px;white-space:nowrap}
+.btn:hover{background:var(--accent-dark)}
+.btn.secondary{border:1px solid var(--line);background:#fff;color:var(--text)}
+.btn.secondary:hover{border-color:#c4b5fd;background:var(--soft)}
+.btn.danger{background:#fee2e2;color:var(--danger)}
+.btn.danger:hover{background:#fecaca}
+.btn[disabled]{cursor:not-allowed;opacity:.55}
+.project-list{display:grid;gap:10px}
+.project-btn{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--text);cursor:pointer;text-align:left;padding:11px 12px}
+.project-btn.active{border-color:var(--accent);background:var(--soft)}
+.project-title{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:850}
+.project-progress{margin-top:7px;color:var(--muted);font-size:.86rem;font-weight:700}
+.mini-bar{height:7px;margin-top:8px;border-radius:999px;background:#e2e8f0;overflow:hidden}
+.mini-bar span{display:block;height:100%;width:0;background:var(--accent)}
+.empty{padding:12px;border:1px dashed #cbd5e1;border-radius:8px;color:var(--muted);font-size:.93rem;text-align:center}
+.main-card{overflow:hidden}
+.project-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fafafa)}
+.project-name{margin:0;font-size:1.45rem;font-weight:900;overflow-wrap:anywhere}
+.progress-label{margin:5px 0 0;color:var(--muted);font-weight:750}
+.progress-shell{height:11px;margin-top:12px;border-radius:999px;background:#e2e8f0;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--accent);transition:width .18s ease}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.phases{display:grid;gap:14px;padding:18px}
+.phase{border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}
+.phase-head{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f8fafc;padding:13px 14px;border-bottom:1px solid var(--line)}
+.phase-title{margin:0;font-size:1rem;font-weight:850}
+.phase-count{color:var(--muted);font-size:.86rem;font-weight:800}
+.items{display:grid;gap:0}
+.item{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:46px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item input{width:19px;height:19px;accent-color:var(--accent)}
+.item label{cursor:pointer;overflow-wrap:anywhere}
+.item.done label{text-decoration:line-through;color:var(--muted)}
+.icon-btn{border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--muted);cursor:pointer;font-weight:850;min-width:34px;height:34px}
+.icon-btn:hover{border-color:#fecaca;color:var(--danger);background:#fff1f2}
+.add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:12px 14px;border-top:1px solid var(--line);background:#fff}
+.status{min-height:22px;margin:12px 0 0;color:var(--ok);font-size:.92rem;font-weight:750}
+.archived-box{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.archived-row{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:8px;padding:10px 11px;margin-top:8px}
+.archived-row span{font-weight:800;overflow-wrap:anywhere}
+footer{margin-top:22px;color:var(--muted);font-size:.94rem;text-align:center}
+footer a{color:var(--muted)}
+@media(max-width:860px){.hero{flex-direction:column}.layout{grid-template-columns:1fr}.lang-toggle{align-self:stretch}.lang-toggle button{flex:1 1 0}.project-header{flex-direction:column}.actions{justify-content:flex-start}}
+@media(max-width:560px){.page{width:min(100% - 20px,1140px);padding-top:18px}.top-nav{align-items:flex-start;flex-direction:column}.create-row,.add-row{grid-template-columns:1fr}.btn{width:100%}.item{grid-template-columns:28px minmax(0,1fr)}.item .icon-btn{grid-column:2;justify-self:start}.panel,.project-header{padding:17px}.phases{padding:12px}}
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="top-nav" aria-label="Tool navigation">
+    <a class="brand" href="../">&larr; Freelance Tools</a>
+    <a href="./">&larr; <span data-i18n="backLink">Back to Project Checklist</span></a>
+  </nav>
+
+  <header class="hero">
+    <div class="title-block">
+      <p class="eyebrow" data-i18n="eyebrow">Offline project tool</p>
+      <h1 data-i18n="title">Freelance project checklist</h1>
+      <p class="intro" data-i18n="intro">Create a checklist per client project, track each phase, add your own steps, and copy the full status when you need to share it.</p>
+    </div>
+    <div class="lang-toggle" aria-label="Language">
+      <button type="button" id="langEn" class="active">EN</button>
+      <button type="button" id="langZh">繁體中文</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="card panel" aria-labelledby="projectsTitle">
+      <div class="section-head">
+        <h2 id="projectsTitle" data-i18n="projectsTitle">Projects</h2>
+      </div>
+      <div class="create-row">
+        <input id="projectName" type="text" maxlength="80" autocomplete="off" data-i18n-placeholder="projectPlaceholder" placeholder="New project name">
+        <button id="addProjectBtn" type="button" class="btn" data-i18n="addProject">Add</button>
+      </div>
+      <div id="projectList" class="project-list"></div>
+      <div class="archived-box">
+        <div class="section-head">
+          <h2 data-i18n="archivedTitle">Archived</h2>
+        </div>
+        <div id="archivedList"></div>
+      </div>
+    </aside>
+
+    <section class="card main-card" aria-live="polite">
+      <div class="project-header">
+        <div>
+          <h2 id="activeName" class="project-name">-</h2>
+          <p id="progressText" class="progress-label">0 / 16 done - 0%</p>
+          <div class="progress-shell" aria-hidden="true"><div id="progressFill" class="progress-fill"></div></div>
+          <div id="status" class="status" role="status"></div>
+        </div>
+        <div class="actions">
+          <button id="copyBtn" type="button" class="btn secondary" data-i18n="copyAsText">Copy as text</button>
+          <button id="archiveBtn" type="button" class="btn danger" data-i18n="archiveProject">Archive project</button>
+        </div>
+      </div>
+      <div id="phaseWrap" class="phases"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span data-i18n="footerLead">All data stays in your browser</span>
+    <span> &middot; </span>
+    <a href="../" data-i18n="footerTools">More free tools</a>
+    <span> &middot; </span>
+    <a href="https://bitsonic1.gumroad.com/l/freelance-suite" data-i18n="footerSuite">Get the full suite -&gt;</a>
+  </footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var storageKey = 'projchecklist_v1';
+  var customSeq = 1;
+  var state = {
+    lang: 'en',
+    activeId: '',
+    projects: []
+  };
+
+  var phases = [
+    {
+      id: 'before',
+      title: {en: 'Phase 1 - Before you start', zh: '第 1 階段 - 開始前'},
+      items: [
+        {id: 'quote_sent', en: 'Quote or estimate sent', zh: '已送出報價或估價'},
+        {id: 'contract_signed', en: 'Contract signed by both parties', zh: '雙方已簽署合約'},
+        {id: 'deposit_received', en: 'Deposit received', zh: '已收到訂金'},
+        {id: 'kickoff_done', en: 'Kickoff call or meeting done', zh: '已完成啟動通話或會議'},
+        {id: 'brief_confirmed', en: 'Brief confirmed in writing', zh: '需求簡報已用書面確認'}
+      ]
+    },
+    {
+      id: 'during',
+      title: {en: 'Phase 2 - During the work', zh: '第 2 階段 - 執行中'},
+      items: [
+        {id: 'milestones_reviewed', en: 'Milestones reviewed with client', zh: '已和客戶檢查里程碑'},
+        {id: 'changes_priced', en: 'Change requests documented and priced', zh: '變更需求已記錄並報價'},
+        {id: 'time_logged', en: 'Time logged (if billing hourly)', zh: '已記錄工時（若按時計費）'}
+      ]
+    },
+    {
+      id: 'delivery',
+      title: {en: 'Phase 3 - Delivery', zh: '第 3 階段 - 交付'},
+      items: [
+        {id: 'files_delivered', en: 'Final files delivered', zh: '已交付最終檔案'},
+        {id: 'signoff_received', en: 'Client sign-off received', zh: '已收到客戶簽核'},
+        {id: 'final_invoice_sent', en: 'Final invoice sent', zh: '已送出尾款發票'},
+        {id: 'late_fee_ready', en: 'Late fee clause ready if payment is delayed', zh: '若付款延遲，已準備好滯納條款'}
+      ]
+    },
+    {
+      id: 'after',
+      title: {en: 'Phase 4 - After the project', zh: '第 4 階段 - 專案後'},
+      items: [
+        {id: 'testimonial_requested', en: 'Testimonial or review requested', zh: '已請求推薦語或評價'},
+        {id: 'case_study_added', en: 'Case study or portfolio piece added', zh: '已新增案例研究或作品集項目'},
+        {id: 'referral_had', en: 'Referral conversation had', zh: '已進行轉介紹對話'},
+        {id: 'next_project_discussed', en: 'Next project discussed', zh: '已討論下一個專案'}
+      ]
+    }
+  ];
+
+  var text = {
+    en: {
+      backLink: 'Back to Project Checklist',
+      eyebrow: 'Offline project tool',
+      title: 'Freelance project checklist',
+      intro: 'Create a checklist per client project, track each phase, add your own steps, and copy the full status when you need to share it.',
+      projectsTitle: 'Projects',
+      projectPlaceholder: 'New project name',
+      addProject: 'Add',
+      archivedTitle: 'Archived',
+      emptyProjects: 'No active projects yet.',
+      emptyArchived: 'No archived projects.',
+      copyAsText: 'Copy as text',
+      copied: 'Copied',
+      copyFailed: 'Select text',
+      archiveProject: 'Archive project',
+      restore: 'Restore',
+      addItem: 'Add item',
+      customPlaceholder: 'Add a custom item',
+      removeItem: 'Remove custom item',
+      donePattern: '{done} / {total} done - {pct}%',
+      archivedDone: 'Project archived.',
+      restoredDone: 'Project restored.',
+      needComplete: 'Archive is available once every item is checked.',
+      addedProject: 'Project added.',
+      duplicateProject: 'A project with that name already exists.',
+      enterProject: 'Enter a project name first.',
+      enterItem: 'Enter an item first.',
+      exportTitle: 'Freelance project checklist',
+      activeBadge: 'active',
+      footerLead: 'All data stays in your browser',
+      footerTools: 'More free tools',
+      footerSuite: 'Get the full suite ->'
+    },
+    zh: {
+      backLink: '回到專案清單頁',
+      eyebrow: '離線專案工具',
+      title: '自由工作者專案清單',
+      intro: '為每個客戶專案建立清單，追蹤各階段進度，加入自己的步驟，並在需要時複製完整狀態。',
+      projectsTitle: '專案',
+      projectPlaceholder: '新專案名稱',
+      addProject: '新增',
+      archivedTitle: '封存',
+      emptyProjects: '目前沒有進行中的專案。',
+      emptyArchived: '沒有封存專案。',
+      copyAsText: '複製文字',
+      copied: '已複製',
+      copyFailed: '請手動選取',
+      archiveProject: '封存專案',
+      restore: '還原',
+      addItem: '新增項目',
+      customPlaceholder: '新增自訂項目',
+      removeItem: '移除自訂項目',
+      donePattern: '已完成 {done} / {total} - {pct}%',
+      archivedDone: '專案已封存。',
+      restoredDone: '專案已還原。',
+      needComplete: '所有項目完成後才能封存。',
+      addedProject: '專案已新增。',
+      duplicateProject: '已有同名專案。',
+      enterProject: '請先輸入專案名稱。',
+      enterItem: '請先輸入項目。',
+      exportTitle: '自由工作者專案清單',
+      activeBadge: '進行中',
+      footerLead: '所有資料都留在你的瀏覽器',
+      footerTools: '更多免費工具',
+      footerSuite: '取得完整套件 ->'
+    }
+  };
+
+  var el = {
+    langEn: document.getElementById('langEn'),
+    langZh: document.getElementById('langZh'),
+    projectName: document.getElementById('projectName'),
+    addProjectBtn: document.getElementById('addProjectBtn'),
+    projectList: document.getElementById('projectList'),
+    archivedList: document.getElementById('archivedList'),
+    activeName: document.getElementById('activeName'),
+    progressText: document.getElementById('progressText'),
+    progressFill: document.getElementById('progressFill'),
+    status: document.getElementById('status'),
+    copyBtn: document.getElementById('copyBtn'),
+    archiveBtn: document.getElementById('archiveBtn'),
+    phaseWrap: document.getElementById('phaseWrap')
+  };
+
+  load();
+  bind();
+  render();
+
+  function bind(){
+    el.langEn.addEventListener('click', function(){setLang('en');});
+    el.langZh.addEventListener('click', function(){setLang('zh');});
+    el.addProjectBtn.addEventListener('click', addProject);
+    el.projectName.addEventListener('keydown', function(event){
+      if(event.key === 'Enter'){
+        event.preventDefault();
+        addProject();
+      }
+    });
+    el.copyBtn.addEventListener('click', copyChecklist);
+    el.archiveBtn.addEventListener('click', archiveActive);
+  }
+
+  function defaultProject(name){
+    var id = 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+    var items = {};
+    phases.forEach(function(phase){
+      items[phase.id] = phase.items.map(function(item){
+        return {id: item.id, done: false, custom: false};
+      });
+    });
+    return {id: id, name: name, archived: false, items: items};
+  }
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(storageKey);
+      if(raw){
+        var saved = JSON.parse(raw);
+        if(saved && typeof saved === 'object'){
+          state.lang = saved.lang === 'zh' ? 'zh' : 'en';
+          state.activeId = typeof saved.activeId === 'string' ? saved.activeId : '';
+          state.projects = Array.isArray(saved.projects) ? saved.projects : [];
+        }
+      }
+    }catch(err){
+      state = {lang: 'en', activeId: '', projects: []};
+    }
+
+    if(state.projects.length === 0){
+      var first = defaultProject('Project 1');
+      state.projects.push(first);
+      state.activeId = first.id;
+    }
+    normalize();
+    if(!activeProject()){
+      var firstActive = state.projects.find(function(project){return !project.archived;}) || state.projects[0];
+      state.activeId = firstActive ? firstActive.id : '';
+    }
+    save();
+  }
+
+  function normalize(){
+    state.projects.forEach(function(project){
+      project.items = project.items && typeof project.items === 'object' ? project.items : {};
+      phases.forEach(function(phase){
+        if(!Array.isArray(project.items[phase.id])){
+          project.items[phase.id] = [];
+        }
+        var existing = {};
+        project.items[phase.id].forEach(function(item){
+          if(item && typeof item.id === 'string'){
+            existing[item.id] = item;
+          }
+        });
+        var ordered = phase.items.map(function(def){
+          var current = existing[def.id] || {};
+          return {id: def.id, done: current.done === true, custom: false};
+        });
+        project.items[phase.id].forEach(function(item){
+          if(item && item.custom === true && typeof item.text === 'string' && item.text.trim()){
+            ordered.push({id: item.id || customId(), done: item.done === true, custom: true, text: item.text.trim()});
+          }
+        });
+        project.items[phase.id] = ordered;
+      });
+    });
+  }
+
+  function save(){
+    try{
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }catch(err){
+    }
+  }
+
+  function t(key){
+    var pack = text[state.lang] || text.en;
+    return pack[key] || text.en[key] || '';
+  }
+
+  function setLang(lang){
+    state.lang = lang === 'zh' ? 'zh' : 'en';
+    save();
+    render();
+  }
+
+  function activeProject(){
+    return state.projects.find(function(project){return project.id === state.activeId;}) || null;
+  }
+
+  function labelFor(phaseId, item){
+    if(item.custom){
+      return item.text || '';
+    }
+    var phase = phases.find(function(entry){return entry.id === phaseId;});
+    var def = phase ? phase.items.find(function(entry){return entry.id === item.id;}) : null;
+    return def ? (def[state.lang] || def.en) : item.id;
+  }
+
+  function stats(project){
+    var total = 0;
+    var done = 0;
+    phases.forEach(function(phase){
+      var rows = project.items[phase.id] || [];
+      total += rows.length;
+      rows.forEach(function(item){
+        if(item.done){
+          done += 1;
+        }
+      });
+    });
+    return {done: done, total: total, pct: total ? Math.round((done / total) * 100) : 0};
+  }
+
+  function progressLine(project){
+    var s = stats(project);
+    return t('donePattern').replace('{done}', s.done).replace('{total}', s.total).replace('{pct}', s.pct);
+  }
+
+  function render(){
+    document.documentElement.lang = state.lang === 'zh' ? 'zh-Hant' : 'en';
+    el.langEn.classList.toggle('active', state.lang === 'en');
+    el.langZh.classList.toggle('active', state.lang === 'zh');
+    document.querySelectorAll('[data-i18n]').forEach(function(node){
+      node.textContent = t(node.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(node){
+      node.placeholder = t(node.getAttribute('data-i18n-placeholder'));
+    });
+    renderProjects();
+    renderActive();
+  }
+
+  function renderProjects(){
+    var active = state.projects.filter(function(project){return !project.archived;});
+    el.projectList.replaceChildren();
+    if(active.length === 0){
+      var empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = t('emptyProjects');
+      el.projectList.appendChild(empty);
+    }else{
+      active.forEach(function(project){
+        var s = stats(project);
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'project-btn' + (project.id === state.activeId ? ' active' : '');
+        button.innerHTML = '<span class="project-title"><span></span><span class="small"></span></span><div class="project-progress"></div><div class="mini-bar"><span></span></div>';
+        button.querySelector('.project-title span:first-child').textContent = project.name;
+        button.querySelector('.project-title .small').textContent = project.id === state.activeId ? t('activeBadge') : '';
+        button.querySelector('.project-progress').textContent = progressLine(project);
+        button.querySelector('.mini-bar span').style.width = s.pct + '%';
+        button.addEventListener('click', function(){
+          state.activeId = project.id;
+          setStatus('');
+          save();
+          render();
+        });
+        el.projectList.appendChild(button);
+      });
+    }
+
+    var archived = state.projects.filter(function(project){return project.archived;});
+    el.archivedList.replaceChildren();
+    if(archived.length === 0){
+      var archEmpty = document.createElement('div');
+      archEmpty.className = 'empty';
+      archEmpty.textContent = t('emptyArchived');
+      el.archivedList.appendChild(archEmpty);
+    }else{
+      archived.forEach(function(project){
+        var row = document.createElement('div');
+        row.className = 'archived-row';
+        var name = document.createElement('span');
+        var restore = document.createElement('button');
+        name.textContent = project.name;
+        restore.type = 'button';
+        restore.className = 'btn secondary';
+        restore.textContent = t('restore');
+        restore.addEventListener('click', function(){
+          project.archived = false;
+          state.activeId = project.id;
+          setStatus(t('restoredDone'));
+          save();
+          render();
+        });
+        row.appendChild(name);
+        row.appendChild(restore);
+        el.archivedList.appendChild(row);
+      });
+    }
+  }
+
+  function renderActive(){
+    var project = activeProject();
+    if(!project){
+      el.activeName.textContent = '-';
+      el.progressText.textContent = t('emptyProjects');
+      el.progressFill.style.width = '0%';
+      el.phaseWrap.replaceChildren();
+      return;
+    }
+    var s = stats(project);
+    el.activeName.textContent = project.name;
+    el.progressText.textContent = progressLine(project);
+    el.progressFill.style.width = s.pct + '%';
+    el.archiveBtn.disabled = s.total === 0 || s.done !== s.total || project.archived;
+    el.phaseWrap.replaceChildren();
+
+    phases.forEach(function(phase){
+      var phaseCard = document.createElement('section');
+      phaseCard.className = 'phase';
+
+      var head = document.createElement('div');
+      head.className = 'phase-head';
+      var title = document.createElement('h3');
+      title.className = 'phase-title';
+      title.textContent = phase.title[state.lang] || phase.title.en;
+      var count = document.createElement('span');
+      count.className = 'phase-count';
+      var phaseItems = project.items[phase.id] || [];
+      var phaseDone = phaseItems.filter(function(item){return item.done;}).length;
+      count.textContent = t('donePattern').replace('{done}', phaseDone).replace('{total}', phaseItems.length).replace('{pct}', phaseItems.length ? Math.round((phaseDone / phaseItems.length) * 100) : 0);
+      head.appendChild(title);
+      head.appendChild(count);
+
+      var list = document.createElement('div');
+      list.className = 'items';
+      phaseItems.forEach(function(item){
+        list.appendChild(renderItem(project, phase.id, item));
+      });
+
+      var add = document.createElement('div');
+      add.className = 'add-row';
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.maxLength = 140;
+      input.placeholder = t('customPlaceholder');
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn secondary';
+      button.textContent = t('addItem');
+      var addNow = function(){
+        addCustomItem(project, phase.id, input);
+      };
+      button.addEventListener('click', addNow);
+      input.addEventListener('keydown', function(event){
+        if(event.key === 'Enter'){
+          event.preventDefault();
+          addNow();
+        }
+      });
+      add.appendChild(input);
+      add.appendChild(button);
+
+      phaseCard.appendChild(head);
+      phaseCard.appendChild(list);
+      phaseCard.appendChild(add);
+      el.phaseWrap.appendChild(phaseCard);
+    });
+  }
+
+  function renderItem(project, phaseId, item){
+    var row = document.createElement('div');
+    var checkId = 'chk_' + project.id + '_' + phaseId + '_' + item.id;
+    row.className = 'item' + (item.done ? ' done' : '');
+    var box = document.createElement('input');
+    box.type = 'checkbox';
+    box.id = checkId;
+    box.checked = item.done === true;
+    box.addEventListener('change', function(){
+      item.done = box.checked;
+      setStatus('');
+      save();
+      render();
+    });
+    var label = document.createElement('label');
+    label.htmlFor = checkId;
+    label.textContent = labelFor(phaseId, item);
+    row.appendChild(box);
+    row.appendChild(label);
+
+    if(item.custom){
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'icon-btn';
+      remove.title = t('removeItem');
+      remove.setAttribute('aria-label', t('removeItem'));
+      remove.textContent = 'x';
+      remove.addEventListener('click', function(){
+        project.items[phaseId] = (project.items[phaseId] || []).filter(function(rowItem){
+          return rowItem.id !== item.id;
+        });
+        save();
+        render();
+      });
+      row.appendChild(remove);
+    }
+    return row;
+  }
+
+  function addProject(){
+    var name = el.projectName.value.trim();
+    if(!name){
+      setStatus(t('enterProject'));
+      return;
+    }
+    var exists = state.projects.some(function(project){
+      return project.name.toLowerCase() === name.toLowerCase();
+    });
+    if(exists){
+      setStatus(t('duplicateProject'));
+      return;
+    }
+    var project = defaultProject(name);
+    state.projects.push(project);
+    state.activeId = project.id;
+    el.projectName.value = '';
+    setStatus(t('addedProject'));
+    save();
+    render();
+  }
+
+  function addCustomItem(project, phaseId, input){
+    var value = input.value.trim();
+    if(!value){
+      setStatus(t('enterItem'));
+      return;
+    }
+    project.items[phaseId].push({id: customId(), done: false, custom: true, text: value});
+    input.value = '';
+    setStatus('');
+    save();
+    render();
+  }
+
+  function customId(){
+    customSeq += 1;
+    return 'custom_' + Date.now().toString(36) + '_' + customSeq;
+  }
+
+  function archiveActive(){
+    var project = activeProject();
+    if(!project){
+      return;
+    }
+    var s = stats(project);
+    if(s.done !== s.total || s.total === 0){
+      setStatus(t('needComplete'));
+      return;
+    }
+    project.archived = true;
+    var next = state.projects.find(function(row){return !row.archived;});
+    state.activeId = next ? next.id : project.id;
+    setStatus(t('archivedDone'));
+    save();
+    render();
+  }
+
+  function exportText(project){
+    var lines = [];
+    lines.push(t('exportTitle') + ': ' + project.name);
+    lines.push(progressLine(project));
+    lines.push('');
+    phases.forEach(function(phase){
+      lines.push(phase.title[state.lang] || phase.title.en);
+      (project.items[phase.id] || []).forEach(function(item){
+        lines.push((item.done ? '[x] ' : '[ ] ') + labelFor(phase.id, item));
+      });
+      lines.push('');
+    });
+    return lines.join('\n').trim();
+  }
+
+  function copyChecklist(){
+    var project = activeProject();
+    if(!project){
+      return;
+    }
+    copyText(exportText(project), el.copyBtn);
+  }
+
+  function copyText(value, button){
+    var done = function(ok){
+      var original = t('copyAsText');
+      button.textContent = ok ? t('copied') : t('copyFailed');
+      window.setTimeout(function(){
+        button.textContent = original;
+      }, 1400);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(value).then(function(){done(true);}).catch(function(){fallbackCopy(value, done);});
+    }else{
+      fallbackCopy(value, done);
+    }
+  }
+
+  function fallbackCopy(value, done){
+    var box = document.createElement('textarea');
+    box.value = value;
+    box.setAttribute('readonly', '');
+    box.style.position = 'fixed';
+    box.style.left = '-9999px';
+    document.body.appendChild(box);
+    box.select();
+    var ok = false;
+    try{
+      ok = document.execCommand('copy');
+    }catch(err){
+      ok = false;
+    }
+    document.body.removeChild(box);
+    done(ok);
+  }
+
+  function setStatus(message){
+    el.status.textContent = message || '';
+  }
+}());
+</script>
+</body>
+</html>

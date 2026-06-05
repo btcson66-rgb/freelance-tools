@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice Number Generator — Auto-Increment, Copy, Log</title>
+<meta name="description" content="Free invoice number generator for freelancers. Set a prefix, auto-increment, copy the next number in one click, and log history.">
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--accent-dk:#1d4ed8;--ok:#16a34a;--shadow:0 8px 28px rgba(15,23,42,.09)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif,"PingFang TC","Microsoft JhengHei";line-height:1.5}
+.page{width:min(900px,calc(100% - 32px));margin:0 auto;padding:28px 0 48px}
+.top-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px}
+.top-nav a{font-size:14px;color:var(--muted);text-decoration:none;font-weight:600}
+.top-nav a:hover{color:var(--text)}
+.top-nav .brand{font-size:15px;font-weight:800;color:var(--text);text-decoration:none}
+h1{font-size:26px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px}
+.sub{font-size:15px;color:var(--muted);margin-bottom:24px}
+.lang-row{display:flex;gap:8px;margin-bottom:20px}
+.lang-btn{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--muted)}
+.lang-btn.active{border-color:var(--accent);color:var(--accent);background:#eff6ff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow)}
+.card h2{font-size:16px;font-weight:750;margin-bottom:16px;color:var(--text)}
+.series-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.ser-tab{padding:6px 13px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--line);background:var(--bg);color:var(--muted);transition:all .15s}
+.ser-tab.active{border-color:var(--accent);background:#eff6ff;color:var(--accent)}
+.field{margin-bottom:14px}
+label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:5px}
+input[type=text],input[type=number]{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;color:var(--text);background:var(--bg);transition:border-color .15s}
+input:focus{outline:none;border-color:var(--accent)}
+.gen-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:11px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:.2px;margin-top:4px;transition:filter .15s}
+.gen-btn:hover{filter:brightness(.93)}
+.result-box{background:#eff6ff;border:2px solid var(--accent);border-radius:13px;padding:18px 20px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:68px}
+.result-num{font-size:28px;font-weight:900;color:var(--accent);letter-spacing:.5px;font-family:ui-monospace,monospace}
+.copy-btn{padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.copy-btn:hover{filter:brightness(.9)}
+.copy-btn.copied{background:var(--ok)}
+.add-ser-row{display:flex;gap:8px;margin-top:12px}
+.add-ser-row input{flex:1;padding:8px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;color:var(--text);background:var(--bg)}
+.add-ser-row input:focus{outline:none;border-color:var(--accent)}
+.add-ser-btn,.del-ser-btn{padding:8px 14px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:filter .15s}
+.add-ser-btn{background:#eff6ff;color:var(--accent)}.add-ser-btn:hover{filter:brightness(.95)}
+.del-ser-btn{background:#fee2e2;color:#b91c1c}.del-ser-btn:hover{filter:brightness(.95)}
+.hist-list{list-style:none;max-height:320px;overflow-y:auto}
+.hist-list li{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.hist-list li:last-child{border-bottom:none}
+.hist-num{font-family:ui-monospace,monospace;font-weight:700;color:var(--text)}
+.hist-date{font-size:12px;color:var(--muted)}
+.hist-copy{background:none;border:1px solid var(--line);border-radius:7px;padding:3px 10px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--muted)}
+.hist-copy:hover{border-color:var(--accent);color:var(--accent)}
+.empty{color:var(--muted);font-size:14px;padding:20px 0;text-align:center}
+.badge{display:inline-block;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:999px;font-size:12px;font-weight:700;padding:2px 10px;margin-left:8px}
+.footer-note{text-align:center;font-size:13px;color:var(--muted);margin-top:28px}
+.footer-note a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="top-nav">
+    <a href="../" class="brand">◆ Freelance Tools</a>
+    <a href="./">← Back to Invoice # generator</a>
+  </nav>
+  <h1 id="ttl">Invoice Number Generator</h1>
+  <p class="sub" id="subt">Auto-increment, copy, log — keep your invoice numbers consistent and professional.</p>
+
+  <div class="lang-row">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('zh')">繁中</button>
+  </div>
+
+  <div class="grid">
+    <div>
+      <!-- Series selector -->
+      <div class="card" style="margin-bottom:20px">
+        <h2 id="h-series">Invoice Series</h2>
+        <div class="series-tabs" id="seriesTabs"></div>
+        <div class="add-ser-row">
+          <input id="newSerName" placeholder="New series name…" maxlength="30">
+          <button class="add-ser-btn" onclick="addSeries()" id="btn-add-ser">+ Add</button>
+          <button class="del-ser-btn" onclick="deleteSeries()" id="btn-del-ser">Delete</button>
+        </div>
+      </div>
+
+      <!-- Generator -->
+      <div class="card">
+        <h2 id="h-gen">Generate Next Number</h2>
+        <div class="field">
+          <label id="lbl-prefix">Prefix</label>
+          <input type="text" id="prefix" placeholder="INV-2026-" maxlength="20" oninput="saveSettings()">
+        </div>
+        <div class="field">
+          <label id="lbl-next">Next counter</label>
+          <input type="number" id="counter" min="1" max="99999" value="1" oninput="saveSettings()">
+        </div>
+        <div class="field">
+          <label id="lbl-pad">Zero-pad to digits</label>
+          <input type="number" id="padlen" min="1" max="6" value="3" oninput="saveSettings()">
+        </div>
+        <button class="gen-btn" onclick="generateNext()" id="btn-gen">Generate next number →</button>
+
+        <div class="result-box" id="resultBox" style="display:none">
+          <span class="result-num" id="resultNum"></span>
+          <button class="copy-btn" id="copyBtn" onclick="copyNum()">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="card">
+      <h2 id="h-hist">History <span class="badge" id="histCount">0</span></h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px" id="h-hist-sub">Last 20 generated numbers for the current series.</p>
+      <ul class="hist-list" id="histList"></ul>
+    </div>
+  </div>
+
+  <p class="footer-note" id="footer-note">All data stays in your browser · <a href="../">More free tools</a> · <a href="../free-invoice-generator/">Build the invoice →</a></p>
+</div>
+
+<script>
+const STOR = 'invnum_v1';
+let lang = 'en';
+let data; // { activeSeries, series: { [name]: { prefix, counter, padlen, history:[] } } }
+
+const T = {
+  en: {
+    ttl:'Invoice Number Generator',
+    subt:'Auto-increment, copy, log — keep your invoice numbers consistent and professional.',
+    'h-series':'Invoice Series','h-gen':'Generate Next Number','h-hist':'History',
+    'h-hist-sub':'Last 20 generated numbers for the current series.',
+    'lbl-prefix':'Prefix','lbl-next':'Next counter','lbl-pad':'Zero-pad to digits',
+    'btn-gen':'Generate next number →','btn-add-ser':'+ Add','btn-del-ser':'Delete',
+    'footer-note':'All data stays in your browser',
+    copy:'Copy',copied:'Copied!',
+    'del-confirm':'Delete series "{n}"? This cannot be undone.',
+    'del-only':'Cannot delete the only series.',
+    'new-placeholder':'New series name…',
+    'hist-empty':'No numbers generated yet.',
+  },
+  zh: {
+    ttl:'發票編號產生器',
+    subt:'自動遞增、複製、記錄 — 保持發票編號一致且專業。',
+    'h-series':'發票系列','h-gen':'產生下一個編號','h-hist':'歷史記錄',
+    'h-hist-sub':'目前系列最近20筆記錄。',
+    'lbl-prefix':'前綴','lbl-next':'下一個計數','lbl-pad':'補零位數',
+    'btn-gen':'產生下一個編號 →','btn-add-ser':'+ 新增','btn-del-ser':'刪除',
+    'footer-note':'所有資料保留在您的瀏覽器中',
+    copy:'複製',copied:'已複製！',
+    'del-confirm':'刪除系列「{n}」？此操作無法復原。',
+    'del-only':'無法刪除唯一的系列。',
+    'new-placeholder':'新系列名稱…',
+    'hist-empty':'尚未產生任何編號。',
+  }
+};
+
+function t(k){return T[lang][k]||k}
+
+function load(){
+  try{
+    data=JSON.parse(localStorage.getItem(STOR));
+    if(!data||!data.series){throw 0}
+  }catch(e){
+    data={
+      activeSeries:'Main',
+      series:{
+        'Main':{prefix:'INV-2026-',counter:1,padlen:3,history:[]}
+      }
+    };
+    save();
+  }
+}
+function save(){localStorage.setItem(STOR,JSON.stringify(data))}
+
+function activeSer(){return data.series[data.activeSeries]}
+
+function saveSettings(){
+  const s=activeSer();
+  s.prefix=document.getElementById('prefix').value;
+  s.counter=parseInt(document.getElementById('counter').value)||1;
+  s.padlen=parseInt(document.getElementById('padlen').value)||3;
+  save();
+}
+
+function renderSerTabs(){
+  const names=Object.keys(data.series);
+  const tabs=document.getElementById('seriesTabs');
+  tabs.innerHTML='';
+  names.forEach(n=>{
+    const b=document.createElement('button');
+    b.className='ser-tab'+(n===data.activeSeries?' active':'');
+    b.textContent=n;
+    b.onclick=()=>{data.activeSeries=n;save();renderAll()};
+    tabs.appendChild(b);
+  });
+}
+
+function renderForm(){
+  const s=activeSer();
+  document.getElementById('prefix').value=s.prefix||'INV-2026-';
+  document.getElementById('counter').value=s.counter||1;
+  document.getElementById('padlen').value=s.padlen||3;
+  document.getElementById('resultBox').style.display='none';
+}
+
+function renderHistory(){
+  const s=activeSer();
+  const ul=document.getElementById('histList');
+  const count=document.getElementById('histCount');
+  const hist=s.history||[];
+  count.textContent=hist.length;
+  if(hist.length===0){
+    ul.innerHTML=`<li><span style="color:var(--muted);font-size:14px">${t('hist-empty')}</span></li>`;
+    return;
+  }
+  ul.innerHTML='';
+  hist.forEach(item=>{
+    const li=document.createElement('li');
+    li.innerHTML=`<span class="hist-num">${item.num}</span><span class="hist-date">${item.date}</span><button class="hist-copy" onclick="copyText('${item.num}',this)">${t('copy')}</button>`;
+    ul.appendChild(li);
+  });
+}
+
+function renderAll(){
+  renderSerTabs();
+  renderForm();
+  renderHistory();
+  applyLang();
+}
+
+function generateNext(){
+  const s=activeSer();
+  const prefix=document.getElementById('prefix').value;
+  const pad=parseInt(document.getElementById('padlen').value)||3;
+  const cnt=parseInt(document.getElementById('counter').value)||1;
+  const num=prefix+String(cnt).padStart(pad,'0');
+  // update
+  s.prefix=prefix;s.counter=cnt+1;s.padlen=pad;
+  // history
+  if(!s.history)s.history=[];
+  s.history.unshift({num,date:new Date().toLocaleDateString()});
+  if(s.history.length>20)s.history=s.history.slice(0,20);
+  document.getElementById('counter').value=s.counter;
+  save();
+  // show result
+  const box=document.getElementById('resultBox');
+  document.getElementById('resultNum').textContent=num;
+  document.getElementById('copyBtn').textContent=t('copy');
+  document.getElementById('copyBtn').className='copy-btn';
+  box.style.display='flex';
+  renderHistory();
+}
+
+function copyNum(){
+  const num=document.getElementById('resultNum').textContent;
+  copyText(num,document.getElementById('copyBtn'));
+}
+
+function copyText(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent=t('copied');
+    btn.className=(btn.className||'')+' copied';
+    setTimeout(()=>{btn.textContent=orig;btn.className=btn.className.replace(' copied','')},1500);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    const orig=btn.textContent;btn.textContent=t('copied');
+    setTimeout(()=>{btn.textContent=orig},1500);
+  });
+}
+
+function addSeries(){
+  const inp=document.getElementById('newSerName');
+  const name=inp.value.trim();
+  if(!name)return;
+  if(Object.keys(data.series).length>=3){alert('Max 3 series.');return}
+  if(data.series[name]){alert('Series already exists.');return}
+  data.series[name]={prefix:'INV-',counter:1,padlen:3,history:[]};
+  data.activeSeries=name;
+  inp.value='';
+  save();renderAll();
+}
+
+function deleteSeries(){
+  const names=Object.keys(data.series);
+  if(names.length<=1){alert(t('del-only'));return}
+  if(!confirm(t('del-confirm').replace('{n}',data.activeSeries)))return;
+  delete data.series[data.activeSeries];
+  data.activeSeries=Object.keys(data.series)[0];
+  save();renderAll();
+}
+
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent===l.toUpperCase()||(l==='zh'&&b.textContent==='繁中'))});
+  applyLang();
+}
+
+function applyLang(){
+  const ids=['ttl','subt','h-series','h-gen','h-hist','h-hist-sub','lbl-prefix','lbl-next','lbl-pad','btn-gen','btn-add-ser','btn-del-ser'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t(id)});
+  document.getElementById('footer-note').innerHTML=`${t('footer-note')} · <a href="../">More free tools</a> · <a href="../free-invoice-generator/">Build the invoice →</a>`;
+  document.getElementById('newSerName').placeholder=t('new-placeholder');
+  renderHistory();
+}
+
+load();
+renderAll();
+</script>
+</body>
+</html>
