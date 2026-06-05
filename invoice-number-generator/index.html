@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Invoice Number Generator — Auto-Number Your Freelance Invoices</title>
+<meta name="description" content="A free invoice number generator for freelancers. Set a prefix, auto-increment the counter, copy the next number in one click, and track your invoice history. Offline, no sign-up.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/invoice-number-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Invoice Number Generator — Auto-Number Your Invoices">
+<meta property="og:description" content="Set a prefix, auto-increment, copy the next number in one click. Tracks history. Free, offline.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/invoice-number-generator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/invoicepro.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Invoice Number Generator">
+<meta name="twitter:description" content="Set a prefix, auto-increment, copy the next number. Tracks history. Free, offline.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/invoicepro.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Invoice Number Generator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline invoice number generator for freelancers. Set a prefix and starting number, auto-increment with each invoice, copy the next number in one click, and track your invoice history across multiple series.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/invoice-number-generator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Custom prefix (INV, 2026-INV, etc.)",
+    "Auto-increment counter",
+    "One-click copy",
+    "Invoice history log (last 20)",
+    "Multiple invoice series",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "What format should an invoice number be?", "acceptedAnswer": { "@type": "Answer", "text": "Invoice numbers should be unique and sequential. Common formats include a prefix plus a number (INV-001, INV-2026-001) or a year-month-number (2026-06-001). The important thing is consistency: each invoice gets a unique, trackable number. Some countries have legal requirements for invoice numbering, so check what applies where you are." } },
+    { "@type": "Question", "name": "Do I need to number my invoices?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, in most countries invoices must have a unique sequential number for tax and audit purposes. Even where it is not legally required, numbered invoices are easier to track, reference in correspondence and match to payments." } },
+    { "@type": "Question", "name": "Is this invoice number generator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. It runs in your browser with no account and nothing uploaded. There is no paid version." } },
+    { "@type": "Question", "name": "Can I use multiple series?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. You can save up to 3 named series with separate prefixes and counters — for example, one for a retainer client, one for project work and one for general invoices." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#2563eb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#dbeafe,transparent),linear-gradient(180deg,#fff,#f8fafc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#1d4ed8;background:#dbeafe;border:1px solid #bfdbfe;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:38px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#cbd5e1}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  p{margin:10px 0;color:#1f2937}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#374151}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#cbd5e1}
+  .endcta{background:#0f172a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#cbd5e1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#334155;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free invoice number generator</h1>
+    <p class="sub">Set your prefix (INV-2026, or whatever works), click to generate the next sequential number, copy it in one click, and track your invoice history. Multiple series supported. Runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the generator →</a>
+      <a class="btn buy" href="../free-invoice-generator/">Make the invoice →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Auto-increment counter</span>
+      <span><span class="dotg">●</span> History log</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+<section>
+  <div class="wrap">
+    <h2>Keep invoice numbers consistent and professional</h2>
+    <p>Sequential invoice numbers are required for tax purposes in most countries, and they make it easy to track which invoices have been paid, reference a specific document in correspondence, and spot gaps if a number is skipped. The problem is remembering where you left off and keeping a consistent format — especially when you bill multiple clients or run separate series for retainers and project work.</p>
+    <p>This generator stores your prefix and counter in your browser. Click "Generate next number" and it shows the next one — ready to copy into <a href="../free-invoice-generator/">InvoicePro</a> or wherever you create your invoices. Nothing is uploaded, the counter persists between sessions, and you can run up to 3 named series simultaneously.</p>
+    <h2>What it does</h2>
+    <div class="feat">
+      <div><h4>Custom prefix</h4><p>Set your format: INV, 2026-INV, client-INV, or anything that works for your business.</p></div>
+      <div><h4>Auto-increment</h4><p>Each click generates the next number — no manual tracking, no skipped numbers.</p></div>
+      <div><h4>One-click copy</h4><p>Copy the number straight to your clipboard to paste wherever you need it.</p></div>
+      <div><h4>History log</h4><p>Keeps the last 20 generated numbers with the date, so you can trace any invoice back.</p></div>
+      <div><h4>Multiple series</h4><p>Up to 3 named series with separate prefixes and counters.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Everything stored locally — your invoice history never leaves your browser.</p></div>
+    </div>
+    <h2>How to use it</h2>
+    <ol class="steps">
+      <li><strong>Set your prefix</strong> (e.g. INV-2026) and starting number.</li>
+      <li><strong>Click "Generate next number"</strong> each time you create a new invoice.</li>
+      <li><strong>Copy the number</strong> and paste it into your invoice.</li>
+    </ol>
+    <h2>Pair it with InvoicePro</h2>
+    <p>Generate the number here, then build the invoice in <a href="../free-invoice-generator/">InvoicePro</a>. Lock the scope in a <a href="../free-freelance-contract/">contract</a> before the work starts. All offline, all free or one-time purchase.</p>
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>What format should an invoice number be?</dt>
+      <dd>Unique and sequential. Common formats: INV-001, INV-2026-001, or 2026-06-001. Consistency matters more than the format — check any legal requirements where you are.</dd>
+      <dt>Do I need to number my invoices?</dt>
+      <dd>Yes, in most countries for tax and audit purposes. Even where not required, numbered invoices are much easier to track and reference.</dd>
+      <dt>Is this free?</dt>
+      <dd>Yes — no account, nothing uploaded, completely free. There is no paid version.</dd>
+      <dt>Can I use multiple series?</dt>
+      <dd>Yes. Up to 3 named series with separate prefixes and counters.</dd>
+    </dl>
+    <h2>More free tools for freelancers</h2>
+    <div class="related">
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+      <a href="../invoice-due-date-calculator/">📅 Due date calculator</a>
+      <a href="../invoice-late-fee-calculator/">⏰ Late fee calculator</a>
+      <a href="../freelance-contract-templates/">📄 Contract templates</a>
+    </div>
+  </div>
+</section>
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Never lose track of your invoice numbers</h2>
+      <p>One click, one number. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the generator →</a>
+        <a class="btn buy" href="../">See all tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+</body>
+</html>
