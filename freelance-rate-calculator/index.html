@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Freelance Rate Calculator — Hourly &amp; Day Rate, Offline</title>
+<meta name="description" content="A free freelance rate calculator: work out the hourly, day and week rate you need to hit your income goal after tax and expenses — or check whether your current rate adds up. Runs in your browser, nothing uploaded.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/freelance-rate-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Freelance Rate Calculator — Hourly &amp; Day Rate, Offline">
+<meta property="og:description" content="Find the hourly, day and week rate you need to hit your income goal after tax and expenses. Free, runs in your browser, nothing uploaded.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/freelance-rate-calculator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Freelance Rate Calculator — Offline">
+<meta name="twitter:description" content="Find the hourly, day and week rate you need to hit your income goal. Free, nothing uploaded.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Freelance Rate Calculator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline freelance rate calculator. Work out the hourly, day and week rate you need to reach a target take-home income after tax and expenses, or check whether your current rate adds up. Runs in your browser with no account and no data upload.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/freelance-rate-calculator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Find the rate that hits your income goal",
+    "Check an existing hourly rate",
+    "Hourly, day and week rates",
+    "Accounts for tax set-aside and expenses",
+    "Multiple currencies",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this rate calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. It runs in your browser with no account and no sign-up, and nothing is uploaded. There is no paid version of the calculator." } },
+    { "@type": "Question", "name": "How do I calculate my freelance hourly rate?", "acceptedAnswer": { "@type": "Answer", "text": "Start from what you want to keep. Add your target annual take-home income and yearly business expenses, divide by one minus your tax set-aside rate to get the gross revenue you need, then divide that by your realistic billable hours per year. The calculator does this for you and also shows a day and week rate." } },
+    { "@type": "Question", "name": "Why is my billable rate higher than an employee salary divided by hours?", "acceptedAnswer": { "@type": "Answer", "text": "Because freelancers pay their own tax, cover their own expenses, and only some working hours are billable. Admin, sales, breaks and unpaid time mean your billable hours are well below your working hours, so the rate has to be higher to reach the same take-home." } },
+    { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Completely. The calculator runs entirely in your browser with zero network requests. Your income goals and numbers are never uploaded anywhere." } },
+    { "@type": "Question", "name": "Is this financial or tax advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. It is a planning estimate to help you set a rate. Tax rules vary by country, so confirm your real set-aside rate and obligations with a qualified professional." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#7c3aed}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#ede9fe,transparent),linear-gradient(180deg,#fff,#f8fafc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#6d28d9;background:#ede9fe;border:1px solid #ddd6fe;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:40px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#cbd5e1}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#1f2937}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#374151}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#cbd5e1}
+  .endcta{background:#0f172a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#cbd5e1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#334155;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free freelance rate calculator</h1>
+    <p class="sub">Stop guessing your price. Enter the income you want to keep, your expenses, tax set-aside and realistic billable hours — and get the hourly, day and week rate that actually gets you there. Or check whether the rate you charge today adds up. Runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the calculator →</a>
+      <a class="btn buy" href="../free-time-tracker/">Then track the hours →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Income-goal &amp; rate-check modes</span>
+      <span><span class="dotg">●</span> Tax &amp; expenses built in</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Price from what you want to keep, not a guess</h2>
+    <p>Most freelancers pick a number that "sounds about right" and quietly underearn for years. The honest way to set a rate is to work backwards from the take-home income you actually want, then add the things employment hides from you: your own tax, your own expenses, and the fact that only some of your working hours are billable.</p>
+    <p>This calculator does that math in two directions. In <strong>income-goal mode</strong>, you tell it the take-home you want, your yearly expenses, your tax set-aside percentage and your realistic billable hours, and it returns the hourly, day and week rate you need to charge. In <strong>rate-check mode</strong>, you enter a rate you are considering and it shows the gross revenue, expenses, tax and the take-home you would actually be left with.</p>
+
+    <h2>What it works out</h2>
+    <div class="feat">
+      <div><h4>Required hourly rate</h4><p>The rate that hits your target take-home after tax and expenses — with the intermediate numbers shown.</p></div>
+      <div><h4>Day &amp; week rate</h4><p>Derived from your hourly rate so you can quote fixed blocks of time with confidence.</p></div>
+      <div><h4>Tax set-aside built in</h4><p>Grosses up your goal so the rate already covers the tax you should be putting away.</p></div>
+      <div><h4>Realistic billable hours</h4><p>Encourages a true weeks-and-hours input, because admin and sales time are not billable.</p></div>
+      <div><h4>Rate-check mode</h4><p>Enter a rate and see the take-home it really produces before you commit to it.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Runs entirely in your browser. Your income goals never leave your computer.</p></div>
+    </div>
+
+    <h2>How to calculate your rate in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Enter your target take-home</strong> income and your yearly business expenses.</li>
+      <li><strong>Add your tax set-aside %</strong> and your realistic billable hours per week and weeks per year.</li>
+      <li><strong>Read your rate</strong> — the calculator shows the hourly, day and week rate that gets you there.</li>
+    </ol>
+
+    <h2>From rate to invoice</h2>
+    <p>Once you know your number, the rest of the workflow is offline too: <a href="../free-time-tracker/">track the billable hours</a> you priced, turn them into an invoice with <a href="../free-invoice-generator/">InvoicePro</a>, lock the terms with a <a href="../free-freelance-contract/">contract</a>, and watch the money with the <a href="../free-expense-tracker/">expense &amp; tax tracker</a>. All one-time purchases, no subscription. Get all five in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$39 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this rate calculator free?</dt>
+      <dd>Yes, completely. It runs in your browser with no account and nothing uploaded. There is no paid version of the calculator itself.</dd>
+      <dt>How do I calculate my freelance hourly rate?</dt>
+      <dd>Work backwards: add your target take-home and yearly expenses, divide by one minus your tax set-aside rate to get the gross revenue you need, then divide by your realistic billable hours per year. The calculator does this and adds a day and week rate.</dd>
+      <dt>Why is my rate higher than a salary divided by hours?</dt>
+      <dd>Because you pay your own tax, cover your own expenses, and only some hours are billable. Admin, sales and unpaid time push your billable hours well below your working hours.</dd>
+      <dt>Is my data private?</dt>
+      <dd>Completely. Zero network requests — your numbers stay on your computer.</dd>
+      <dt>Is this financial or tax advice?</dt>
+      <dd>No, it is a planning estimate. Tax rules vary by country — confirm your real set-aside rate with a professional.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of offline, no-subscription tools that cover the whole freelance workflow:</p>
+    <div class="related">
+      <a href="../free-freelance-crm/">◎ Free freelance CRM</a>
+      <a href="../free-freelance-contract/">✒ Free contract maker</a>
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+      <a href="../free-time-tracker/">◷ Free time tracker</a>
+      <a href="../free-expense-tracker/">$ Free expense tracker</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Find your number now</h2>
+      <p>Two minutes to a rate you can defend. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the calculator →</a>
+        <a class="btn buy" href="../">See all the tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>

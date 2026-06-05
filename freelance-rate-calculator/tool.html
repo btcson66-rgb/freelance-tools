@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freelance Rate Calculator - Hourly, Day, and Week Rate Tool</title>
+  <meta name="description" content="Free offline freelance rate calculator for setting an hourly rate from your income goal, expenses, taxes, and billable hours.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --ink: #111827;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #f1f5f9;
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
+      --accent-soft: #ede9fe;
+      --good: #166534;
+      --warn: #92400e;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-underline-offset: 0.18em;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 26px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      border-radius: 8px;
+      color: #ffffff;
+      background: var(--accent);
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.5vw, 2rem);
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .tagline {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .lang-toggle,
+    .mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      gap: 3px;
+    }
+
+    .lang-toggle button,
+    .mode-toggle button {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .lang-toggle button {
+      min-width: 58px;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+    }
+
+    .mode-toggle {
+      width: 100%;
+    }
+
+    .mode-toggle button {
+      flex: 1 1 0;
+      padding: 10px 12px;
+    }
+
+    .lang-toggle button[aria-pressed="true"],
+    .mode-toggle button[aria-pressed="true"] {
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.94fr) minmax(360px, 1.06fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+      padding: 22px 22px 0;
+    }
+
+    .panel-title {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .panel-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 20px 22px 22px;
+    }
+
+    .span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: #334155;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: var(--ink);
+      background: #ffffff;
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .lang-toggle button:focus-visible,
+    .mode-toggle button:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--accent);
+    }
+
+    .note {
+      margin: 0 22px 22px;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent-soft);
+      padding: 12px 14px;
+      color: #312e81;
+      font-size: 0.92rem;
+    }
+
+    .results {
+      padding: 22px;
+    }
+
+    .result-eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .headline-label {
+      margin: 0;
+      color: #334155;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .headline-value {
+      margin: 4px 0 6px;
+      color: var(--ink);
+      font-size: clamp(2.25rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.03;
+      overflow-wrap: anywhere;
+    }
+
+    .headline-sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .status {
+      margin: 0 0 16px;
+      border: 1px solid #fed7aa;
+      border-radius: 8px;
+      background: #fff7ed;
+      color: var(--warn);
+      padding: 10px 12px;
+      font-size: 0.93rem;
+      font-weight: 700;
+    }
+
+    .status[hidden] {
+      display: none;
+    }
+
+    .summary {
+      display: grid;
+      gap: 9px;
+      margin-bottom: 18px;
+    }
+
+    .summary-row,
+    .step-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 10px 12px;
+      min-width: 0;
+    }
+
+    .summary-row span,
+    .step-row span {
+      color: var(--muted);
+      min-width: 0;
+    }
+
+    .summary-row strong,
+    .step-row strong {
+      color: var(--ink);
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .steps-title {
+      margin: 0 0 10px;
+      color: #334155;
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .steps {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .disclaimer {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      margin-top: 18px;
+      padding: 16px 4px 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      text-align: center;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 880px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lang-toggle {
+        align-self: stretch;
+      }
+
+      .lang-toggle button {
+        flex: 1 1 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 22px, 1180px);
+        padding-top: 16px;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 21px;
+      }
+
+      .form {
+        grid-template-columns: 1fr;
+        padding: 18px 16px 18px;
+      }
+
+      .panel-header,
+      .results {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .note {
+        margin-left: 16px;
+        margin-right: 16px;
+      }
+
+      .summary-row,
+      .step-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .summary-row strong,
+      .step-row strong {
+        text-align: left;
+      }
+
+      .headline-value {
+        font-size: clamp(2rem, 12vw, 3.2rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">%</div>
+        <div>
+          <h1 data-i18n="appTitle">Freelance Rate Calculator</h1>
+          <p class="tagline" data-i18n="tagline">Plan a sustainable hourly rate from real income, tax, expenses, and billable time.</p>
+        </div>
+      </div>
+
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel" aria-labelledby="input-title">
+        <div class="panel-header">
+          <h2 class="panel-title" id="input-title" data-i18n="inputTitle">Inputs</h2>
+          <p class="panel-copy" data-i18n="inputCopy">Switch modes without losing your numbers. Everything stays in this browser.</p>
+        </div>
+
+        <form class="form" id="calculator" novalidate>
+          <div class="span-2">
+            <div class="mode-toggle" aria-label="Calculator mode">
+              <button type="button" data-mode="find" aria-pressed="true" data-i18n="modeFind">Find my rate</button>
+              <button type="button" data-mode="check" aria-pressed="false" data-i18n="modeCheck">Check my rate</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="currency">
+              <span data-i18n="currencyLabel">Currency</span>
+            </label>
+            <select id="currency" name="currency">
+              <option value="USD">$ USD</option>
+              <option value="TWD">NT$ TWD</option>
+              <option value="EUR">€ EUR</option>
+              <option value="GBP">£ GBP</option>
+              <option value="AUD">A$ AUD</option>
+              <option value="CAD">C$ CAD</option>
+              <option value="JPY">JP¥ JPY</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="hoursPerDay">
+              <span data-i18n="hoursPerDayLabel">Hours per day</span>
+              <span class="hint" data-i18n="defaultHint">default 8</span>
+            </label>
+            <input id="hoursPerDay" name="hoursPerDay" inputmode="decimal" type="number" min="0" step="0.25" value="8">
+          </div>
+
+          <div class="field span-2 mode-find-field">
+            <label for="targetTakeHome">
+              <span data-i18n="targetLabel">Target annual take-home income</span>
+              <span class="hint" data-i18n="afterTaxHint">after tax</span>
+            </label>
+            <input id="targetTakeHome" name="targetTakeHome" inputmode="decimal" type="number" min="0" step="100" value="90000">
+          </div>
+
+          <div class="field span-2 mode-check-field" hidden>
+            <label for="hourlyRate">
+              <span data-i18n="hourlyLabel">Hourly rate</span>
+            </label>
+            <input id="hourlyRate" name="hourlyRate" inputmode="decimal" type="number" min="0" step="1" value="100">
+          </div>
+
+          <div class="field">
+            <label for="expenses">
+              <span data-i18n="expensesLabel">Annual business expenses</span>
+            </label>
+            <input id="expenses" name="expenses" inputmode="decimal" type="number" min="0" step="100" value="6000">
+          </div>
+
+          <div class="field">
+            <label for="taxRate">
+              <span data-i18n="taxLabel">Tax set-aside rate</span>
+              <span class="hint">%</span>
+            </label>
+            <input id="taxRate" name="taxRate" inputmode="decimal" type="number" min="0" max="99.99" step="0.1" value="25">
+          </div>
+
+          <div class="field">
+            <label for="billableHours">
+              <span data-i18n="hoursLabel">Billable hours per week</span>
+            </label>
+            <input id="billableHours" name="billableHours" inputmode="decimal" type="number" min="0" step="0.5" value="25">
+          </div>
+
+          <div class="field">
+            <label for="weeks">
+              <span data-i18n="weeksLabel">Weeks worked per year</span>
+            </label>
+            <input id="weeks" name="weeks" inputmode="decimal" type="number" min="0" max="52" step="1" value="46">
+          </div>
+        </form>
+
+        <p class="note" data-i18n="reality">Reality check: utilization is rarely 100%. Admin, sales, breaks, and slow weeks mean your billable hours are lower than your working hours, so use realistic hours and weeks.</p>
+      </section>
+
+      <section class="panel results" aria-live="polite" aria-labelledby="results-title">
+        <p class="result-eyebrow" id="results-title" data-i18n="resultsTitle">Results</p>
+        <p class="headline-label" id="headlineLabel">Required hourly rate</p>
+        <div class="headline-value" id="headlineValue">-</div>
+        <p class="headline-sub" id="headlineSub">-</p>
+        <p class="status" id="status" hidden></p>
+
+        <div class="summary" aria-label="Summary">
+          <div class="summary-row"><span id="row1Label">-</span><strong id="row1Value">-</strong></div>
+          <div class="summary-row"><span id="row2Label">-</span><strong id="row2Value">-</strong></div>
+          <div class="summary-row"><span id="row3Label">-</span><strong id="row3Value">-</strong></div>
+          <div class="summary-row"><span id="row4Label">-</span><strong id="row4Value">-</strong></div>
+          <div class="summary-row"><span id="row5Label">-</span><strong id="row5Value">-</strong></div>
+        </div>
+
+        <h2 class="steps-title" data-i18n="stepsTitle">Calculation steps</h2>
+        <ol class="steps" id="steps"></ol>
+
+        <p class="disclaimer" data-i18n="disclaimer">Planning estimate only, not tax or financial advice. Tax rules vary by country - confirm your real rate with a qualified professional.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span data-i18n="footerLead">Part of a free suite of offline freelance tools</span>
+      <span> - </span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/" data-i18n="footerLink">open the suite</a>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var storeKey = "ratecalc_v1";
+      var numericFields = ["targetTakeHome", "expenses", "taxRate", "billableHours", "weeks", "hoursPerDay", "hourlyRate"];
+      var defaults = {
+        mode: "find",
+        lang: "en",
+        currency: "USD",
+        targetTakeHome: "90000",
+        expenses: "6000",
+        taxRate: "25",
+        billableHours: "25",
+        weeks: "46",
+        hoursPerDay: "8",
+        hourlyRate: "100"
+      };
+      var currencies = {
+        USD: { symbol: "$", decimals: 2 },
+        TWD: { symbol: "NT$", decimals: 0 },
+        EUR: { symbol: "€", decimals: 2 },
+        GBP: { symbol: "£", decimals: 2 },
+        AUD: { symbol: "A$", decimals: 2 },
+        CAD: { symbol: "C$", decimals: 2 },
+        JPY: { symbol: "JP¥", decimals: 0 }
+      };
+      var text = {
+        en: {
+          appTitle: "Freelance Rate Calculator",
+          tagline: "Plan a sustainable hourly rate from real income, tax, expenses, and billable time.",
+          inputTitle: "Inputs",
+          inputCopy: "Switch modes without losing your numbers. Everything stays in this browser.",
+          modeFind: "Find my rate",
+          modeCheck: "Check my rate",
+          currencyLabel: "Currency",
+          hoursPerDayLabel: "Hours per day",
+          defaultHint: "default 8",
+          targetLabel: "Target annual take-home income",
+          afterTaxHint: "after tax",
+          hourlyLabel: "Hourly rate",
+          expensesLabel: "Annual business expenses",
+          taxLabel: "Tax set-aside rate",
+          hoursLabel: "Billable hours per week",
+          weeksLabel: "Weeks worked per year",
+          reality: "Reality check: utilization is rarely 100%. Admin, sales, breaks, and slow weeks mean your billable hours are lower than your working hours, so use realistic hours and weeks.",
+          resultsTitle: "Results",
+          stepsTitle: "Calculation steps",
+          disclaimer: "Planning estimate only, not tax or financial advice. Tax rules vary by country - confirm your real rate with a qualified professional.",
+          footerLead: "Part of a free suite of offline freelance tools",
+          footerLink: "open the suite",
+          requiredHourly: "Required hourly rate",
+          estimatedTakeHome: "Estimated annual take-home",
+          basedOn: "Based on {hours} billable hours per year.",
+          checkBasedOn: "At {rate}/hr over {hours} billable hours per year.",
+          dayRate: "Day rate ({hours} hours)",
+          weekRate: "Billable week rate",
+          grossNeeded: "Required gross annual revenue",
+          billableYear: "Total billable hours/year",
+          grossAnnual: "Gross annual revenue",
+          annualExpenses: "Annual expenses",
+          preTaxProfit: "Pre-tax profit",
+          taxAmount: "Estimated tax set-aside",
+          takeHomePerHour: "Take-home per billable hour",
+          targetPlusExpenses: "Target take-home + expenses",
+          grossUp: "Gross up for tax set-aside",
+          divideHours: "Divide by billable hours",
+          hourlyResult: "Required hourly rate",
+          invalidTax: "Tax set-aside must be below 100% so the rate can be calculated.",
+          invalidMissing: "Enter complete, finite numbers to calculate.",
+          invalidPositive: "Use non-negative money and tax values, with hours and weeks above zero.",
+          invalidComputed: "Those inputs are too large to calculate reliably.",
+          dash: "-"
+        },
+        zh: {
+          appTitle: "自由工作者費率計算器",
+          tagline: "用收入目標、稅金、成本和可收費時間，估算可持續的時薪。",
+          inputTitle: "輸入資料",
+          inputCopy: "切換模式時會保留數字。資料只儲存在這個瀏覽器。",
+          modeFind: "找出我的費率",
+          modeCheck: "檢查我的費率",
+          currencyLabel: "幣別",
+          hoursPerDayLabel: "每日小時",
+          defaultHint: "預設 8",
+          targetLabel: "年度目標稅後收入",
+          afterTaxHint: "稅後",
+          hourlyLabel: "目前時薪",
+          expensesLabel: "年度營業成本",
+          taxLabel: "預留稅率",
+          hoursLabel: "每週可收費小時",
+          weeksLabel: "每年工作週數",
+          reality: "現實檢查：利用率很少是 100%。行政、業務開發、休息和淡季都會讓可收費時間低於總工作時間，請用務實的小時和週數。",
+          resultsTitle: "結果",
+          stepsTitle: "計算步驟",
+          disclaimer: "這只是規劃估算，不是稅務或財務建議。各國稅制不同，實際費率請與合格專業人士確認。",
+          footerLead: "這是免費離線自由工作者工具套組的一部分",
+          footerLink: "開啟工具套組",
+          requiredHourly: "需要的時薪",
+          estimatedTakeHome: "預估年度稅後收入",
+          basedOn: "以每年 {hours} 個可收費小時計算。",
+          checkBasedOn: "以 {rate}/小時、每年 {hours} 個可收費小時計算。",
+          dayRate: "日費率（{hours} 小時）",
+          weekRate: "可收費週費率",
+          grossNeeded: "需要的年度總營收",
+          billableYear: "每年可收費小時",
+          grossAnnual: "年度總營收",
+          annualExpenses: "年度成本",
+          preTaxProfit: "稅前利潤",
+          taxAmount: "預估預留稅金",
+          takeHomePerHour: "每個可收費小時的稅後收入",
+          targetPlusExpenses: "目標稅後收入 + 成本",
+          grossUp: "依預留稅率反推總營收",
+          divideHours: "除以可收費小時",
+          hourlyResult: "需要的時薪",
+          invalidTax: "預留稅率必須低於 100%，才能計算費率。",
+          invalidMissing: "請輸入完整且有效的數字。",
+          invalidPositive: "金額和稅率需為非負數，小時和週數需大於零。",
+          invalidComputed: "這組數字太大，無法可靠計算。",
+          dash: "-"
+        }
+      };
+
+      var state = loadState();
+      var form = document.getElementById("calculator");
+      var status = document.getElementById("status");
+      var steps = document.getElementById("steps");
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function loadState() {
+        var clean = Object.assign({}, defaults);
+        var raw = null;
+        try {
+          raw = window.localStorage.getItem(storeKey);
+        } catch (error) {
+          raw = null;
+        }
+        if (!raw) {
+          return clean;
+        }
+        try {
+          var saved = JSON.parse(raw);
+          if (!saved || typeof saved !== "object" || Array.isArray(saved)) {
+            return clean;
+          }
+          if (saved.mode === "find" || saved.mode === "check") {
+            clean.mode = saved.mode;
+          }
+          if (saved.lang === "en" || saved.lang === "zh") {
+            clean.lang = saved.lang;
+          }
+          if (Object.prototype.hasOwnProperty.call(currencies, saved.currency)) {
+            clean.currency = saved.currency;
+          }
+          numericFields.forEach(function (field) {
+            if (Object.prototype.hasOwnProperty.call(saved, field)) {
+              var value = saved[field];
+              if (value === "") {
+                clean[field] = "";
+              } else if (Number.isFinite(Number(value))) {
+                clean[field] = String(value);
+              }
+            }
+          });
+        } catch (error) {
+          return clean;
+        }
+        return clean;
+      }
+
+      function saveState() {
+        var next = {
+          mode: state.mode,
+          lang: state.lang,
+          currency: byId("currency").value
+        };
+        numericFields.forEach(function (field) {
+          next[field] = byId(field).value;
+        });
+        state = Object.assign({}, state, next);
+        try {
+          window.localStorage.setItem(storeKey, JSON.stringify(next));
+        } catch (error) {
+          return;
+        }
+      }
+
+      function applyState() {
+        byId("currency").value = Object.prototype.hasOwnProperty.call(currencies, state.currency) ? state.currency : defaults.currency;
+        numericFields.forEach(function (field) {
+          byId(field).value = typeof state[field] === "string" ? state[field] : defaults[field];
+        });
+        setMode(state.mode);
+        setLanguage(state.lang);
+      }
+
+      function setMode(mode) {
+        state.mode = mode === "check" ? "check" : "find";
+        document.querySelectorAll("[data-mode]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-mode") === state.mode));
+        });
+        document.querySelectorAll(".mode-find-field").forEach(function (node) {
+          node.hidden = state.mode !== "find";
+        });
+        document.querySelectorAll(".mode-check-field").forEach(function (node) {
+          node.hidden = state.mode !== "check";
+        });
+      }
+
+      function setLanguage(lang) {
+        state.lang = lang === "zh" ? "zh" : "en";
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+        document.querySelectorAll("[data-lang]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-lang") === state.lang));
+        });
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          if (text[state.lang][key]) {
+            node.textContent = text[state.lang][key];
+          }
+        });
+      }
+
+      function readNumber(id) {
+        var raw = byId(id).value.trim();
+        if (raw === "") {
+          return NaN;
+        }
+        var value = Number(raw);
+        return Number.isFinite(value) ? value : NaN;
+      }
+
+      function activeText() {
+        return text[state.lang] || text.en;
+      }
+
+      function currencyInfo() {
+        var value = byId("currency").value;
+        return currencies[value] || currencies.USD;
+      }
+
+      function formatNumber(value, decimals) {
+        if (!Number.isFinite(value)) {
+          return activeText().dash;
+        }
+        var places = Number.isFinite(decimals) ? decimals : 0;
+        return new Intl.NumberFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: places,
+          maximumFractionDigits: places
+        }).format(value);
+      }
+
+      function formatMoney(value, decimals) {
+        if (!Number.isFinite(value)) {
+          return activeText().dash;
+        }
+        var info = currencyInfo();
+        var places = Number.isFinite(decimals) ? decimals : info.decimals;
+        var sign = value < 0 ? "-" : "";
+        var amount = Math.abs(value);
+        var formatted = new Intl.NumberFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: places,
+          maximumFractionDigits: places
+        }).format(amount);
+        return sign + info.symbol + formatted;
+      }
+
+      function replaceToken(template, key, value) {
+        return template.replace("{" + key + "}", String(value));
+      }
+
+      function setText(id, value) {
+        byId(id).textContent = String(value);
+      }
+
+      function setSummary(rows) {
+        for (var i = 0; i < 5; i += 1) {
+          var row = rows[i] || { label: activeText().dash, value: activeText().dash };
+          setText("row" + (i + 1) + "Label", row.label);
+          setText("row" + (i + 1) + "Value", row.value);
+        }
+      }
+
+      function setSteps(rows) {
+        steps.replaceChildren();
+        rows.forEach(function (row) {
+          var item = document.createElement("li");
+          var line = document.createElement("div");
+          var label = document.createElement("span");
+          var value = document.createElement("strong");
+          line.className = "step-row";
+          label.textContent = row.label;
+          value.textContent = row.value;
+          line.appendChild(label);
+          line.appendChild(value);
+          item.appendChild(line);
+          steps.appendChild(item);
+        });
+      }
+
+      function showStatus(message) {
+        status.hidden = false;
+        status.textContent = message;
+      }
+
+      function clearStatus() {
+        status.hidden = true;
+        status.textContent = "";
+      }
+
+      function renderInvalid(message) {
+        var t = activeText();
+        showStatus(message);
+        setText("headlineLabel", state.mode === "find" ? t.requiredHourly : t.estimatedTakeHome);
+        setText("headlineValue", t.dash);
+        setText("headlineSub", t.dash);
+        setSummary([]);
+        setSteps([]);
+      }
+
+      function finiteAll(values) {
+        return values.every(function (value) {
+          return Number.isFinite(value);
+        });
+      }
+
+      function renderFind() {
+        var t = activeText();
+        var target = readNumber("targetTakeHome");
+        var expenses = readNumber("expenses");
+        var taxRate = readNumber("taxRate");
+        var billableHours = readNumber("billableHours");
+        var weeks = readNumber("weeks");
+        var hoursPerDay = readNumber("hoursPerDay");
+
+        if (!finiteAll([target, expenses, taxRate, billableHours, weeks, hoursPerDay])) {
+          renderInvalid(t.invalidMissing);
+          return;
+        }
+        if (target < 0 || expenses < 0 || taxRate < 0 || billableHours <= 0 || weeks <= 0 || hoursPerDay <= 0) {
+          renderInvalid(t.invalidPositive);
+          return;
+        }
+        if (taxRate >= 100) {
+          renderInvalid(t.invalidTax);
+          return;
+        }
+
+        var taxFraction = taxRate / 100;
+        var targetPlusExpenses = target + expenses;
+        var grossRevenue = targetPlusExpenses / (1 - taxFraction);
+        var totalHours = billableHours * weeks;
+        var hourly = grossRevenue / totalHours;
+        var dayRate = hourly * hoursPerDay;
+        var weekRate = hourly * billableHours;
+
+        if (!finiteAll([grossRevenue, totalHours, hourly, dayRate, weekRate])) {
+          renderInvalid(t.invalidComputed);
+          return;
+        }
+
+        clearStatus();
+        setText("headlineLabel", t.requiredHourly);
+        setText("headlineValue", formatMoney(hourly, 2) + "/hr");
+        setText("headlineSub", replaceToken(t.basedOn, "hours", formatNumber(totalHours, 0)));
+        setSummary([
+          { label: replaceToken(t.dayRate, "hours", formatNumber(hoursPerDay, 2).replace(/\.00$/, "")), value: formatMoney(dayRate, 2) },
+          { label: t.weekRate, value: formatMoney(weekRate, 2) },
+          { label: t.grossNeeded, value: formatMoney(grossRevenue, 0) },
+          { label: t.billableYear, value: formatNumber(totalHours, 0) },
+          { label: t.taxAmount, value: formatMoney(grossRevenue * taxFraction, 0) }
+        ]);
+        setSteps([
+          { label: t.targetPlusExpenses, value: formatMoney(targetPlusExpenses, 0) },
+          { label: t.grossUp, value: formatMoney(grossRevenue, 0) },
+          { label: t.billableYear, value: formatNumber(billableHours, 2).replace(/\.00$/, "") + " x " + formatNumber(weeks, 0) + " = " + formatNumber(totalHours, 0) },
+          { label: t.divideHours, value: formatMoney(grossRevenue, 0) + " / " + formatNumber(totalHours, 0) },
+          { label: t.hourlyResult, value: formatMoney(hourly, 2) + "/hr" }
+        ]);
+      }
+
+      function renderCheck() {
+        var t = activeText();
+        var hourly = readNumber("hourlyRate");
+        var expenses = readNumber("expenses");
+        var taxRate = readNumber("taxRate");
+        var billableHours = readNumber("billableHours");
+        var weeks = readNumber("weeks");
+        var hoursPerDay = readNumber("hoursPerDay");
+
+        if (!finiteAll([hourly, expenses, taxRate, billableHours, weeks, hoursPerDay])) {
+          renderInvalid(t.invalidMissing);
+          return;
+        }
+        if (hourly < 0 || expenses < 0 || taxRate < 0 || billableHours <= 0 || weeks <= 0 || hoursPerDay <= 0) {
+          renderInvalid(t.invalidPositive);
+          return;
+        }
+        if (taxRate >= 100) {
+          renderInvalid(t.invalidTax);
+          return;
+        }
+
+        var totalHours = billableHours * weeks;
+        var grossAnnual = hourly * totalHours;
+        var preTaxProfit = grossAnnual - expenses;
+        var taxAmount = Math.max(preTaxProfit, 0) * (taxRate / 100);
+        var takeHome = preTaxProfit - taxAmount;
+        var takeHomePerHour = takeHome / totalHours;
+
+        if (!finiteAll([totalHours, grossAnnual, preTaxProfit, taxAmount, takeHome, takeHomePerHour])) {
+          renderInvalid(t.invalidComputed);
+          return;
+        }
+
+        clearStatus();
+        setText("headlineLabel", t.estimatedTakeHome);
+        setText("headlineValue", formatMoney(takeHome, 0));
+        setText("headlineSub", replaceToken(replaceToken(t.checkBasedOn, "rate", formatMoney(hourly, 2)), "hours", formatNumber(totalHours, 0)));
+        setSummary([
+          { label: t.grossAnnual, value: formatMoney(grossAnnual, 0) },
+          { label: t.annualExpenses, value: formatMoney(expenses, 0) },
+          { label: t.preTaxProfit, value: formatMoney(preTaxProfit, 0) },
+          { label: t.taxAmount, value: formatMoney(taxAmount, 0) },
+          { label: t.takeHomePerHour, value: formatMoney(takeHomePerHour, 2) + "/hr" }
+        ]);
+        setSteps([
+          { label: t.grossAnnual, value: formatMoney(hourly, 2) + " x " + formatNumber(totalHours, 0) + " = " + formatMoney(grossAnnual, 0) },
+          { label: t.preTaxProfit, value: formatMoney(grossAnnual, 0) + " - " + formatMoney(expenses, 0) + " = " + formatMoney(preTaxProfit, 0) },
+          { label: t.taxAmount, value: formatMoney(taxAmount, 0) },
+          { label: t.estimatedTakeHome, value: formatMoney(takeHome, 0) },
+          { label: t.takeHomePerHour, value: formatMoney(takeHomePerHour, 2) + "/hr" }
+        ]);
+      }
+
+      function render() {
+        if (state.mode === "check") {
+          renderCheck();
+        } else {
+          renderFind();
+        }
+      }
+
+      document.querySelectorAll("[data-mode]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          setMode(button.getAttribute("data-mode"));
+          saveState();
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-lang]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          setLanguage(button.getAttribute("data-lang"));
+          saveState();
+          render();
+        });
+      });
+
+      form.addEventListener("input", function () {
+        saveState();
+        render();
+      });
+
+      form.addEventListener("change", function () {
+        saveState();
+        render();
+      });
+
+      applyState();
+      render();
+    }());
+  </script>
+</body>
+</html>
