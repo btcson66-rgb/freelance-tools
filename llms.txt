@@ -1,0 +1,39 @@
+# Freelance Tools — Free Offline Tools & Guides for Freelancers
+
+> Free, single-file, offline-first tools for freelancers: invoicing, time tracking, CRM,
+> expenses, contracts and quotes. No login, no subscription, your data stays in your browser.
+> Paid Pro versions are one-time purchases on Gumroad. Site: https://btcson66-rgb.github.io/freelance-tools/
+
+## Free tools (run in the browser, nothing to install)
+- [Free Invoice Generator](https://btcson66-rgb.github.io/freelance-tools/free-invoice-generator/): Offline single-file invoice & quote maker
+- [Free Time Tracker](https://btcson66-rgb.github.io/freelance-tools/free-time-tracker/): Billable-hours timesheet, runs in your browser
+- [Free Freelance CRM](https://btcson66-rgb.github.io/freelance-tools/free-freelance-crm/): Lead & client sales-pipeline tracker
+- [Free Expense Tracker](https://btcson66-rgb.github.io/freelance-tools/free-expense-tracker/): Income, expenses & tax set-aside tracker
+- [Free Freelance Contract](https://btcson66-rgb.github.io/freelance-tools/free-freelance-contract/): Proposal & service-contract maker
+
+## Free calculators & utilities
+- [Freelance Rate Calculator](https://btcson66-rgb.github.io/freelance-tools/freelance-rate-calculator/): Find/check your hourly rate from an income goal
+- [Invoice Late-Fee Calculator](https://btcson66-rgb.github.io/freelance-tools/invoice-late-fee-calculator/): Compute overdue fees + reminder text
+- [Hourly to Salary Calculator](https://btcson66-rgb.github.io/freelance-tools/hourly-to-salary-calculator/): Convert hourly <-> annual both ways
+- [Project Quote Builder](https://btcson66-rgb.github.io/freelance-tools/project-quote-builder/): Line-item quote with discount/tax, print to PDF
+- [Invoice Due-Date Calculator](https://btcson66-rgb.github.io/freelance-tools/invoice-due-date-calculator/): Net 7/15/30 due dates + early-pay discount
+- [Freelance Tax Estimator](https://btcson66-rgb.github.io/freelance-tools/freelance-tax-estimator/): Quarterly/monthly set-aside estimate
+- [Invoice Number Generator](https://btcson66-rgb.github.io/freelance-tools/invoice-number-generator/): Auto-incrementing invoice numbers
+- [Freelance Project Checklist](https://btcson66-rgb.github.io/freelance-tools/freelance-project-checklist/): Pre-built 16-item project checklist
+
+## Guides
+- [How Much Should Freelancers Set Aside for Taxes Each Year?](https://btcson66-rgb.github.io/freelance-tools/blog/how-much-to-set-aside-for-taxes-freelance/): Learn how much to set aside for taxes freelance income may create, how the 25-30% habit works, and how to track expenses and estimated payments each year.
+- [How to Track Billable Hours as a Freelancer: Simple Guide](https://btcson66-rgb.github.io/freelance-tools/blog/how-to-track-billable-hours/): Learn how to track billable hours, separate non-billable work, choose fair rounding rules, measure your effective rate, and create accurate client invoices.
+- [How to Write a Freelance Contract (Plain-English Guide)](https://btcson66-rgb.github.io/freelance-tools/blog/how-to-write-a-freelance-contract/): Learn how to write a freelance contract with clear scope, payment terms, revisions, ownership, cancellation, kill fee, signatures, and common mistakes to avoid.
+- [How to Write a Freelance Invoice: Your Step-by-Step Guide](https://btcson66-rgb.github.io/freelance-tools/blog/how-to-write-a-freelance-invoice/): Learn how to write a freelance invoice with the right fields, payment terms, tax details, and follow-up steps so clients can pay you promptly and reliably.
+- [Offline Freelance Tools vs Cloud Apps: A Practical Guide](https://btcson66-rgb.github.io/freelance-tools/blog/offline-vs-cloud-freelance-tools/): Compare offline freelance tools with cloud apps for privacy, data ownership, subscriptions, reliability, collaboration, and the long-term cost of each.
+- [Freelance Contract Checklist: 10 Essential Clauses You Need](https://btcson66-rgb.github.io/freelance-tools/blog/freelance-contract-checklist/): Use this freelance contract checklist to define scope, payment, revisions, ownership, cancellation, confidentiality, liability, signatures, and disputes.
+- [How to Track Expenses as a Freelancer (Without a Spreadsheet)](https://btcson66-rgb.github.io/freelance-tools/blog/freelance-expense-tracking/): Learn freelance expense tracking without a spreadsheet, including deductible categories, receipt habits, business separation, quarterly reviews, and tax set-aside planning.
+- [Freelance Invoice Payment Terms Explained: Net 15, 30, 45 and How to Get Paid Faster](https://btcson66-rgb.github.io/freelance-tools/blog/freelance-invoice-payment-terms/): Understand freelance invoice payment terms like Net 15, Net 30, deposits, 2/10 Net 30 discounts, late fees, follow-ups, and faster payment habits.
+- [Free Freelance Invoice Template: What to Include and How to Send It](https://btcson66-rgb.github.io/freelance-tools/blog/freelance-invoice-template/): Use this freelance invoice template guide to include the right fields, payment terms, line items, tax details, totals, and PDF sending process.
+- [Freelance Sales Pipeline: A Simple System for More Leads](https://btcson66-rgb.github.io/freelance-tools/blog/freelance-sales-pipeline/): Build a freelance sales pipeline that tracks leads, follow-ups, proposals, wins, and losses so promising client conversations do not disappear unnoticed.
+
+## About
+All tools are single HTML files that work offline with localStorage — no servers, no tracking.
+Built for freelancers who want to own their data. Pro upgrades add unlimited records, CSV
+export and a tool bundle. Full list & comparisons: https://btcson66-rgb.github.io/freelance-tools/best-free-freelance-tools/
