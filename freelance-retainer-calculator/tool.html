@@ -1,0 +1,1024 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freelance Retainer Calculator - Monthly Retainer Pricing</title>
+  <meta name="description" content="Free offline freelance retainer calculator for pricing included hours, availability premium or volume discount, overage rate, effective hourly rate, and annual retainer value.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --ink: #111827;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #f3e8ff;
+      --accent: #7e22ce;
+      --accent-dark: #581c87;
+      --accent-soft: #faf5ff;
+      --good: #166534;
+      --warn: #92400e;
+      --danger: #b91c1c;
+      --shadow: 0 18px 46px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-underline-offset: 0.18em;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: flex-start;
+      min-width: 0;
+      gap: 13px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 1.35rem;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3.2vw, 2.65rem);
+      line-height: 1.08;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .tagline {
+      max-width: 72ch;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .lang-toggle button {
+      min-width: 58px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .lang-toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(340px, 1.08fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+      padding: 22px 22px 0;
+    }
+
+    .panel-title {
+      margin: 0 0 4px;
+      font-size: 1.08rem;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .panel-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 20px 22px 22px;
+    }
+
+    .span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: #334155;
+      font-size: 0.9rem;
+      font-weight: 750;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: var(--ink);
+      background: #ffffff;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .lang-toggle button:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.16);
+      outline: none;
+    }
+
+    .note {
+      margin: 0;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent-soft);
+      padding: 12px 14px;
+      color: #4c1d95;
+      font-size: 0.9rem;
+    }
+
+    .result-panel {
+      overflow: hidden;
+    }
+
+    .result-top {
+      padding: 24px 24px 22px;
+      background: linear-gradient(180deg, var(--accent-soft), #ffffff 78%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .result-eyebrow {
+      margin: 0 0 7px;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .result-copy {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .main-number {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      color: var(--accent-dark);
+      font-size: clamp(2.25rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .per-month {
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 750;
+    }
+
+    .takeaway {
+      margin: 14px 0 0;
+      color: #312e81;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .message {
+      display: none;
+      margin: 12px 0 0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .message.is-neutral {
+      display: block;
+      color: #475569;
+      background: #f1f5f9;
+    }
+
+    .message.is-error {
+      display: block;
+      color: var(--danger);
+      background: #fef2f2;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 20px 22px 22px;
+    }
+
+    .metric {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 14px;
+    }
+
+    .metric.wide {
+      grid-column: 1 / -1;
+    }
+
+    .metric-label {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      margin: 0;
+      color: var(--ink);
+      font-size: 1.24rem;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-text {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .positive {
+      color: var(--warn);
+    }
+
+    .negative {
+      color: var(--good);
+    }
+
+    .zero {
+      color: #475569;
+    }
+
+    .disclaimer {
+      margin: 0;
+      padding: 0 22px 22px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    footer {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .lang-toggle {
+        align-self: flex-start;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        width: min(100% - 24px, 1120px);
+        padding-top: 20px;
+      }
+
+      .brand {
+        gap: 10px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 1.15rem;
+      }
+
+      .form,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .span-2,
+      .metric.wide {
+        grid-column: auto;
+      }
+
+      .panel-header,
+      .form,
+      .result-top,
+      .metrics {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .disclaimer {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">R</div>
+        <div>
+          <p class="eyebrow" data-i18n="eyebrow">Freelance pricing tool</p>
+          <h1 data-i18n="appTitle">Freelance Retainer Calculator</h1>
+          <p class="tagline" data-i18n="tagline">Price a monthly retainer from included hours, your standard hourly rate, an availability premium or volume discount, and a clear overage policy.</p>
+        </div>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="zh-Hant" aria-pressed="false">繁中</button>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="Retainer calculator">
+      <section class="panel" aria-labelledby="inputTitle">
+        <div class="panel-header">
+          <h2 class="panel-title" id="inputTitle" data-i18n="inputTitle">Retainer inputs</h2>
+          <p class="panel-copy" data-i18n="inputCopy">Use realistic monthly hours, then show the client exactly what the retainer changes versus ad-hoc billing.</p>
+        </div>
+
+        <form class="form" id="retainerForm" novalidate>
+          <div class="field span-2">
+            <label for="currency">
+              <span data-i18n="currencyLabel">Currency</span>
+              <span class="hint" data-i18n="currencyHint">prefix only</span>
+            </label>
+            <select id="currency" name="currency">
+              <option value="$">$ USD</option>
+              <option value="NT$">NT$ TWD</option>
+              <option value="€">€ EUR</option>
+              <option value="£">£ GBP</option>
+              <option value="A$">A$ AUD</option>
+              <option value="C$">C$ CAD</option>
+              <option value="JP¥">JP¥ JPY</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="includedHours">
+              <span data-i18n="hoursLabel">Included hours per month</span>
+              <span class="hint" data-i18n="hoursHint">e.g. 20</span>
+            </label>
+            <input id="includedHours" name="includedHours" type="number" min="0" step="0.25" inputmode="decimal" value="20">
+          </div>
+
+          <div class="field">
+            <label for="hourlyRate">
+              <span data-i18n="rateLabel">Your standard hourly rate</span>
+              <span class="hint" data-i18n="rateHint">e.g. 80</span>
+            </label>
+            <input id="hourlyRate" name="hourlyRate" type="number" min="0" step="0.01" inputmode="decimal" value="80">
+          </div>
+
+          <div class="field span-2">
+            <label for="adjustment">
+              <span data-i18n="adjustmentLabel">Retainer adjustment %</span>
+              <span class="hint" data-i18n="adjustmentHint">default 15</span>
+            </label>
+            <input id="adjustment" name="adjustment" type="number" min="-99" step="0.1" inputmode="decimal" value="15">
+          </div>
+
+          <p class="note span-2" data-i18n="adjustmentNote">Positive adds an availability premium for reserving capacity. Negative gives a volume discount for a guaranteed monthly commitment.</p>
+
+          <div class="field">
+            <label for="overageRate">
+              <span data-i18n="overageLabel">Overage hourly rate</span>
+              <span class="hint" data-i18n="overageHint">blank = standard</span>
+            </label>
+            <input id="overageRate" name="overageRate" type="number" min="0" step="0.01" inputmode="decimal" value="80">
+          </div>
+
+          <div class="field">
+            <label for="extraHours">
+              <span data-i18n="extraHoursLabel">Extra hours example</span>
+              <span class="hint" data-i18n="extraHoursHint">over cap</span>
+            </label>
+            <input id="extraHours" name="extraHours" type="number" min="0" step="0.25" inputmode="decimal" value="5">
+          </div>
+        </form>
+      </section>
+
+      <aside class="panel result-panel" aria-live="polite" aria-labelledby="resultTitle">
+        <div class="result-top">
+          <p class="result-eyebrow" id="resultTitle" data-i18n="resultTitle">Monthly retainer fee</p>
+          <p class="result-copy" data-i18n="resultCopy">Main price to put in the proposal.</p>
+          <p class="main-number"><span id="monthlyRetainer">--</span><span class="per-month" data-i18n="perMonth">/ month</span></p>
+          <p class="takeaway" id="takeaway" data-i18n="neutralTakeaway">Enter your numbers to calculate a monthly retainer.</p>
+          <p class="message" id="message"></p>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <p class="metric-label" data-i18n="effectiveLabel">Effective hourly</p>
+            <p class="metric-value" id="effectiveHourly">--</p>
+            <p class="metric-text" data-i18n="effectiveText">Inside the included hours.</p>
+          </div>
+
+          <div class="metric">
+            <p class="metric-label" data-i18n="annualLabel">Annual value</p>
+            <p class="metric-value" id="annualValue">--</p>
+            <p class="metric-text" data-i18n="annualText">Monthly fee multiplied by 12.</p>
+          </div>
+
+          <div class="metric">
+            <p class="metric-label" data-i18n="overageRateLabel">Overage rate</p>
+            <p class="metric-value" id="overageRateOutput">--</p>
+            <p class="metric-text" data-i18n="overageRateText">Billed separately beyond the cap.</p>
+          </div>
+
+          <div class="metric">
+            <p class="metric-label" data-i18n="overageExampleLabel">Overage example</p>
+            <p class="metric-value" id="overageExample">--</p>
+            <p class="metric-text" id="overageExampleText">--</p>
+          </div>
+
+          <div class="metric wide">
+            <p class="metric-label" id="comparisonLabel" data-i18n="comparisonLabel">Vs ad-hoc billing</p>
+            <p class="metric-value" id="comparisonValue">--</p>
+            <p class="metric-text" id="comparisonText">--</p>
+          </div>
+        </div>
+
+        <p class="disclaimer" data-i18n="disclaimer">A pricing guide, not financial or legal advice. Set retainer terms, hour caps, and overage rates in a written agreement.</p>
+      </aside>
+    </section>
+
+    <footer>
+      <span data-i18n="footerLead">More freelance calculators:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      "use strict";
+
+      var storageKey = "retainer_v1";
+      var defaults = {
+        lang: "en",
+        currency: "$",
+        includedHours: "20",
+        hourlyRate: "80",
+        adjustment: "15",
+        overageRate: "80",
+        extraHours: "5"
+      };
+
+      var copy = {
+        en: {
+          eyebrow: "Freelance pricing tool",
+          appTitle: "Freelance Retainer Calculator",
+          tagline: "Price a monthly retainer from included hours, your standard hourly rate, an availability premium or volume discount, and a clear overage policy.",
+          inputTitle: "Retainer inputs",
+          inputCopy: "Use realistic monthly hours, then show the client exactly what the retainer changes versus ad-hoc billing.",
+          currencyLabel: "Currency",
+          currencyHint: "prefix only",
+          hoursLabel: "Included hours per month",
+          hoursHint: "e.g. 20",
+          rateLabel: "Your standard hourly rate",
+          rateHint: "e.g. 80",
+          adjustmentLabel: "Retainer adjustment %",
+          adjustmentHint: "default 15",
+          adjustmentNote: "Positive adds an availability premium for reserving capacity. Negative gives a volume discount for a guaranteed monthly commitment.",
+          overageLabel: "Overage hourly rate",
+          overageHint: "blank = standard",
+          extraHoursLabel: "Extra hours example",
+          extraHoursHint: "over cap",
+          resultTitle: "Monthly retainer fee",
+          resultCopy: "Main price to put in the proposal.",
+          perMonth: "/ month",
+          neutralTakeaway: "Enter your numbers to calculate a monthly retainer.",
+          effectiveLabel: "Effective hourly",
+          effectiveText: "Inside the included hours.",
+          annualLabel: "Annual value",
+          annualText: "Monthly fee multiplied by 12.",
+          overageRateLabel: "Overage rate",
+          overageRateText: "Billed separately beyond the cap.",
+          overageExampleLabel: "Overage example",
+          comparisonLabel: "Vs ad-hoc billing",
+          disclaimer: "A pricing guide, not financial or legal advice. Set retainer terms, hour caps, and overage rates in a written agreement.",
+          footerLead: "More freelance calculators:",
+          enterNumbers: "Enter included hours and a standard hourly rate above zero.",
+          adjustmentError: "Adjustment must be greater than -100%; otherwise the retainer fee is zero or negative.",
+          overageError: "Overage hourly rate cannot be negative.",
+          extraHoursError: "Extra hours cannot be negative.",
+          premiumLabel: "Availability premium",
+          discountLabel: "Volume discount",
+          noAdjustmentLabel: "No adjustment",
+          premiumText: "Client pays {diff} more than {adhoc} ad-hoc billing for guaranteed availability.",
+          discountText: "You give {diff} off the {adhoc} ad-hoc value for a guaranteed monthly commitment.",
+          noAdjustmentText: "Retainer matches {adhoc} ad-hoc billing for the included hours.",
+          overageText: "{hours} extra hours = {cost}, billed separately at {rate}/hr.",
+          premiumTakeaway: "A {hours}-hour retainer at {rate}/hr + {pct}% availability premium = {retainer}/month ({effective}/hr effective). Overage billed at {overage}/hr.",
+          discountTakeaway: "A {hours}-hour retainer at {rate}/hr - {pct}% volume discount = {retainer}/month ({effective}/hr effective). Overage billed at {overage}/hr.",
+          noAdjustmentTakeaway: "A {hours}-hour retainer at {rate}/hr with no adjustment = {retainer}/month ({effective}/hr effective). Overage billed at {overage}/hr."
+        },
+        "zh-Hant": {
+          eyebrow: "自由工作者定價工具",
+          appTitle: "自由工作者月費保留合約計算機",
+          tagline: "用每月包含時數、你的標準時薪、保留可用性的加價或固定量折扣，以及清楚的超時費率，估算月費保留合約。",
+          inputTitle: "保留合約輸入",
+          inputCopy: "先填入實際可交付的每月時數，再清楚呈現它和臨時按時計費的差異。",
+          currencyLabel: "貨幣",
+          currencyHint: "僅作前綴",
+          hoursLabel: "每月包含時數",
+          hoursHint: "例如 20",
+          rateLabel: "你的標準時薪",
+          rateHint: "例如 80",
+          adjustmentLabel: "保留合約調整 %",
+          adjustmentHint: "預設 15",
+          adjustmentNote: "正數代表為保留產能收取可用性加價；負數代表為固定月承諾提供量價折扣。",
+          overageLabel: "超時時薪",
+          overageHint: "空白 = 標準時薪",
+          extraHoursLabel: "超時範例時數",
+          extraHoursHint: "超過上限",
+          resultTitle: "月費保留合約金額",
+          resultCopy: "可放入提案的主要月費。",
+          perMonth: "/ 月",
+          neutralTakeaway: "輸入數字後即可計算月費保留合約。",
+          effectiveLabel: "合約內有效時薪",
+          effectiveText: "以包含時數計算。",
+          annualLabel: "年度合約價值",
+          annualText: "月費乘以 12。",
+          overageRateLabel: "超時費率",
+          overageRateText: "超過包含時數後另行計費。",
+          overageExampleLabel: "超時範例",
+          comparisonLabel: "相較臨時按時計費",
+          disclaimer: "這是定價參考，不是財務或法律建議。保留合約條款、時數上限與超時費率應寫入書面協議。",
+          footerLead: "更多自由工作者計算工具：",
+          enterNumbers: "請輸入大於零的包含時數與標準時薪。",
+          adjustmentError: "調整幅度必須大於 -100%；否則月費會變成零或負數。",
+          overageError: "超時時薪不可為負數。",
+          extraHoursError: "超時範例時數不可為負數。",
+          premiumLabel: "可用性加價",
+          discountLabel: "量價折扣",
+          noAdjustmentLabel: "無調整",
+          premiumText: "客戶為保留你的可用性，比 {adhoc} 的臨時按時計費多支付 {diff}。",
+          discountText: "你針對 {adhoc} 的臨時按時計費價值，提供 {diff} 的固定月承諾折扣。",
+          noAdjustmentText: "保留合約與包含時數的 {adhoc} 臨時按時計費相同。",
+          overageText: "{hours} 小時超時 = {cost}，以 {rate}/小時另行計費。",
+          premiumTakeaway: "{hours} 小時保留合約，以 {rate}/小時加上 {pct}% 可用性加價 = 每月 {retainer}（有效時薪 {effective}）。超時以 {overage}/小時計費。",
+          discountTakeaway: "{hours} 小時保留合約，以 {rate}/小時扣除 {pct}% 量價折扣 = 每月 {retainer}（有效時薪 {effective}）。超時以 {overage}/小時計費。",
+          noAdjustmentTakeaway: "{hours} 小時保留合約，以 {rate}/小時且不調整 = 每月 {retainer}（有效時薪 {effective}）。超時以 {overage}/小時計費。"
+        }
+      };
+
+      var state = loadState();
+      var ids = [
+        "currency",
+        "includedHours",
+        "hourlyRate",
+        "adjustment",
+        "overageRate",
+        "extraHours",
+        "monthlyRetainer",
+        "effectiveHourly",
+        "annualValue",
+        "overageRateOutput",
+        "overageExample",
+        "overageExampleText",
+        "comparisonLabel",
+        "comparisonValue",
+        "comparisonText",
+        "takeaway",
+        "message"
+      ];
+      var el = {};
+
+      ids.forEach(function(id) {
+        el[id] = document.getElementById(id);
+      });
+
+      function loadState() {
+        var loaded = {};
+        try {
+          var raw = window.localStorage.getItem(storageKey);
+          if (raw) {
+            loaded = JSON.parse(raw) || {};
+          }
+        } catch (error) {
+          loaded = {};
+        }
+
+        return {
+          lang: loaded.lang === "zh-Hant" ? "zh-Hant" : defaults.lang,
+          currency: typeof loaded.currency === "string" ? loaded.currency : defaults.currency,
+          includedHours: valueOrDefault(loaded.includedHours, defaults.includedHours),
+          hourlyRate: valueOrDefault(loaded.hourlyRate, defaults.hourlyRate),
+          adjustment: valueOrDefault(loaded.adjustment, defaults.adjustment),
+          overageRate: valueOrDefault(loaded.overageRate, defaults.overageRate),
+          extraHours: valueOrDefault(loaded.extraHours, defaults.extraHours)
+        };
+      }
+
+      function valueOrDefault(value, fallback) {
+        return value === 0 || typeof value === "string" || typeof value === "number" ? String(value) : fallback;
+      }
+
+      function saveState() {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (error) {
+          return;
+        }
+      }
+
+      function applyState() {
+        el.currency.value = hasCurrency(state.currency) ? state.currency : defaults.currency;
+        el.includedHours.value = state.includedHours;
+        el.hourlyRate.value = state.hourlyRate;
+        el.adjustment.value = state.adjustment;
+        el.overageRate.value = state.overageRate;
+        el.extraHours.value = state.extraHours;
+        setLanguage(state.lang, false);
+      }
+
+      function hasCurrency(prefix) {
+        var exists = false;
+        Array.prototype.forEach.call(el.currency.options, function(option) {
+          if (option.value === prefix) {
+            exists = true;
+          }
+        });
+        return exists;
+      }
+
+      function readInputs() {
+        state.currency = el.currency.value || defaults.currency;
+        state.includedHours = el.includedHours.value;
+        state.hourlyRate = el.hourlyRate.value;
+        state.adjustment = el.adjustment.value;
+        state.overageRate = el.overageRate.value;
+        state.extraHours = el.extraHours.value;
+      }
+
+      function setLanguage(lang, shouldSave) {
+        state.lang = lang === "zh-Hant" ? "zh-Hant" : "en";
+        document.documentElement.lang = state.lang;
+
+        document.querySelectorAll("[data-lang]").forEach(function(button) {
+          button.setAttribute("aria-pressed", button.getAttribute("data-lang") === state.lang ? "true" : "false");
+        });
+
+        document.querySelectorAll("[data-i18n]").forEach(function(node) {
+          var key = node.getAttribute("data-i18n");
+          if (copy[state.lang][key]) {
+            node.textContent = copy[state.lang][key];
+          }
+        });
+
+        render();
+
+        if (shouldSave) {
+          saveState();
+        }
+      }
+
+      function parseNumber(value) {
+        if (value === null || typeof value === "undefined" || String(value).trim() === "") {
+          return null;
+        }
+
+        var number = Number(value);
+        return isFinite(number) ? number : null;
+      }
+
+      function render() {
+        var text = copy[state.lang];
+        var currency = state.currency || defaults.currency;
+        var hours = parseNumber(state.includedHours);
+        var rate = parseNumber(state.hourlyRate);
+        var adjustmentPct = parseNumber(state.adjustment);
+        var overageInput = parseNumber(state.overageRate);
+        var extraInput = parseNumber(state.extraHours);
+
+        if (adjustmentPct === null) {
+          adjustmentPct = 0;
+        }
+
+        if (extraInput === null) {
+          extraInput = 5;
+        }
+
+        if (hours === null || rate === null || hours <= 0 || rate <= 0) {
+          setNeutral(text.enterNumbers);
+          return;
+        }
+
+        if (adjustmentPct <= -100) {
+          setError(text.adjustmentError);
+          return;
+        }
+
+        if (overageInput !== null && overageInput < 0) {
+          setError(text.overageError);
+          return;
+        }
+
+        if (extraInput < 0) {
+          setError(text.extraHoursError);
+          return;
+        }
+
+        var overage = overageInput === null ? rate : overageInput;
+        var adjustment = adjustmentPct / 100;
+        var retainer = hours * rate * (1 + adjustment);
+        var effective = retainer / hours;
+        var annual = retainer * 12;
+        var adhoc = hours * rate;
+        var diff = retainer - adhoc;
+        var diffPct = adhoc === 0 ? 0 : diff / adhoc * 100;
+        var overageCost = extraInput * overage;
+
+        if (!allFinite([retainer, effective, annual, adhoc, diff, diffPct, overageCost])) {
+          setError(text.enterNumbers);
+          return;
+        }
+
+        clearMessage();
+        el.monthlyRetainer.textContent = formatMoney(retainer, currency);
+        el.effectiveHourly.textContent = formatMoney(effective, currency) + "/hr";
+        el.annualValue.textContent = formatMoney(annual, currency);
+        el.overageRateOutput.textContent = formatMoney(overage, currency) + "/hr";
+        el.overageExample.textContent = formatMoney(overageCost, currency);
+        el.overageExampleText.textContent = template(text.overageText, {
+          hours: formatPlain(extraInput),
+          cost: formatMoney(overageCost, currency),
+          rate: formatMoney(overage, currency)
+        });
+
+        setComparison(text, diff, diffPct, adhoc, currency);
+        setTakeaway(text, hours, rate, adjustmentPct, retainer, effective, overage, currency);
+      }
+
+      function setNeutral(message) {
+        setDashes();
+        el.takeaway.textContent = copy[state.lang].neutralTakeaway;
+        el.message.textContent = message || copy[state.lang].neutralTakeaway;
+        el.message.className = "message is-neutral";
+      }
+
+      function setError(message) {
+        setDashes();
+        el.takeaway.textContent = copy[state.lang].neutralTakeaway;
+        el.message.textContent = message;
+        el.message.className = "message is-error";
+      }
+
+      function clearMessage() {
+        el.message.textContent = "";
+        el.message.className = "message";
+      }
+
+      function setDashes() {
+        el.monthlyRetainer.textContent = "--";
+        el.effectiveHourly.textContent = "--";
+        el.annualValue.textContent = "--";
+        el.overageRateOutput.textContent = "--";
+        el.overageExample.textContent = "--";
+        el.overageExampleText.textContent = "--";
+        el.comparisonValue.textContent = "--";
+        el.comparisonText.textContent = "--";
+        el.comparisonValue.className = "metric-value";
+      }
+
+      function setComparison(text, diff, diffPct, adhoc, currency) {
+        var absolute = formatMoney(Math.abs(diff), currency);
+        var adhocMoney = formatMoney(adhoc, currency);
+        var signed = formatSignedMoney(diff, currency) + " (" + formatSignedNumber(diffPct) + "%)";
+
+        el.comparisonValue.textContent = signed;
+
+        if (diff > 0) {
+          el.comparisonLabel.textContent = text.premiumLabel;
+          el.comparisonValue.className = "metric-value positive";
+          el.comparisonText.textContent = template(text.premiumText, {
+            diff: absolute,
+            adhoc: adhocMoney
+          });
+        } else if (diff < 0) {
+          el.comparisonLabel.textContent = text.discountLabel;
+          el.comparisonValue.className = "metric-value negative";
+          el.comparisonText.textContent = template(text.discountText, {
+            diff: absolute,
+            adhoc: adhocMoney
+          });
+        } else {
+          el.comparisonLabel.textContent = text.noAdjustmentLabel;
+          el.comparisonValue.className = "metric-value zero";
+          el.comparisonText.textContent = template(text.noAdjustmentText, {
+            adhoc: adhocMoney
+          });
+        }
+      }
+
+      function setTakeaway(text, hours, rate, adjustmentPct, retainer, effective, overage, currency) {
+        var key = adjustmentPct > 0 ? "premiumTakeaway" : adjustmentPct < 0 ? "discountTakeaway" : "noAdjustmentTakeaway";
+        el.takeaway.textContent = template(text[key], {
+          hours: formatPlain(hours),
+          rate: formatMoney(rate, currency),
+          pct: formatPercent(Math.abs(adjustmentPct)),
+          retainer: formatMoney(retainer, currency),
+          effective: formatMoney(effective, currency),
+          overage: formatMoney(overage, currency)
+        });
+      }
+
+      function formatMoney(amount, currency) {
+        var prefix = amount < 0 ? "-" + currency : currency;
+        return prefix + formatNumber(Math.abs(amount));
+      }
+
+      function formatSignedMoney(amount, currency) {
+        if (amount > 0) {
+          return "+" + formatMoney(amount, currency);
+        }
+        if (amount < 0) {
+          return formatMoney(amount, currency);
+        }
+        return formatMoney(0, currency);
+      }
+
+      function formatNumber(value) {
+        return value.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function formatSignedNumber(value) {
+        var sign = value > 0 ? "+" : "";
+        return sign + formatNumber(value);
+      }
+
+      function formatPercent(value) {
+        return Number(value).toLocaleString("en-US", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function formatPlain(value) {
+        return Number(value).toLocaleString("en-US", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function template(pattern, values) {
+        return pattern.replace(/\{(\w+)\}/g, function(match, key) {
+          return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : match;
+        });
+      }
+
+      function allFinite(values) {
+        return values.every(function(value) {
+          return isFinite(value);
+        });
+      }
+
+      document.querySelectorAll("[data-lang]").forEach(function(button) {
+        button.addEventListener("click", function() {
+          setLanguage(button.getAttribute("data-lang"), true);
+        });
+      });
+
+      ["currency", "includedHours", "hourlyRate", "adjustment", "overageRate", "extraHours"].forEach(function(id) {
+        el[id].addEventListener("input", function() {
+          readInputs();
+          render();
+          saveState();
+        });
+
+        el[id].addEventListener("change", function() {
+          readInputs();
+          render();
+          saveState();
+        });
+      });
+
+      applyState();
+      saveState();
+    }());
+  </script>
+</body>
+</html>
