@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Freelance Writing Rate Calculator — Per Word &amp; Hourly, Offline</title>
+<meta name="description" content="A free per-word rate calculator for freelance writers: price a project from a per-word rate, see the hourly it really pays, or find the per-word rate you need to hit a target hourly. Runs in your browser, nothing uploaded.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/freelance-writing-rate-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Freelance Writing Rate Calculator — Per Word &amp; Hourly">
+<meta property="og:description" content="Price writing by the word, see the hourly it really pays, or find the per-word rate you need. Free, runs in your browser, nothing uploaded.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/freelance-writing-rate-calculator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Freelance Writing Rate Calculator — Offline">
+<meta name="twitter:description" content="Per-word, per-project and effective hourly for freelance writers. Free, nothing uploaded.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Freelance Writing Rate Calculator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline per-word rate calculator for freelance writers. Price a project from a per-word rate and see the effective hourly it pays, or work backwards from a target hourly to the per-word rate you should charge. Runs in your browser with no account and no data upload.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/freelance-writing-rate-calculator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Price a project from a per-word rate",
+    "See the effective hourly a per-word quote pays",
+    "Find the per-word rate for a target hourly",
+    "Adjustable writing speed (words per hour)",
+    "Multiple currencies",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this writing rate calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. It runs in your browser with no account and no sign-up, and nothing is uploaded. There is no paid version of the calculator." } },
+    { "@type": "Question", "name": "How do I calculate a per-word writing rate?", "acceptedAnswer": { "@type": "Answer", "text": "Decide the hourly income you want, then divide it by how many finished words you write per hour including research and edits. For example, a $60/hour target at 600 words/hour is $0.10 per word. The calculator does this and shows what common article lengths would bill." } },
+    { "@type": "Question", "name": "What is a good per-word rate for freelance writing in 2026?", "acceptedAnswer": { "@type": "Answer", "text": "It varies widely by niche and experience, roughly from a few cents per word for entry-level content up to $0.50–$1.00+ per word for specialist or technical work. Rather than copy a benchmark, work backwards from the hourly you need at your real writing speed, which is what this tool does." } },
+    { "@type": "Question", "name": "Should I charge per word or per hour?", "acceptedAnswer": { "@type": "Answer", "text": "Per-word pricing rewards you for writing quickly and gives the client a clear total up front. Hourly pricing protects you on research-heavy or unpredictable work. The calculator shows the effective hourly of a per-word quote so you can compare them for a specific piece." } },
+    { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Completely. The calculator runs entirely in your browser with zero network requests. Your rates and word counts are never uploaded anywhere." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#1a0f1c;--muted:#6b5b6f;--line:#f0dcef;--bg:#faf5fb;--brand:#db2777}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#fce7f3,transparent),linear-gradient(180deg,#fff,#faf5fb);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#a21563;background:#fce7f3;border:1px solid #fbcfe8;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:40px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#e9b8dd}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#3a2b3d}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#473549}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#e9b8dd}
+  .endcta{background:#1a0f1c;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#e6d3e3;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#4a3a4d;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free freelance writing rate calculator</h1>
+    <p class="sub">Charging by the word? See the hourly it actually pays before you say yes. Or work backwards from the hourly you need to the per-word rate you should quote. Built for freelance writers, editors and content creators — runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the calculator →</a>
+      <a class="btn buy" href="../freelance-rate-calculator/">General rate calculator →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Per-word ↔ hourly both ways</span>
+      <span><span class="dotg">●</span> Adjustable writing speed</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>A per-word rate is only as good as the hourly behind it</h2>
+    <p>"$0.10 a word" sounds clean, but it hides the number that actually matters: how much you earn per hour. A 1,500-word piece at $0.10 is $150 — great if it takes you two hours, painful if the research drags it to six. This calculator turns a per-word rate into the effective hourly for a real piece, so you can spot the jobs that quietly underpay before you accept them.</p>
+    <p>It works in both directions. In <strong>price-a-project mode</strong>, enter your per-word rate and the word count and it shows the project total, the estimated hours at your writing speed, and the effective hourly. In <strong>find-my-rate mode</strong>, enter the hourly you want and your writing speed and it returns the per-word rate to quote — plus what common article lengths would bill at that rate.</p>
+
+    <h2>What it works out</h2>
+    <div class="feat">
+      <div><h4>Project total</h4><p>Per-word rate × word count, formatted and ready to drop into a quote.</p></div>
+      <div><h4>Effective hourly</h4><p>What the per-word quote really pays once you factor in your writing speed.</p></div>
+      <div><h4>Per-word rate you need</h4><p>Work backwards from a target hourly so you never quote below your floor.</p></div>
+      <div><h4>Adjustable writing speed</h4><p>Set realistic finished words per hour — research and edits included, not raw typing speed.</p></div>
+      <div><h4>Common lengths</h4><p>See what 1,000- and 2,000-word pieces bill, so quoting is instant.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Runs entirely in your browser. Your rates never leave your computer.</p></div>
+    </div>
+
+    <h2>How to set your writing rate in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Set your writing speed</strong> — the finished words per hour you really produce, including research and edits (most writers land between 500 and 1,000).</li>
+      <li><strong>Enter a target hourly</strong> (or a per-word rate you've been offered).</li>
+      <li><strong>Read the result</strong> — the per-word rate to quote, or the effective hourly a quote actually pays.</li>
+    </ol>
+
+    <h2>From rate to getting paid</h2>
+    <p>Once your rate is set, the rest of the workflow stays offline too: lock the scope and revision limits in a <a href="../free-freelance-contract/">contract</a>, turn finished work into a clean <a href="../free-invoice-generator/">invoice</a>, <a href="../free-time-tracker/">track your hours</a> to sanity-check that effective hourly on real jobs, and keep an eye on the money with the <a href="../free-expense-tracker/">expense &amp; tax tracker</a>. All one-time purchases, no subscription. Get all five in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$39 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this writing rate calculator free?</dt>
+      <dd>Yes, completely. It runs in your browser with no account and nothing uploaded. There is no paid version of the calculator itself.</dd>
+      <dt>How do I calculate a per-word writing rate?</dt>
+      <dd>Divide the hourly you want by your finished words per hour. A $60/hour target at 600 words/hour is $0.10 per word. The tool does this and shows what common lengths would bill.</dd>
+      <dt>What's a good per-word rate in 2026?</dt>
+      <dd>It ranges from a few cents per word for entry-level content to $0.50–$1.00+ for specialist or technical work. Instead of copying a benchmark, work backwards from your real hourly and speed.</dd>
+      <dt>Per word or per hour?</dt>
+      <dd>Per word rewards speed and gives the client a fixed total; hourly protects you on research-heavy jobs. The tool shows the effective hourly of a per-word quote so you can compare for a given piece.</dd>
+      <dt>Is my data private?</dt>
+      <dd>Completely. Zero network requests — your rates and word counts stay on your computer.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of offline, no-subscription tools that cover the whole freelance workflow:</p>
+    <div class="related">
+      <a href="../freelance-rate-calculator/">⌁ General rate calculator</a>
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+      <a href="../free-freelance-contract/">✒ Free contract maker</a>
+      <a href="../free-time-tracker/">◷ Free time tracker</a>
+      <a href="../payment-fee-calculator/">↺ Payment fee calculator</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Quote with confidence</h2>
+      <p>See the real hourly behind any per-word rate in two minutes. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the calculator →</a>
+        <a class="btn buy" href="../">See all the tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>

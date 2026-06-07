@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Payment Fee Calculator — PayPal, Stripe &amp; Wise, Offline</title>
+<meta name="description" content="A free payment fee calculator for freelancers: see exactly what you keep after PayPal, Stripe, Wise or Payoneer fees — or what to invoice so you receive a target amount. Editable rates, runs in your browser, nothing uploaded.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/payment-fee-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Payment Fee Calculator — PayPal, Stripe &amp; Wise">
+<meta property="og:description" content="See what you keep after PayPal/Stripe/Wise fees, or what to invoice to net a target. Free, runs in your browser, nothing uploaded.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/payment-fee-calculator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Payment Fee Calculator — Offline">
+<meta name="twitter:description" content="What you keep after payment fees, or what to charge to net a target. Free, nothing uploaded.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Payment Fee Calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline payment processing fee calculator for freelancers. Work out exactly what you receive after PayPal, Stripe, Wise or Payoneer fees, or reverse it to find what to invoice so you net a target amount. Rates are editable and it runs in your browser with no account and no data upload.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/payment-fee-calculator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "See net received after fees (PayPal, Stripe, Wise, Payoneer, custom)",
+    "Reverse mode: what to invoice to net a target amount",
+    "Editable percent and fixed fee per processor",
+    "International / cross-border surcharge",
+    "Effective fee rate on any amount",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this payment fee calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. It runs in your browser with no account and no sign-up, and nothing is uploaded. There is no paid version of the calculator." } },
+    { "@type": "Question", "name": "How do I calculate what to charge so I receive a specific amount?", "acceptedAnswer": { "@type": "Answer", "text": "Use reverse mode. If the fee is a percent p plus a fixed fee f, and you want to net N, invoice N plus f, divided by one minus p. For example, to net $1,000 on Stripe (2.9% + $0.30) you invoice (1000 + 0.30) / (1 - 0.029) which is about $1,030.18. The calculator does this for you." } },
+    { "@type": "Question", "name": "How much does PayPal or Stripe take from freelancers?", "acceptedAnswer": { "@type": "Answer", "text": "As of 2026 PayPal goods-and-services is commonly 3.49% + $0.49 and Stripe is 2.9% + $0.30 on standard US card payments, with cross-border surcharges on top. Rates change and vary by country and account type, so the calculator pre-fills these but lets you edit them to match your real fees." } },
+    { "@type": "Question", "name": "Why is the fee on small payments so high?", "acceptedAnswer": { "@type": "Answer", "text": "Because the fixed fee dominates. A $0.49 fixed fee is almost 5% of a $10 payment but under 0.05% of a $1,000 payment. The calculator shows the effective fee rate so you can see when small jobs or splitting invoices costs you more." } },
+    { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Completely. The calculator runs entirely in your browser with zero network requests. Your amounts are never uploaded anywhere." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#052e1a;--muted:#5b7367;--line:#d9eee2;--bg:#f4fbf7;--brand:#16a34a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:#15803d;text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#d1fae5,transparent),linear-gradient(180deg,#fff,#f4fbf7);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#15803d;background:#d1fae5;border:1px solid #a7f3d0;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:40px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#9ad9bb}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#1f3a2c}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  table.rates{width:100%;border-collapse:collapse;margin-top:12px;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  table.rates th,table.rates td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line)}
+  table.rates th{background:#ecfdf3;font-weight:750}
+  table.rates tr:last-child td{border-bottom:0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#2c473a}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#9ad9bb}
+  .endcta{background:#052e1a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#bfe6d1;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#1d4d36;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free payment fee calculator</h1>
+    <p class="sub">PayPal, Stripe, Wise and Payoneer all take a cut. See exactly what lands in your account after fees — or flip it around and find what to invoice so you actually receive the amount you need. Rates are editable to match your account and country. Runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the calculator →</a>
+      <a class="btn buy" href="../free-invoice-generator/">Then make the invoice →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Net-received &amp; reverse modes</span>
+      <span><span class="dotg">●</span> Editable rates + surcharge</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Know what you keep before you send the invoice</h2>
+    <p>It's easy to forget that a $1,000 invoice doesn't put $1,000 in your pocket. After processing fees you might keep around $965 on PayPal or $971 on Stripe — and on small or cross-border payments the gap is bigger. This calculator does the arithmetic both ways so there are no surprises when the payout lands.</p>
+    <p>In <strong>"how much will I receive" mode</strong>, enter what the client pays and pick a processor; it shows the fee and the net you keep, plus the effective fee rate. In <strong>"what should I invoice" mode</strong>, enter the amount you need to <em>net</em> and it tells you the gross to charge so the fee comes out of the client's payment, not yours.</p>
+
+    <h2>Typical 2026 processor fees (editable in the tool)</h2>
+    <table class="rates">
+      <tr><th>Processor</th><th>Common rate</th><th>Notes</th></tr>
+      <tr><td>PayPal (Goods &amp; Services)</td><td>3.49% + $0.49</td><td>+ ~1.5% cross-border surcharge</td></tr>
+      <tr><td>Stripe (standard card)</td><td>2.9% + $0.30</td><td>+ ~1.5% on international cards</td></tr>
+      <tr><td>Wise (receiving)</td><td>varies</td><td>depends on currency &amp; route — edit it</td></tr>
+      <tr><td>Payoneer (card payment)</td><td>~3.0%</td><td>plus withdrawal fees in some cases</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">Fees change and vary by country, currency and account type. The calculator pre-fills these but every field is editable so you can match your real rate — these are estimates, not a quote from the providers.</p>
+
+    <h2>What it works out</h2>
+    <div class="feat">
+      <div><h4>Net you receive</h4><p>The amount that actually lands after the percent and fixed fee are taken.</p></div>
+      <div><h4>What to invoice</h4><p>Reverse the math to charge the gross that nets your target amount.</p></div>
+      <div><h4>Effective fee rate</h4><p>Fee as a percent of the payment — exposes how much small jobs really cost.</p></div>
+      <div><h4>Editable per processor</h4><p>PayPal, Stripe, Wise, Payoneer presets you can override, plus a custom mode.</p></div>
+      <div><h4>Cross-border surcharge</h4><p>Add the international percent on top with one field.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Runs entirely in your browser. Your amounts never leave your computer.</p></div>
+    </div>
+
+    <h2>How to use it in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Pick a processor</strong> (or Custom) — the percent and fixed fee fill in and stay editable.</li>
+      <li><strong>Choose a mode</strong> — enter the amount the client pays, or the amount you want to net.</li>
+      <li><strong>Read the result</strong> — net received or invoice amount, with the fee and effective rate shown.</li>
+    </ol>
+
+    <h2>From quote to paid</h2>
+    <p>Fees are one line in the bigger picture. Set a rate that already absorbs them with the <a href="../freelance-rate-calculator/">rate calculator</a>, put the right number on a clean <a href="../free-invoice-generator/">invoice</a>, lock terms in a <a href="../free-freelance-contract/">contract</a>, and track what actually arrives with the <a href="../free-expense-tracker/">expense &amp; tax tracker</a>. All offline, one-time purchases, no subscription. Get all five in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$39 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this payment fee calculator free?</dt>
+      <dd>Yes, completely. It runs in your browser with no account and nothing uploaded. There is no paid version of the calculator itself.</dd>
+      <dt>How do I charge so I receive an exact amount?</dt>
+      <dd>Use reverse mode. For a percent p plus fixed fee f, to net N you invoice (N + f) / (1 − p). To net $1,000 on Stripe that's about $1,030.18. The tool does it for you.</dd>
+      <dt>How much does PayPal or Stripe take?</dt>
+      <dd>As of 2026, commonly PayPal 3.49% + $0.49 and Stripe 2.9% + $0.30 on US card payments, plus cross-border surcharges. Rates vary — edit them to match your account.</dd>
+      <dt>Why is the fee on small payments so high?</dt>
+      <dd>The fixed fee dominates. $0.49 is ~5% of a $10 payment but a rounding error on $1,000. The tool shows the effective rate so you can see it.</dd>
+      <dt>Is my data private?</dt>
+      <dd>Completely. Zero network requests — your amounts stay on your computer.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of offline, no-subscription tools that cover the whole freelance workflow:</p>
+    <div class="related">
+      <a href="../freelance-rate-calculator/">⌁ Rate calculator</a>
+      <a href="../free-invoice-generator/">▤ Free invoice generator</a>
+      <a href="../invoice-late-fee-calculator/">◷ Late-fee calculator</a>
+      <a href="../free-expense-tracker/">$ Free expense tracker</a>
+      <a href="../freelance-writing-rate-calculator/">✎ Writing rate calculator</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>See what you really keep</h2>
+      <p>No more guessing at payout time. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the calculator →</a>
+        <a class="btn buy" href="../">See all the tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>

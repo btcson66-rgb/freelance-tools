@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freelance Writing Rate Calculator — Per Word, Per Project, Hourly</title>
+  <meta name="description" content="Free per-word rate calculator for freelance writers. Price a project from a per-word rate, see the effective hourly, or work out the per-word rate you need to hit a target hourly. Offline, nothing uploaded.">
+  <style>
+    :root{
+      color-scheme: light;
+      --bg:#faf5fb; --card:#ffffff; --text:#1a0f1c; --muted:#6b5b6f; --line:#f0dcef;
+      --soft:#fdf2fb; --accent:#db2777; --accent-dark:#a21563; --danger:#b91c1c;
+      --shadow:0 18px 40px rgba(146,28,99,.10);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif,"PingFang TC","Microsoft JhengHei";line-height:1.5}
+    a{color:var(--accent-dark)}
+    .page{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:32px 0 24px}
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}
+    .title-block{max-width:780px}
+    .eyebrow{margin:0 0 8px;color:var(--accent-dark);font-size:.82rem;font-weight:800;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(2rem,4vw,3.2rem);line-height:1.06}
+    .intro{margin:14px 0 0;color:var(--muted);font-size:1.05rem;max-width:70ch}
+    .lang-toggle,.mode-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--line);
+      border-radius:999px;background:var(--card);box-shadow:0 8px 22px rgba(146,28,99,.06)}
+    .lang-toggle{flex:0 0 auto}
+    .lang-toggle button,.mode-toggle button{border:0;border-radius:999px;padding:8px 12px;background:transparent;
+      color:var(--muted);font:inherit;font-size:.92rem;font-weight:800;cursor:pointer}
+    .lang-toggle button.active,.mode-toggle button.active{background:var(--accent);color:#fff}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.84fr);gap:20px;align-items:start}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+    .panel{padding:22px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+    h2{margin:0;font-size:1.2rem}
+    .field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .field{display:flex;flex-direction:column;gap:7px}
+    .field.full{grid-column:1 / -1}
+    label{color:#3f2b41;font-size:.92rem;font-weight:750}
+    input,select{width:100%;border:1px solid #e3c9e0;border-radius:8px;background:#fff;color:var(--text);font:inherit;
+      padding:11px 12px;outline:none;transition:border-color .16s,box-shadow .16s}
+    input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(219,39,119,.16)}
+    .input-row{display:grid;grid-template-columns:116px minmax(0,1fr);gap:8px}
+    .result-card{overflow:hidden}
+    .result-top{padding:22px;background:linear-gradient(180deg,#fdf2fb 0%,#fff 100%);border-bottom:1px solid var(--line)}
+    .status{margin:0 0 12px;color:var(--muted);font-weight:700}
+    .status.error{color:var(--danger)}
+    .main-label{margin:0;color:var(--muted);font-size:.94rem;font-weight:750}
+    .main-value{margin:2px 0 0;color:var(--accent-dark);font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;font-weight:900;overflow-wrap:anywhere}
+    .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 22px 20px}
+    .metric{padding:13px;border:1px solid var(--line);border-radius:8px;background:#fff}
+    .metric.wide{grid-column:1 / -1;background:var(--soft);border-color:#f3c6ea}
+    .metric span{display:block;color:var(--muted);font-size:.85rem;font-weight:750}
+    .metric strong{display:block;margin-top:4px;font-size:1.2rem;overflow-wrap:anywhere}
+    .reality{padding:20px 22px 22px;border-top:1px solid var(--line)}
+    .reality p{margin:8px 0 0;color:var(--muted);font-size:.95rem}
+    footer{margin-top:22px;color:var(--muted);font-size:.95rem;text-align:center}
+    @media(max-width:850px){header{flex-direction:column}.grid{grid-template-columns:1fr}}
+    @media(max-width:580px){.page{width:min(100% - 20px,1120px);padding-top:20px}
+      .field-grid,.metrics{grid-template-columns:1fr}.input-row{grid-template-columns:1fr}
+      .metric.wide{grid-column:auto}.panel,.result-top,.reality{padding:18px}.metrics{padding:14px 18px 18px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance writing tool</p>
+        <h1 data-i18n="title">Writing rate calculator</h1>
+        <p class="intro" data-i18n="intro">Price writing by the word, see the hourly rate it really pays, or find the per-word rate you need to hit a target hourly.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" id="langEn" class="active">EN</button>
+        <button type="button" id="langZh">中文</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <div class="section-title">
+          <h2 id="inputsTitle" data-i18n="inputsTitle">Inputs</h2>
+          <div class="mode-toggle" aria-label="Mode">
+            <button type="button" id="modePrice" class="active" data-i18n="modePrice">Price a project</button>
+            <button type="button" id="modeRate" data-i18n="modeRate">Find per-word rate</button>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field full">
+            <label for="perWord" id="perWordLabel">Rate per word</label>
+            <div class="input-row">
+              <select id="currency" aria-label="Currency">
+                <option value="$ USD">$ USD</option>
+                <option value="NT$ TWD">NT$ TWD</option>
+                <option value="€ EUR">€ EUR</option>
+                <option value="£ GBP">£ GBP</option>
+                <option value="A$ AUD">A$ AUD</option>
+                <option value="C$ CAD">C$ CAD</option>
+                <option value="JP¥ JPY">JP¥ JPY</option>
+              </select>
+              <input id="perWord" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.15">
+            </div>
+          </div>
+
+          <div class="field" id="wordCountField">
+            <label for="wordCount" data-i18n="wordCount">Word count</label>
+            <input id="wordCount" type="number" min="0" step="50" inputmode="numeric" placeholder="1500">
+          </div>
+
+          <div class="field" id="targetHourlyField" style="display:none">
+            <label for="targetHourly" data-i18n="targetHourly">Target hourly rate</label>
+            <input id="targetHourly" type="number" min="0" step="1" inputmode="decimal" placeholder="60">
+          </div>
+
+          <div class="field">
+            <label for="speed" data-i18n="speed">Writing speed (words/hour)</label>
+            <input id="speed" type="number" min="0" step="25" inputmode="numeric" value="600">
+          </div>
+        </div>
+        <p class="reality" style="border:0;padding:14px 0 0;margin:0"><span data-i18n="speedHint">Tip: most freelance writers produce 500–1,000 finished words per hour including research and edits. Lower the speed for technical or heavily-researched work.</span></p>
+      </section>
+
+      <section class="card result-card" aria-labelledby="resultsTitle">
+        <div class="result-top">
+          <p id="status" class="status">Enter your numbers to start.</p>
+          <p id="mainLabel" class="main-label">Project total</p>
+          <p id="mainValue" class="main-value">—</p>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span id="metricOneLabel">Estimated hours</span>
+            <strong id="metricOne">—</strong>
+          </div>
+          <div class="metric">
+            <span id="metricTwoLabel">Effective hourly</span>
+            <strong id="metricTwo">—</strong>
+          </div>
+          <div class="metric wide">
+            <span id="metricWideLabel">Per 1,000 words</span>
+            <strong id="metricWide">—</strong>
+          </div>
+        </div>
+        <div class="reality">
+          <h2 id="resultsTitle" data-i18n="realityTitle">Per-word vs hourly</h2>
+          <p id="realityText">Per-word pricing rewards you for writing faster; hourly pricing protects you on research-heavy work. This shows both so you can pick the one that pays you more for a given piece.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More free freelance tools:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      "use strict";
+      var storageKey = "writingrate_v1";
+      var state = { lang:"en", mode:"price", currency:"$ USD",
+        perWord:"", wordCount:"", targetHourly:"", speed:"600" };
+
+      var text = {
+        en:{
+          eyebrow:"Freelance writing tool",
+          title:"Writing rate calculator",
+          intro:"Price writing by the word, see the hourly rate it really pays, or find the per-word rate you need to hit a target hourly.",
+          inputsTitle:"Inputs",
+          modePrice:"Price a project",
+          modeRate:"Find per-word rate",
+          perWordLabel:"Rate per word",
+          wordCount:"Word count",
+          targetHourly:"Target hourly rate",
+          speed:"Writing speed (words/hour)",
+          speedHint:"Tip: most freelance writers produce 500–1,000 finished words per hour including research and edits. Lower the speed for technical or heavily-researched work.",
+          projectTotal:"Project total",
+          neededPerWord:"Per-word rate you need",
+          estHours:"Estimated hours",
+          effHourly:"Effective hourly",
+          per1000:"Per 1,000 words",
+          per2000:"Per 2,000 words",
+          realityTitle:"Per-word vs hourly",
+          realityPrice:"At %R/word and %S words/hour, this piece pays about %H per hour. If that is below your target hourly, raise the per-word rate or write faster — per-word pricing rewards speed.",
+          realityRate:"To earn %T per hour at %S words/hour, charge about %R per word. A 1,500-word article would then bill %B.",
+          needInput:"Enter your numbers to start.",
+          invalidInput:"Enter valid positive numbers.",
+          ready:"Calculated from your inputs.",
+          footerText:"More free freelance tools:"
+        },
+        zh:{
+          eyebrow:"自由寫作工具",
+          title:"寫作費率計算器",
+          intro:"以字計價、看清楚實際時薪，或反推你要達到目標時薪所需的每字費率。",
+          inputsTitle:"輸入",
+          modePrice:"估算專案報價",
+          modeRate:"反推每字費率",
+          perWordLabel:"每字費率",
+          wordCount:"字數",
+          targetHourly:"目標時薪",
+          speed:"寫作速度（字／小時）",
+          speedHint:"提示：多數自由寫作者含研究與修改後，每小時可產出 500–1,000 個完稿字。技術性或需大量查證的內容請調低速度。",
+          projectTotal:"專案總價",
+          neededPerWord:"所需每字費率",
+          estHours:"預估工時",
+          effHourly:"實際時薪",
+          per1000:"每 1,000 字",
+          per2000:"每 2,000 字",
+          realityTitle:"以字計價 vs 以時計價",
+          realityPrice:"以每字 %R、每小時 %S 字計算，這篇約等於每小時 %H。若低於你的目標時薪，請提高每字費率或加快速度——以字計價會獎勵寫得快的人。",
+          realityRate:"若想以每小時 %S 字達到每小時 %T，每字約需收 %R。一篇 1,500 字的文章則約為 %B。",
+          needInput:"請輸入數字開始計算。",
+          invalidInput:"請輸入有效且大於 0 的數字。",
+          ready:"已依你的輸入完成計算。",
+          footerText:"更多免費自由工作者工具："
+        }
+      };
+
+      var ids = ["currency","perWord","wordCount","targetHourly","speed"];
+      var el = {};
+      ids.forEach(function(id){ el[id]=document.getElementById(id); });
+      el.langEn=document.getElementById("langEn");
+      el.langZh=document.getElementById("langZh");
+      el.modePrice=document.getElementById("modePrice");
+      el.modeRate=document.getElementById("modeRate");
+      el.perWordLabel=document.getElementById("perWordLabel");
+      el.wordCountField=document.getElementById("wordCountField");
+      el.targetHourlyField=document.getElementById("targetHourlyField");
+      el.status=document.getElementById("status");
+      el.mainLabel=document.getElementById("mainLabel");
+      el.mainValue=document.getElementById("mainValue");
+      el.metricOneLabel=document.getElementById("metricOneLabel");
+      el.metricOne=document.getElementById("metricOne");
+      el.metricTwoLabel=document.getElementById("metricTwoLabel");
+      el.metricTwo=document.getElementById("metricTwo");
+      el.metricWideLabel=document.getElementById("metricWideLabel");
+      el.metricWide=document.getElementById("metricWide");
+      el.realityText=document.getElementById("realityText");
+
+      load(); bind(); render();
+
+      function bind(){
+        ids.forEach(function(id){
+          el[id].addEventListener("input",function(){ state[id]=el[id].value; render(); save(); });
+        });
+        el.langEn.addEventListener("click",function(){ state.lang="en"; render(); save(); });
+        el.langZh.addEventListener("click",function(){ state.lang="zh"; render(); save(); });
+        el.modePrice.addEventListener("click",function(){ state.mode="price"; render(); save(); });
+        el.modeRate.addEventListener("click",function(){ state.mode="rate"; render(); save(); });
+      }
+
+      function load(){
+        try{
+          var raw=localStorage.getItem(storageKey);
+          if(!raw) return;
+          var s=JSON.parse(raw);
+          if(!s||typeof s!=="object") return;
+          Object.keys(state).forEach(function(k){
+            if(!Object.prototype.hasOwnProperty.call(s,k)) return;
+            if(k==="lang"){ state.lang = s.lang==="zh"?"zh":"en"; }
+            else if(k==="mode"){ state.mode = s.mode==="rate"?"rate":"price"; }
+            else if(typeof s[k]==="string"){ state[k]=s[k]; }
+          });
+        }catch(e){ state.lang="en"; state.mode="price"; }
+      }
+      function save(){ try{ localStorage.setItem(storageKey,JSON.stringify(state)); }catch(e){} }
+
+      function render(){
+        ids.forEach(function(id){ el[id].value=state[id]; });
+        document.documentElement.lang = state.lang==="zh"?"zh-Hant":"en";
+        el.langEn.classList.toggle("active",state.lang==="en");
+        el.langZh.classList.toggle("active",state.lang==="zh");
+        el.modePrice.classList.toggle("active",state.mode==="price");
+        el.modeRate.classList.toggle("active",state.mode==="rate");
+
+        document.querySelectorAll("[data-i18n]").forEach(function(n){
+          n.textContent = t(n.getAttribute("data-i18n"));
+        });
+
+        var priceMode = state.mode==="price";
+        el.perWordLabel.textContent = priceMode ? t("perWordLabel") : t("neededPerWord");
+        el.wordCountField.style.display = priceMode ? "" : "none";
+        el.targetHourlyField.style.display = priceMode ? "none" : "";
+        // In rate mode the per-word field becomes an OUTPUT, so make it read-only-ish
+        el.perWord.readOnly = !priceMode;
+        el.perWord.style.background = priceMode ? "#fff" : "#fbeef7";
+
+        var o = calculate();
+        el.status.textContent=o.status; el.status.classList.toggle("error",o.error);
+        el.mainLabel.textContent=o.mainLabel; el.mainValue.textContent=o.mainValue;
+        el.metricOneLabel.textContent=o.metricOneLabel; el.metricOne.textContent=o.metricOne;
+        el.metricTwoLabel.textContent=o.metricTwoLabel; el.metricTwo.textContent=o.metricTwo;
+        el.metricWideLabel.textContent=o.metricWideLabel; el.metricWide.textContent=o.metricWide;
+        el.realityText.textContent=o.reality;
+      }
+
+      function calculate(){
+        var speed = num(state.speed);
+        var empty = {
+          status:t("needInput"), error:false,
+          mainLabel: state.mode==="price"?t("projectTotal"):t("neededPerWord"),
+          mainValue:"—",
+          metricOneLabel:t("estHours"), metricOne:"—",
+          metricTwoLabel:t("effHourly"), metricTwo:"—",
+          metricWideLabel:t("per1000"), metricWide:"—",
+          reality:t(state.mode==="price"?"realityPrice":"realityRate")
+            .replace("%R","—").replace("%S","—").replace("%H","—").replace("%T","—").replace("%B","—")
+        };
+
+        if(state.mode==="price"){
+          if(state.perWord.trim()===""||state.wordCount.trim()==="") return empty;
+          var pw=num(state.perWord), wc=num(state.wordCount);
+          if(!pos(pw)||!pos(wc)){ empty.status=t("invalidInput"); empty.error=true; return empty; }
+          var total = pw*wc;
+          var hours = pos(speed) ? wc/speed : NaN;
+          var effHourly = (pos(speed)) ? total/(wc/speed) : NaN; // = pw*speed
+          return {
+            status:t("ready"), error:false,
+            mainLabel:t("projectTotal"), mainValue:money(total),
+            metricOneLabel:t("estHours"), metricOne: Number.isFinite(hours)? hours.toLocaleString(undefined,{maximumFractionDigits:1})+"h":"—",
+            metricTwoLabel:t("effHourly"), metricTwo: Number.isFinite(effHourly)?money(effHourly):"—",
+            metricWideLabel:t("per1000"), metricWide:money(pw*1000),
+            reality:t("realityPrice")
+              .replace("%R",money(pw)).replace("%S",pos(speed)?speed.toLocaleString():"—")
+              .replace("%H",Number.isFinite(effHourly)?money(effHourly):"—")
+          };
+        }
+
+        // rate mode: target hourly + speed -> per-word
+        if(state.targetHourly.trim()==="") return empty;
+        var th=num(state.targetHourly);
+        if(!pos(th)||!pos(speed)){ empty.status=t("invalidInput"); empty.error=true; return empty; }
+        var perWord = th/speed;
+        state.perWord = perWord.toFixed(4); // reflect output into the (read-only) field
+        el.perWord.value = state.perWord;
+        var bill1500 = perWord*1500;
+        return {
+          status:t("ready"), error:false,
+          mainLabel:t("neededPerWord"), mainValue:money(perWord),
+          metricOneLabel:t("per1000"), metricOne:money(perWord*1000),
+          metricTwoLabel:t("per2000"), metricTwo:money(perWord*2000),
+          metricWideLabel:t("effHourly"), metricWide:money(th),
+          reality:t("realityRate")
+            .replace("%T",money(th)).replace("%S",speed.toLocaleString())
+            .replace("%R",money(perWord)).replace("%B",money(bill1500))
+        };
+      }
+
+      function t(k){ var p=text[state.lang]||text.en; return p[k]||text.en[k]||""; }
+      function num(v){ if(typeof v!=="string") return NaN; var n=Number(v.replace(/,/g,"").trim()); return Number.isFinite(n)?n:NaN; }
+      function pos(v){ return Number.isFinite(v)&&v>0; }
+      function money(v){
+        if(!Number.isFinite(v)) return "—";
+        var dp = Math.abs(v)<1 ? (Math.abs(v)<0.1?4:3) : 2;
+        return state.currency+" "+v.toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp});
+      }
+    }());
+  </script>
+</body>
+</html>

@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payment Fee Calculator for Freelancers - PayPal, Stripe, Wise</title>
+  <meta name="description" content="Free offline payment fee calculator for freelancers. Estimate PayPal, Stripe, Wise, Payoneer, and custom processor fees, including reverse invoice gross-up.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #f0fdf4;
+      --accent: #16a34a;
+      --accent-dark: #15803d;
+      --danger: #b91c1c;
+      --warn: #92400e;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-underline-offset: 0.18em;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      max-width: 780px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 70ch;
+    }
+
+    .lang-toggle,
+    .mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--card);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+    }
+
+    .lang-toggle {
+      flex: 0 0 auto;
+    }
+
+    .lang-toggle button,
+    .mode-toggle button {
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .lang-toggle button[aria-pressed="true"],
+    .mode-toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .lang-toggle button:focus-visible,
+    .mode-toggle button:focus-visible,
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.16);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      padding: 11px 12px;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .preset-note {
+      margin: 14px 0 0;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: var(--soft);
+      padding: 12px 14px;
+      color: #14532d;
+      font-size: 0.92rem;
+    }
+
+    .result-card {
+      overflow: hidden;
+    }
+
+    .result-top {
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #dcfce7 0%, #ffffff 100%);
+    }
+
+    .status {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.warn {
+      color: var(--warn);
+    }
+
+    .main-label {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 750;
+    }
+
+    .main-value {
+      margin: 2px 0 0;
+      color: var(--accent-dark);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .takeaway {
+      margin: 12px 0 0;
+      color: #14532d;
+      font-weight: 750;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px 22px 4px;
+    }
+
+    .metric {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .metric.wide {
+      grid-column: 1 / -1;
+      border-color: #bbf7d0;
+      background: var(--soft);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 750;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.2rem;
+      overflow-wrap: anywhere;
+    }
+
+    .details {
+      padding: 18px 22px 22px;
+    }
+
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .details-row strong {
+      color: var(--text);
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .disclaimer {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (max-width: 850px) {
+      header {
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        padding-top: 20px;
+      }
+
+      .section-title {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .mode-toggle {
+        width: 100%;
+      }
+
+      .mode-toggle button {
+        flex: 1 1 0;
+      }
+
+      .field-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .metric.wide {
+        grid-column: auto;
+      }
+
+      .details-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .details-row strong {
+        text-align: left;
+      }
+
+      .panel,
+      .result-top,
+      .details {
+        padding: 18px;
+      }
+
+      .metrics {
+        padding: 14px 18px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance payment tool</p>
+        <h1 data-i18n="title">Payment fee calculator</h1>
+        <p class="intro" data-i18n="intro">See what you keep after PayPal, Stripe, Wise, Payoneer, or custom processor fees, then reverse the math to invoice for a target net amount.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="zh" aria-pressed="false">繁中</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <div class="section-title">
+          <h2 id="inputsTitle" data-i18n="inputsTitle">Fee inputs</h2>
+          <div class="mode-toggle" aria-label="Calculator mode">
+            <button type="button" data-mode="forward" aria-pressed="true" data-i18n="modeForward">How much will I receive?</button>
+            <button type="button" data-mode="reverse" aria-pressed="false" data-i18n="modeReverse">What should I invoice?</button>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field full">
+            <label for="amount" id="amountLabel">Client pays</label>
+            <div class="input-row">
+              <select id="currency" aria-label="Currency">
+                <option value="USD">$ USD</option>
+                <option value="TWD">NT$ TWD</option>
+                <option value="EUR">€ EUR</option>
+                <option value="GBP">£ GBP</option>
+                <option value="AUD">A$ AUD</option>
+                <option value="CAD">C$ CAD</option>
+                <option value="JPY">JP¥ JPY</option>
+              </select>
+              <input id="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="1000">
+            </div>
+          </div>
+
+          <div class="field full">
+            <label for="processor" data-i18n="processorLabel">Processor preset</label>
+            <select id="processor">
+              <option value="paypal">PayPal - Goods &amp; Services, US domestic</option>
+              <option value="stripe">Stripe - standard US card</option>
+              <option value="wise">Wise - receiving varies</option>
+              <option value="payoneer">Payoneer - card payment</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="basePercent" data-i18n="basePercentLabel">Base processor fee (%)</label>
+            <input id="basePercent" type="number" min="0" step="0.01" inputmode="decimal">
+          </div>
+
+          <div class="field">
+            <label for="fixedFee" data-i18n="fixedFeeLabel">Fixed fee</label>
+            <input id="fixedFee" type="number" min="0" step="0.01" inputmode="decimal">
+          </div>
+
+          <div class="field full">
+            <label for="surcharge" data-i18n="surchargeLabel">International / cross-border surcharge (%)</label>
+            <input id="surcharge" type="number" min="0" step="0.01" inputmode="decimal" value="0">
+          </div>
+        </div>
+
+        <p class="preset-note" data-i18n="presetNote">Preset rates are editable US/domestic estimates. Fees vary by country, currency, account type, and payment method; Wise varies especially widely.</p>
+      </section>
+
+      <section class="card result-card" aria-labelledby="resultsTitle">
+        <div class="result-top">
+          <p id="status" class="status">Enter an amount to start.</p>
+          <p id="mainLabel" class="main-label">Net you receive</p>
+          <p id="mainValue" class="main-value">-</p>
+          <p id="takeaway" class="takeaway">-</p>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <span id="metricOneLabel">Gross paid</span>
+            <strong id="metricOne">-</strong>
+          </div>
+          <div class="metric">
+            <span id="metricTwoLabel">Fee charged</span>
+            <strong id="metricTwo">-</strong>
+          </div>
+          <div class="metric wide">
+            <span id="metricThreeLabel">Effective fee rate</span>
+            <strong id="metricThree">-</strong>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="details-row">
+            <span data-i18n="formulaLabel">Current fee formula</span>
+            <strong id="formulaValue">-</strong>
+          </div>
+          <p class="disclaimer" data-i18n="disclaimer">Processor fees change and vary by country, currency, and account type. These are editable estimates, not a quote from PayPal/Stripe/Wise/Payoneer.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More freelance calculators:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var storageKey = "payfee_v1";
+      var defaults = {
+        lang: "en",
+        mode: "forward",
+        currency: "USD",
+        processor: "paypal",
+        amount: "",
+        basePercent: "3.49",
+        fixedFee: "0.49",
+        surcharge: "0"
+      };
+
+      var presets = {
+        paypal: { percent: "3.49", fixed: "0.49" },
+        stripe: { percent: "2.9", fixed: "0.30" },
+        wise: { percent: "1.5", fixed: "0.00" },
+        payoneer: { percent: "3.0", fixed: "0.00" },
+        custom: { percent: "0", fixed: "0" }
+      };
+
+      var currencies = {
+        USD: "$",
+        TWD: "NT$",
+        EUR: "€",
+        GBP: "£",
+        AUD: "A$",
+        CAD: "C$",
+        JPY: "JP¥"
+      };
+
+      var text = {
+        en: {
+          eyebrow: "Freelance payment tool",
+          title: "Payment fee calculator",
+          intro: "See what you keep after PayPal, Stripe, Wise, Payoneer, or custom processor fees, then reverse the math to invoice for a target net amount.",
+          inputsTitle: "Fee inputs",
+          modeForward: "How much will I receive?",
+          modeReverse: "What should I invoice?",
+          amountForward: "Client pays",
+          amountReverse: "Net I want to receive",
+          processorLabel: "Processor preset",
+          basePercentLabel: "Base processor fee (%)",
+          fixedFeeLabel: "Fixed fee",
+          surchargeLabel: "International / cross-border surcharge (%)",
+          presetNote: "Preset rates are editable US/domestic estimates. Fees vary by country, currency, account type, and payment method; Wise varies especially widely.",
+          netReceived: "Net you receive",
+          invoiceAmount: "Invoice this amount",
+          grossPaid: "Gross paid",
+          feeCharged: "Fee charged",
+          effectiveRate: "Effective fee rate",
+          netTarget: "Net you receive",
+          formulaLabel: "Current fee formula",
+          disclaimer: "Processor fees change and vary by country, currency, and account type. These are editable estimates, not a quote from PayPal/Stripe/Wise/Payoneer.",
+          footerText: "More freelance calculators:",
+          needInput: "Enter an amount to start.",
+          invalidAmount: "Enter an amount greater than 0.",
+          invalidRates: "Use valid, non-negative fee numbers.",
+          invalidReverse: "At 100% fee or higher, no invoice amount can net your target.",
+          ready: "Calculated from your editable fee settings.",
+          feeExceedsGross: "Fee is larger than the client payment, so your net is negative.",
+          dash: "-",
+          takeawayForward: "On {gross} via {processor}, you keep {net} ({rate}% lost to fees).",
+          takeawayReverse: "To keep {net} via {processor}, invoice {gross}; fees take {fee} ({rate}%).",
+          takeawayEmpty: "Enter an amount and choose a fee preset.",
+          processorPaypal: "PayPal",
+          processorStripe: "Stripe",
+          processorWise: "Wise",
+          processorPayoneer: "Payoneer",
+          processorCustom: "Custom"
+        },
+        zh: {
+          eyebrow: "自由工作者收款工具",
+          title: "付款手續費計算器",
+          intro: "估算 PayPal、Stripe、Wise、Payoneer 或自訂手續費後實際入帳多少，也可反推為了收到目標淨額應開多少發票。",
+          inputsTitle: "手續費設定",
+          modeForward: "我會實收多少？",
+          modeReverse: "我該開多少發票？",
+          amountForward: "客戶付款金額",
+          amountReverse: "我想實收的淨額",
+          processorLabel: "付款平台預設",
+          basePercentLabel: "基本手續費 (%)",
+          fixedFeeLabel: "固定手續費",
+          surchargeLabel: "國際 / 跨境加收比例 (%)",
+          presetNote: "預設費率是可編輯的美國境內估算值。實際費用會因國家、幣別、帳戶類型與付款方式而不同，Wise 的差異尤其大。",
+          netReceived: "你會實收",
+          invoiceAmount: "請開這個金額",
+          grossPaid: "客戶付款總額",
+          feeCharged: "扣除手續費",
+          effectiveRate: "實際費率",
+          netTarget: "你會實收",
+          formulaLabel: "目前手續費公式",
+          disclaimer: "付款平台費用會變動，且會因國家、幣別與帳戶類型不同。這些是可編輯估算值，不是 PayPal/Stripe/Wise/Payoneer 的正式報價。",
+          footerText: "更多自由工作者計算器：",
+          needInput: "請輸入金額開始計算。",
+          invalidAmount: "請輸入大於 0 的金額。",
+          invalidRates: "請使用有效且不可為負數的手續費設定。",
+          invalidReverse: "手續費達 100% 或更高時，無法反推出可實收目標金額的發票金額。",
+          ready: "已依照你可編輯的手續費設定計算。",
+          feeExceedsGross: "手續費高於客戶付款金額，因此淨收入會是負數。",
+          dash: "-",
+          takeawayForward: "使用 {processor} 收 {gross}，你會實收 {net}，手續費約占 {rate}%。",
+          takeawayReverse: "若想透過 {processor} 實收 {net}，請開 {gross}；手續費為 {fee}，約占 {rate}%。",
+          takeawayEmpty: "請輸入金額並選擇手續費預設。",
+          processorPaypal: "PayPal",
+          processorStripe: "Stripe",
+          processorWise: "Wise",
+          processorPayoneer: "Payoneer",
+          processorCustom: "自訂"
+        }
+      };
+
+      var el = {};
+      [
+        "currency",
+        "processor",
+        "amount",
+        "basePercent",
+        "fixedFee",
+        "surcharge",
+        "status",
+        "mainLabel",
+        "mainValue",
+        "takeaway",
+        "metricOneLabel",
+        "metricOne",
+        "metricTwoLabel",
+        "metricTwo",
+        "metricThreeLabel",
+        "metricThree",
+        "formulaValue",
+        "amountLabel"
+      ].forEach(function (id) {
+        el[id] = document.getElementById(id);
+      });
+
+      var state = loadState();
+
+      bind();
+      render();
+
+      function bind() {
+        document.querySelectorAll("[data-lang]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.lang = button.getAttribute("data-lang") === "zh" ? "zh" : "en";
+            render();
+            saveState();
+          });
+        });
+
+        document.querySelectorAll("[data-mode]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.mode = button.getAttribute("data-mode") === "reverse" ? "reverse" : "forward";
+            render();
+            saveState();
+          });
+        });
+
+        el.currency.addEventListener("change", function () {
+          state.currency = Object.prototype.hasOwnProperty.call(currencies, el.currency.value) ? el.currency.value : defaults.currency;
+          render();
+          saveState();
+        });
+
+        el.processor.addEventListener("change", function () {
+          state.processor = Object.prototype.hasOwnProperty.call(presets, el.processor.value) ? el.processor.value : "custom";
+          state.basePercent = presets[state.processor].percent;
+          state.fixedFee = presets[state.processor].fixed;
+          render();
+          saveState();
+        });
+
+        el.amount.addEventListener("input", function () {
+          state.amount = el.amount.value;
+          render();
+          saveState();
+        });
+
+        el.surcharge.addEventListener("input", function () {
+          state.surcharge = el.surcharge.value;
+          render();
+          saveState();
+        });
+
+        ["basePercent", "fixedFee"].forEach(function (id) {
+          el[id].addEventListener("input", function () {
+            state[id] = el[id].value;
+            state.processor = "custom";
+            render();
+            saveState();
+          });
+        });
+      }
+
+      function loadState() {
+        var clean = Object.assign({}, defaults);
+        var raw = null;
+        try {
+          raw = window.localStorage.getItem(storageKey);
+        } catch (error) {
+          raw = null;
+        }
+        if (!raw) {
+          return clean;
+        }
+        try {
+          var saved = JSON.parse(raw);
+          if (!saved || typeof saved !== "object" || Array.isArray(saved)) {
+            return clean;
+          }
+          if (saved.lang === "zh" || saved.lang === "en") {
+            clean.lang = saved.lang;
+          }
+          if (saved.mode === "reverse" || saved.mode === "forward") {
+            clean.mode = saved.mode;
+          }
+          if (Object.prototype.hasOwnProperty.call(currencies, saved.currency)) {
+            clean.currency = saved.currency;
+          }
+          if (Object.prototype.hasOwnProperty.call(presets, saved.processor)) {
+            clean.processor = saved.processor;
+          }
+          ["amount", "basePercent", "fixedFee", "surcharge"].forEach(function (key) {
+            if (Object.prototype.hasOwnProperty.call(saved, key) && typeof saved[key] === "string") {
+              clean[key] = saved[key];
+            }
+          });
+        } catch (error) {
+          return clean;
+        }
+        return clean;
+      }
+
+      function saveState() {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (error) {
+        }
+      }
+
+      function render() {
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+
+        document.querySelectorAll("[data-lang]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-lang") === state.lang));
+        });
+        document.querySelectorAll("[data-mode]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-mode") === state.mode));
+        });
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          node.textContent = t(key);
+        });
+
+        updateProcessorOptions();
+
+        el.currency.value = Object.prototype.hasOwnProperty.call(currencies, state.currency) ? state.currency : defaults.currency;
+        el.processor.value = Object.prototype.hasOwnProperty.call(presets, state.processor) ? state.processor : "custom";
+        el.amount.value = state.amount;
+        el.basePercent.value = state.basePercent;
+        el.fixedFee.value = state.fixedFee;
+        el.surcharge.value = state.surcharge;
+        el.amountLabel.textContent = state.mode === "reverse" ? t("amountReverse") : t("amountForward");
+        el.amount.placeholder = state.mode === "reverse" ? "1000" : "1000";
+
+        var output = calculate();
+        el.status.textContent = output.status;
+        el.status.classList.toggle("error", output.kind === "error");
+        el.status.classList.toggle("warn", output.kind === "warn");
+        el.mainLabel.textContent = output.mainLabel;
+        el.mainValue.textContent = output.mainValue;
+        el.takeaway.textContent = output.takeaway;
+        el.metricOneLabel.textContent = output.metricOneLabel;
+        el.metricOne.textContent = output.metricOne;
+        el.metricTwoLabel.textContent = output.metricTwoLabel;
+        el.metricTwo.textContent = output.metricTwo;
+        el.metricThreeLabel.textContent = output.metricThreeLabel;
+        el.metricThree.textContent = output.metricThree;
+        el.formulaValue.textContent = output.formula;
+      }
+
+      function updateProcessorOptions() {
+        var labels = {
+          paypal: "PayPal - Goods & Services, US domestic",
+          stripe: "Stripe - standard US card",
+          wise: "Wise - receiving varies",
+          payoneer: "Payoneer - card payment",
+          custom: t("processorCustom")
+        };
+        if (state.lang === "zh") {
+          labels = {
+            paypal: "PayPal - 商品與服務，美國境內",
+            stripe: "Stripe - 美國標準信用卡",
+            wise: "Wise - 收款費率差異大",
+            payoneer: "Payoneer - 信用卡付款",
+            custom: t("processorCustom")
+          };
+        }
+        Array.prototype.forEach.call(el.processor.options, function (option) {
+          option.textContent = labels[option.value] || option.textContent;
+        });
+      }
+
+      function calculate() {
+        var amount = readAmount(state.amount);
+        var basePercent = readFeeNumber(state.basePercent);
+        var fixedFee = readFeeNumber(state.fixedFee);
+        var surcharge = readFeeNumber(state.surcharge);
+        var empty = emptyOutput();
+
+        if (state.amount.trim() === "") {
+          return empty;
+        }
+        if (!Number.isFinite(amount) || amount <= 0) {
+          empty.status = t("invalidAmount");
+          empty.kind = "error";
+          return empty;
+        }
+        if (!Number.isFinite(basePercent) || !Number.isFinite(fixedFee) || !Number.isFinite(surcharge) || basePercent < 0 || fixedFee < 0 || surcharge < 0) {
+          empty.status = t("invalidRates");
+          empty.kind = "error";
+          return empty;
+        }
+
+        var effectivePercent = basePercent + surcharge;
+        var p = effectivePercent / 100;
+        var f = fixedFee;
+        var processor = processorName();
+
+        if (state.mode === "reverse") {
+          if (p >= 1) {
+            empty.status = t("invalidReverse");
+            empty.kind = "error";
+            empty.formula = formulaText(effectivePercent, f);
+            return empty;
+          }
+          var gross = (amount + f) / (1 - p);
+          var reverseFee = gross - amount;
+          if (!finiteAll([gross, reverseFee])) {
+            empty.status = t("invalidRates");
+            empty.kind = "error";
+            return empty;
+          }
+          return {
+            status: t("ready"),
+            kind: "neutral",
+            mainLabel: t("invoiceAmount"),
+            mainValue: money(gross),
+            takeaway: t("takeawayReverse")
+              .replace("{net}", money(amount))
+              .replace("{processor}", processor)
+              .replace("{gross}", money(gross))
+              .replace("{fee}", money(reverseFee))
+              .replace("{rate}", percent(reverseFee / gross * 100)),
+            metricOneLabel: t("feeCharged"),
+            metricOne: money(reverseFee),
+            metricTwoLabel: t("netTarget"),
+            metricTwo: money(amount),
+            metricThreeLabel: t("effectiveRate"),
+            metricThree: percent(reverseFee / gross * 100) + "%",
+            formula: formulaText(effectivePercent, f)
+          };
+        }
+
+        var fee = amount * p + f;
+        var net = amount - fee;
+        if (!finiteAll([fee, net])) {
+          empty.status = t("invalidRates");
+          empty.kind = "error";
+          return empty;
+        }
+        return {
+          status: fee > amount ? t("feeExceedsGross") : t("ready"),
+          kind: fee > amount ? "warn" : "neutral",
+          mainLabel: t("netReceived"),
+          mainValue: money(net),
+          takeaway: t("takeawayForward")
+            .replace("{gross}", money(amount))
+            .replace("{processor}", processor)
+            .replace("{net}", money(net))
+            .replace("{rate}", percent(fee / amount * 100)),
+          metricOneLabel: t("grossPaid"),
+          metricOne: money(amount),
+          metricTwoLabel: t("feeCharged"),
+          metricTwo: money(fee),
+          metricThreeLabel: t("effectiveRate"),
+          metricThree: percent(fee / amount * 100) + "%",
+          formula: formulaText(effectivePercent, f)
+        };
+      }
+
+      function emptyOutput() {
+        return {
+          status: t("needInput"),
+          kind: "neutral",
+          mainLabel: state.mode === "reverse" ? t("invoiceAmount") : t("netReceived"),
+          mainValue: t("dash"),
+          takeaway: t("takeawayEmpty"),
+          metricOneLabel: state.mode === "reverse" ? t("feeCharged") : t("grossPaid"),
+          metricOne: t("dash"),
+          metricTwoLabel: state.mode === "reverse" ? t("netTarget") : t("feeCharged"),
+          metricTwo: t("dash"),
+          metricThreeLabel: t("effectiveRate"),
+          metricThree: t("dash"),
+          formula: formulaText(readFeeNumber(state.basePercent) + readFeeNumber(state.surcharge), readFeeNumber(state.fixedFee))
+        };
+      }
+
+      function t(key) {
+        var pack = text[state.lang] || text.en;
+        return pack[key] || text.en[key] || "";
+      }
+
+      function processorName() {
+        var key = {
+          paypal: "processorPaypal",
+          stripe: "processorStripe",
+          wise: "processorWise",
+          payoneer: "processorPayoneer",
+          custom: "processorCustom"
+        }[state.processor] || "processorCustom";
+        return t(key);
+      }
+
+      function readAmount(value) {
+        if (typeof value !== "string") {
+          return NaN;
+        }
+        var trimmed = value.replace(/,/g, "").trim();
+        if (trimmed === "") {
+          return NaN;
+        }
+        var number = Number(trimmed);
+        return Number.isFinite(number) ? number : NaN;
+      }
+
+      function readFeeNumber(value) {
+        if (typeof value !== "string") {
+          return 0;
+        }
+        var trimmed = value.replace(/,/g, "").trim();
+        if (trimmed === "") {
+          return 0;
+        }
+        var number = Number(trimmed);
+        return Number.isFinite(number) ? number : NaN;
+      }
+
+      function finiteAll(values) {
+        return values.every(function (value) {
+          return Number.isFinite(value);
+        });
+      }
+
+      function formatNumber(value, digits) {
+        if (!Number.isFinite(value)) {
+          return t("dash");
+        }
+        return new Intl.NumberFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: digits,
+          maximumFractionDigits: digits
+        }).format(value);
+      }
+
+      function money(value) {
+        if (!Number.isFinite(value)) {
+          return t("dash");
+        }
+        var symbol = currencies[state.currency] || currencies.USD;
+        var sign = value < 0 ? "-" : "";
+        return sign + symbol + formatNumber(Math.abs(value), 2);
+      }
+
+      function percent(value) {
+        if (!Number.isFinite(value)) {
+          return t("dash");
+        }
+        return formatNumber(value, 2);
+      }
+
+      function formulaText(effectivePercent, fixedFee) {
+        var safePercent = Number.isFinite(effectivePercent) ? effectivePercent : 0;
+        var safeFixed = Number.isFinite(fixedFee) ? fixedFee : 0;
+        return formatNumber(safePercent, 2) + "% + " + money(safeFixed);
+      }
+    }());
+  </script>
+</body>
+</html>
