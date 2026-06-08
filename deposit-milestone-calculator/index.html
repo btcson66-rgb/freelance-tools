@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Deposit &amp; Milestone Payment Calculator for Freelancers — Offline</title>
+<meta name="description" content="A free deposit and milestone payment calculator for freelancers: split any project total into a deposit and milestone payments, see each amount instantly, and check the split adds up to 100%. Runs in your browser, nothing uploaded.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/deposit-milestone-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Deposit &amp; Milestone Payment Calculator for Freelancers">
+<meta property="og:description" content="Split a project total into a deposit and milestone payments, see each amount, check it sums to 100%. Free, runs in your browser, nothing uploaded.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/deposit-milestone-calculator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Deposit &amp; Milestone Calculator — Offline">
+<meta name="twitter:description" content="Split a project into deposit + milestone payments. Free, nothing uploaded.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Deposit & Milestone Payment Calculator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline deposit and milestone payment calculator for freelancers. Split any project total into a deposit and milestone payments, see each amount instantly, and check the split adds up to 100%. Runs in your browser with no account and no data upload.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/deposit-milestone-calculator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Split a project total into 2-4 payments",
+    "Deposit amount highlighted",
+    "Quick-split presets (50/50, 40/30/30, even)",
+    "Editable percentages with a 100% check",
+    "Custom milestone labels",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this deposit calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. It runs in your browser with no account and no sign-up, and nothing is uploaded. There is no paid version of the calculator." } },
+    { "@type": "Question", "name": "How much deposit should a freelancer ask for?", "acceptedAnswer": { "@type": "Answer", "text": "A deposit of 30-50% of the project total is common. It confirms the client is committed and covers your early work before delivery. For larger projects, splitting the balance into milestone payments reduces your risk further. This calculator lets you model any split." } },
+    { "@type": "Question", "name": "What is a milestone payment?", "acceptedAnswer": { "@type": "Answer", "text": "A milestone payment is a portion of the fee due when a defined stage of the project is reached, such as a deposit on signing, a payment at the halfway point, and a final payment on delivery. Tying payments to milestones protects your cash flow on longer projects." } },
+    { "@type": "Question", "name": "How do I split a project into payments?", "acceptedAnswer": { "@type": "Answer", "text": "Enter the project total, choose how many payments you want, and set the percentage for each. Common splits are 50/50 (deposit and final) or 40/30/30. The calculator shows the amount for each payment and confirms the percentages add up to 100%." } },
+    { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Completely. The calculator runs entirely in your browser with zero network requests. Your project values are never uploaded anywhere." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#06222a;--muted:#5b7782;--line:#d6eef2;--bg:#f2fbfc;--brand:#0e7490}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:#0c5c73;text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#cffafe,transparent),linear-gradient(180deg,#fff,#f2fbfc);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#0c5c73;background:#cffafe;border:1px solid #a5f3fc;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:40px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#9adbe6}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#163842}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#234}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#9adbe6}
+  .endcta{background:#06222a;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#bfe3ea;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#16424d;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free deposit &amp; milestone calculator</h1>
+    <p class="sub">Never start work unpaid again. Enter a project total, choose how to split it — a deposit plus one to three milestone payments — and get every amount instantly, with a check that the split adds up to 100%. Runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the calculator →</a>
+      <a class="btn buy" href="../free-freelance-contract/">Put it in a contract →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Deposit + up to 3 milestones</span>
+      <span><span class="dotg">●</span> 100% split check</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>A deposit protects you; milestones keep you paid</h2>
+    <p>Starting a project on a promise is how freelancers end up chasing money. A deposit up front confirms the client is serious and pays for your early work, and splitting the rest into milestone payments means you are never carrying weeks of unpaid work at once. The only friction is the maths — and doing it in your head while quoting is how mistakes creep in.</p>
+    <p>This calculator removes that friction. Put in the project total, pick two, three or four payments, and tap a quick-split preset (50/50, 40/30/30, even) or type your own percentages. It shows the exact amount for each payment, highlights the deposit to request first, and flags it immediately if your percentages don't add up to 100%.</p>
+
+    <h2>What it works out</h2>
+    <div class="feat">
+      <div><h4>Deposit amount</h4><p>The first payment, highlighted, so you know exactly what to request before starting.</p></div>
+      <div><h4>Every milestone</h4><p>Each payment's amount from your percentages, ready to drop into a quote or contract.</p></div>
+      <div><h4>Quick-split presets</h4><p>50/50, 40/30/30 and even splits in one tap, or set your own.</p></div>
+      <div><h4>100% check</h4><p>Live warning if the percentages don't sum to 100, so a split never silently under- or over-bills.</p></div>
+      <div><h4>Custom labels</h4><p>Name each stage (on signing, draft approved, on delivery) to match your workflow.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Runs entirely in your browser. Your project values never leave your computer.</p></div>
+    </div>
+
+    <h2>How to split a project in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Enter the project total</strong> and pick your currency.</li>
+      <li><strong>Choose the number of payments</strong> and a split — a preset or your own percentages.</li>
+      <li><strong>Read the schedule</strong> — the deposit and each milestone amount, with a 100% check.</li>
+    </ol>
+
+    <h2>From split to signed and paid</h2>
+    <p>A payment schedule only protects you once it's in writing. Set the project price with the <a href="../freelance-rate-calculator/">rate calculator</a> or build a line-item <a href="../project-quote-builder/">quote</a>, write the deposit and milestone terms into a <a href="../free-freelance-contract/">contract</a>, then bill each stage with the <a href="../free-invoice-generator/">invoice generator</a> as you hit it. All offline, one-time purchases, no subscription. Get all five in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$39 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this deposit calculator free?</dt>
+      <dd>Yes, completely. It runs in your browser with no account and nothing uploaded. There is no paid version of the calculator itself.</dd>
+      <dt>How much deposit should a freelancer ask for?</dt>
+      <dd>30–50% of the project total is common — it confirms commitment and covers early work. For larger projects, split the balance into milestones to reduce risk further.</dd>
+      <dt>What is a milestone payment?</dt>
+      <dd>A portion of the fee due when a defined stage is reached (deposit on signing, payment at the halfway point, final on delivery), which protects your cash flow on longer projects.</dd>
+      <dt>How do I split a project into payments?</dt>
+      <dd>Enter the total, choose how many payments, and set each percentage. Common splits are 50/50 or 40/30/30. The tool shows each amount and checks the split sums to 100%.</dd>
+      <dt>Is my data private?</dt>
+      <dd>Completely. Zero network requests — your project values stay on your computer.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of offline, no-subscription tools that cover the whole freelance workflow:</p>
+    <div class="related">
+      <a href="../project-quote-builder/">▤ Project quote builder</a>
+      <a href="../free-freelance-contract/">✒ Free contract maker</a>
+      <a href="../free-invoice-generator/">▦ Free invoice generator</a>
+      <a href="../payment-fee-calculator/">↺ Payment fee calculator</a>
+      <a href="../freelance-retainer-calculator/">◷ Retainer calculator</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Quote a payment schedule in seconds</h2>
+      <p>Deposit plus milestones, every amount instant, checked to 100%. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the calculator →</a>
+        <a class="btn buy" href="../">See all the tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>

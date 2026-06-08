@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deposit & Milestone Payment Calculator for Freelancers</title>
+  <meta name="description" content="Free deposit and milestone payment calculator for freelancers. Split a project total into a deposit and milestone payments, see each amount instantly, and check the split adds up to 100%.">
+  <style>
+    :root{
+      color-scheme: light;
+      --bg:#f2fbfc; --card:#ffffff; --text:#06222a; --muted:#5b7782; --line:#d6eef2;
+      --soft:#ecfeff; --accent:#0e7490; --accent-dark:#0c5c73; --danger:#b91c1c; --ok:#0f766e;
+      --shadow:0 18px 40px rgba(6,34,42,.09);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif,"PingFang TC","Microsoft JhengHei";line-height:1.5}
+    a{color:var(--accent-dark)}
+    .page{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:32px 0 24px}
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}
+    .title-block{max-width:780px}
+    .eyebrow{margin:0 0 8px;color:var(--accent-dark);font-size:.82rem;font-weight:800;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(2rem,4vw,3.2rem);line-height:1.06}
+    .intro{margin:14px 0 0;color:var(--muted);font-size:1.05rem;max-width:70ch}
+    .lang-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--line);
+      border-radius:999px;background:var(--card);box-shadow:0 8px 22px rgba(6,34,42,.06);flex:0 0 auto}
+    .lang-toggle button{border:0;border-radius:999px;padding:8px 12px;background:transparent;
+      color:var(--muted);font:inherit;font-size:.92rem;font-weight:800;cursor:pointer}
+    .lang-toggle button.active{background:var(--accent);color:#fff}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.84fr);gap:20px;align-items:start}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+    .panel{padding:22px}
+    h2{margin:0 0 16px;font-size:1.2rem}
+    .field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+    label{color:#234;font-size:.92rem;font-weight:750}
+    input,select{width:100%;border:1px solid #b9dce3;border-radius:8px;background:#fff;color:var(--text);font:inherit;
+      padding:11px 12px;outline:none;transition:border-color .16s,box-shadow .16s}
+    input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(14,116,144,.16)}
+    .input-row{display:grid;grid-template-columns:116px minmax(0,1fr);gap:8px}
+    .presets{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 16px}
+    .presets button{border:1px solid var(--line);background:#fff;color:var(--accent-dark);font:inherit;font-weight:750;
+      font-size:.86rem;border-radius:999px;padding:7px 12px;cursor:pointer}
+    .presets button:hover{border-color:var(--accent)}
+    .ms-row{display:grid;grid-template-columns:1fr 92px;gap:8px;margin-bottom:9px}
+    .ms-row .pct{position:relative}
+    .ms-row .pct::after{content:"%";position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none}
+    .countsel{display:flex;gap:8px;margin-bottom:14px}
+    .countsel button{flex:1;border:1px solid var(--line);background:#fff;color:var(--muted);font:inherit;font-weight:800;
+      border-radius:8px;padding:9px;cursor:pointer}
+    .countsel button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .sumline{font-size:.9rem;font-weight:750;margin-top:4px}
+    .sumline.ok{color:var(--ok)}.sumline.bad{color:var(--danger)}
+    .result-top{padding:22px;background:linear-gradient(180deg,#ecfeff 0%,#fff 100%);border-bottom:1px solid var(--line)}
+    .status{margin:0 0 12px;color:var(--muted);font-weight:700}.status.error{color:var(--danger)}
+    .main-label{margin:0;color:var(--muted);font-size:.94rem;font-weight:750}
+    .main-value{margin:2px 0 0;color:var(--accent-dark);font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;font-weight:900;overflow-wrap:anywhere}
+    .schedule{padding:14px 22px 6px}
+    .sched-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+    .sched-row:last-child{border-bottom:0}
+    .sched-row .lab{color:#234;font-weight:700}
+    .sched-row .lab small{display:block;color:var(--muted);font-weight:600;font-size:.8rem}
+    .sched-row .amt{font-weight:800;white-space:nowrap}
+    .reality{padding:16px 22px 22px;border-top:1px solid var(--line)}
+    .reality p{margin:0;color:var(--muted);font-size:.93rem}
+    footer{margin-top:22px;color:var(--muted);font-size:.95rem;text-align:center}
+    @media(max-width:850px){header{flex-direction:column}.grid{grid-template-columns:1fr}}
+    @media(max-width:580px){.page{width:min(100% - 20px,1120px);padding-top:20px}.panel,.result-top,.schedule,.reality{padding:18px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance payment tool</p>
+        <h1 data-i18n="title">Deposit &amp; milestone calculator</h1>
+        <p class="intro" data-i18n="intro">Split a project total into a deposit and milestone payments, see each amount instantly, and make sure the split adds up to 100%.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" id="langEn" class="active">EN</button>
+        <button type="button" id="langZh">中文</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <h2 id="inputsTitle" data-i18n="inputsTitle">Project &amp; split</h2>
+
+        <div class="field">
+          <label for="total" data-i18n="totalLabel">Total project value</label>
+          <div class="input-row">
+            <select id="currency" aria-label="Currency">
+              <option value="$ USD">$ USD</option>
+              <option value="NT$ TWD">NT$ TWD</option>
+              <option value="€ EUR">€ EUR</option>
+              <option value="£ GBP">£ GBP</option>
+              <option value="A$ AUD">A$ AUD</option>
+              <option value="C$ CAD">C$ CAD</option>
+              <option value="JP¥ JPY">JP¥ JPY</option>
+            </select>
+            <input id="total" type="number" min="0" step="any" inputmode="decimal" placeholder="3000">
+          </div>
+        </div>
+
+        <label data-i18n="paymentsLabel">Number of payments</label>
+        <div class="countsel" id="countsel">
+          <button type="button" data-count="2">2</button>
+          <button type="button" data-count="3">3</button>
+          <button type="button" data-count="4">4</button>
+        </div>
+
+        <label data-i18n="presetLabel">Quick split</label>
+        <div class="presets" id="presets"></div>
+
+        <div id="msRows"></div>
+        <div class="sumline" id="sumline"></div>
+      </section>
+
+      <section class="card result-card" aria-labelledby="resultsTitle">
+        <div class="result-top">
+          <p id="status" class="status">Enter a project total to start.</p>
+          <p class="main-label" data-i18n="depositLabel">Deposit to request upfront</p>
+          <p id="depositValue" class="main-value">—</p>
+        </div>
+        <div class="schedule" id="schedule"></div>
+        <div class="reality">
+          <h2 id="resultsTitle" data-i18n="realityTitle" style="font-size:1.05rem;margin-bottom:6px">Why take a deposit?</h2>
+          <p id="realityText">A deposit (commonly 30–50%) confirms the client is committed and covers your early work. Put the deposit and milestone amounts in your contract so payment timing is never ambiguous. A planning helper, not legal or financial advice.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More free freelance tools:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      "use strict";
+      var storageKey="deposit_v1";
+      var DEF_LABELS={
+        en:["Deposit (on signing)","Milestone 2","Milestone 3","Final payment"],
+        zh:["訂金（簽約時）","階段款 2","階段款 3","尾款"]
+      };
+      var state={ lang:"en", currency:"$ USD", total:"", count:2,
+        pct:["50","50","0","0"], labels:["","","",""] };
+
+      var text={
+        en:{
+          eyebrow:"Freelance payment tool",
+          title:"Deposit & milestone calculator",
+          intro:"Split a project total into a deposit and milestone payments, see each amount instantly, and make sure the split adds up to 100%.",
+          inputsTitle:"Project & split",
+          totalLabel:"Total project value",
+          paymentsLabel:"Number of payments",
+          presetLabel:"Quick split",
+          depositLabel:"Deposit to request upfront",
+          realityTitle:"Why take a deposit?",
+          realityText:"A deposit (commonly 30–50%) confirms the client is committed and covers your early work. Put the deposit and milestone amounts in your contract so payment timing is never ambiguous. A planning helper, not legal or financial advice.",
+          needInput:"Enter a project total to start.",
+          invalidInput:"Enter a valid project total greater than 0.",
+          ready:"Calculated from your inputs.",
+          sumOk:"Split totals 100% ✓",
+          sumBad:"Split totals {x}% — adjust so it sums to 100%.",
+          footerText:"More free freelance tools:",
+          evenly:"Even split"
+        },
+        zh:{
+          eyebrow:"自由工作者收款工具",
+          title:"訂金與分期款計算器",
+          intro:"把專案總額拆成訂金與各階段款，立即看到每筆金額，並確認比例加總為 100%。",
+          inputsTitle:"專案與分期",
+          totalLabel:"專案總額",
+          paymentsLabel:"分幾筆收款",
+          presetLabel:"快速比例",
+          depositLabel:"應先收的訂金",
+          realityTitle:"為什麼要收訂金？",
+          realityText:"訂金（常見 30–50%）能確認客戶有承諾，也涵蓋你前期的投入。把訂金與各階段金額寫進合約，付款時間才不會含糊。這是規劃輔助，並非法律或財務建議。",
+          needInput:"請先輸入專案總額。",
+          invalidInput:"請輸入大於 0 的有效專案總額。",
+          ready:"已依你的輸入完成計算。",
+          sumOk:"比例加總 100% ✓",
+          sumBad:"比例加總為 {x}%，請調整為 100%。",
+          footerText:"更多免費自由工作者工具：",
+          evenly:"平均分配"
+        }
+      };
+
+      var PRESETS={
+        2:[["50 / 50",[50,50]],["60 / 40",[60,40]],["30 / 70",[30,70]]],
+        3:[["40 / 30 / 30",[40,30,30]],["50 / 25 / 25",[50,25,25]],["34 / 33 / 33",[34,33,33]]],
+        4:[["25 each",[25,25,25,25]],["40 / 20 / 20 / 20",[40,20,20,20]]]
+      };
+
+      var el={};
+      ["currency","total","countsel","presets","msRows","sumline","status","depositValue","schedule","realityText","langEn","langZh"]
+        .forEach(function(id){el[id]=document.getElementById(id);});
+
+      load(); bindStatic(); render();
+
+      function bindStatic(){
+        el.currency.addEventListener("change",function(){state.currency=el.currency.value;render();save();});
+        el.total.addEventListener("input",function(){state.total=el.total.value;render();save();});
+        el.langEn.addEventListener("click",function(){state.lang="en";render();save();});
+        el.langZh.addEventListener("click",function(){state.lang="zh";render();save();});
+        el.countsel.addEventListener("click",function(e){
+          var b=e.target.closest("button"); if(!b)return;
+          state.count=parseInt(b.getAttribute("data-count"),10)||2;
+          normalizeForCount();
+          render();save();
+        });
+        el.presets.addEventListener("click",function(e){
+          var b=e.target.closest("button"); if(!b)return;
+          var arr=JSON.parse(b.getAttribute("data-arr"));
+          for(var i=0;i<4;i++){ state.pct[i]= i<arr.length? String(arr[i]) : "0"; }
+          render();save();
+        });
+      }
+
+      function normalizeForCount(){
+        // zero out unused rows; if active rows all zero, default even
+        for(var i=state.count;i<4;i++){ state.pct[i]="0"; }
+      }
+
+      function load(){
+        try{
+          var raw=localStorage.getItem(storageKey); if(!raw)return;
+          var s=JSON.parse(raw); if(!s||typeof s!=="object")return;
+          if(s.lang==="zh"||s.lang==="en")state.lang=s.lang;
+          if(typeof s.currency==="string")state.currency=s.currency;
+          if(typeof s.total==="string")state.total=s.total;
+          if(s.count===2||s.count===3||s.count===4)state.count=s.count;
+          if(Array.isArray(s.pct))for(var i=0;i<4;i++){if(typeof s.pct[i]==="string")state.pct[i]=s.pct[i];}
+          if(Array.isArray(s.labels))for(var j=0;j<4;j++){if(typeof s.labels[j]==="string")state.labels[j]=s.labels[j];}
+        }catch(e){}
+      }
+      function save(){ try{localStorage.setItem(storageKey,JSON.stringify(state));}catch(e){} }
+
+      function t(k){var p=text[state.lang]||text.en;return p[k]||text.en[k]||"";}
+      function num(v){if(typeof v!=="string")return NaN;var n=Number(v.replace(/,/g,"").trim());return Number.isFinite(n)?n:NaN;}
+      function money(v){if(!Number.isFinite(v))return "—";return state.currency+" "+v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+      function labelFor(i){return state.labels[i] && state.labels[i].trim()!=="" ? state.labels[i] : DEF_LABELS[state.lang][i];}
+
+      function render(){
+        // static i18n
+        document.documentElement.lang=state.lang==="zh"?"zh-Hant":"en";
+        el.langEn.classList.toggle("active",state.lang==="en");
+        el.langZh.classList.toggle("active",state.lang==="zh");
+        document.querySelectorAll("[data-i18n]").forEach(function(n){n.textContent=t(n.getAttribute("data-i18n"));});
+        el.currency.value=state.currency; el.total.value=state.total;
+        el.realityText.textContent=t("realityText");
+
+        // count buttons
+        [...el.countsel.querySelectorAll("button")].forEach(function(b){
+          b.classList.toggle("active", parseInt(b.getAttribute("data-count"),10)===state.count);
+        });
+
+        // presets
+        var ev=Math.round(100/state.count);
+        var evArr=[]; for(var k=0;k<state.count;k++){evArr.push(k===state.count-1?100-ev*(state.count-1):ev);}
+        var ph=PRESETS[state.count]||[];
+        el.presets.innerHTML="";
+        var evBtn=document.createElement("button");evBtn.type="button";evBtn.textContent=t("evenly");
+        evBtn.setAttribute("data-arr",JSON.stringify(evArr));el.presets.appendChild(evBtn);
+        ph.forEach(function(p){var b=document.createElement("button");b.type="button";b.textContent=p[0];b.setAttribute("data-arr",JSON.stringify(p[1]));el.presets.appendChild(b);});
+
+        // milestone rows
+        el.msRows.innerHTML="";
+        for(var i=0;i<state.count;i++){
+          (function(idx){
+            var row=document.createElement("div");row.className="ms-row";
+            var labIn=document.createElement("input");labIn.type="text";labIn.value=state.labels[idx];
+            labIn.placeholder=DEF_LABELS[state.lang][idx];
+            labIn.addEventListener("input",function(){state.labels[idx]=labIn.value;renderResults();save();});
+            var pctWrap=document.createElement("div");pctWrap.className="pct";
+            var pctIn=document.createElement("input");pctIn.type="number";pctIn.min="0";pctIn.step="any";pctIn.inputMode="decimal";
+            pctIn.value=state.pct[idx];
+            pctIn.addEventListener("input",function(){state.pct[idx]=pctIn.value;renderResults();save();});
+            pctWrap.appendChild(pctIn);
+            row.appendChild(labIn);row.appendChild(pctWrap);
+            el.msRows.appendChild(row);
+          })(i);
+        }
+        renderResults();
+      }
+
+      function renderResults(){
+        var total=num(state.total);
+        var sum=0,valid=true;
+        for(var i=0;i<state.count;i++){var p=num(state.pct[i]);if(!Number.isFinite(p)||p<0){valid=false;}else{sum+=p;}}
+        var sumRounded=Math.round(sum*100)/100;
+
+        // sum line
+        if(Math.abs(sumRounded-100)<0.001 && valid){el.sumline.className="sumline ok";el.sumline.textContent=t("sumOk");}
+        else{el.sumline.className="sumline bad";el.sumline.textContent=t("sumBad").replace("{x}",sumRounded.toLocaleString());}
+
+        // results
+        if(state.total.trim()===""){
+          el.status.textContent=t("needInput");el.status.classList.remove("error");
+          el.depositValue.textContent="—";el.schedule.innerHTML="";return;
+        }
+        if(!(Number.isFinite(total)&&total>0)){
+          el.status.textContent=t("invalidInput");el.status.classList.add("error");
+          el.depositValue.textContent="—";el.schedule.innerHTML="";return;
+        }
+        el.status.textContent=t("ready");el.status.classList.remove("error");
+
+        var firstPct=num(state.pct[0]);
+        el.depositValue.textContent=money(Number.isFinite(firstPct)?total*firstPct/100:NaN);
+
+        el.schedule.innerHTML="";
+        for(var j=0;j<state.count;j++){
+          var p=num(state.pct[j]); var amt=Number.isFinite(p)?total*p/100:NaN;
+          var r=document.createElement("div");r.className="sched-row";
+          var lab=document.createElement("div");lab.className="lab";
+          lab.innerHTML=esc(labelFor(j))+"<small>"+(Number.isFinite(p)?p.toLocaleString():"—")+"%</small>";
+          var amtEl=document.createElement("div");amtEl.className="amt";amtEl.textContent=money(amt);
+          r.appendChild(lab);r.appendChild(amtEl);el.schedule.appendChild(r);
+        }
+      }
+      function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+    }());
+  </script>
+</body>
+</html>

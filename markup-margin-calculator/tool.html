@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markup &amp; Margin Calculator - Price Marked-Up Costs</title>
+  <meta name="description" content="Free offline markup and margin calculator for freelancers. Convert cost plus markup, cost plus target margin, or cost and selling price into price, profit, markup, and margin.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #fffbeb;
+      --accent: #a16207;
+      --accent-dark: #854d0e;
+      --danger: #b91c1c;
+      --loss-bg: #fef2f2;
+      --profit: #166534;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-underline-offset: 0.18em;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      max-width: 780px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 70ch;
+    }
+
+    .lang-toggle,
+    .mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--card);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+    }
+
+    .lang-toggle {
+      flex: 0 0 auto;
+    }
+
+    .mode-toggle {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .lang-toggle button,
+    .mode-toggle button {
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .mode-toggle button {
+      flex: 1 1 158px;
+    }
+
+    .lang-toggle button[aria-pressed="true"],
+    .mode-toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .lang-toggle button:focus-visible,
+    .mode-toggle button:focus-visible,
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(161, 98, 7, 0.18);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(330px, 0.86fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      padding: 11px 12px;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .suffix-input {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .suffix-input:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(161, 98, 7, 0.18);
+    }
+
+    .suffix-input input {
+      min-height: 42px;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .suffix-input input:focus {
+      box-shadow: none;
+    }
+
+    .suffix-input span {
+      padding: 0 12px;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .note {
+      margin: 14px 0 0;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: var(--soft);
+      padding: 12px 14px;
+      color: #713f12;
+      font-size: 0.92rem;
+    }
+
+    .result-card {
+      overflow: hidden;
+    }
+
+    .result-top {
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fef3c7 0%, #ffffff 100%);
+    }
+
+    .result-top.loss {
+      background: linear-gradient(180deg, var(--loss-bg) 0%, #ffffff 100%);
+    }
+
+    .status {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .status.error,
+    .status.warn {
+      color: var(--danger);
+    }
+
+    .main-label {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 750;
+    }
+
+    .main-value {
+      margin: 2px 0 0;
+      color: var(--accent-dark);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .main-value.loss,
+    .metric strong.loss {
+      color: var(--danger);
+    }
+
+    .metric strong.profit {
+      color: var(--profit);
+    }
+
+    .takeaway {
+      margin: 12px 0 0;
+      color: #713f12;
+      font-weight: 750;
+    }
+
+    .takeaway.loss {
+      color: var(--danger);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px 22px 4px;
+    }
+
+    .metric {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .metric.wide {
+      grid-column: 1 / -1;
+      border-color: #fde68a;
+      background: var(--soft);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 750;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.2rem;
+      overflow-wrap: anywhere;
+    }
+
+    .details {
+      padding: 18px 22px 22px;
+    }
+
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .details-row strong {
+      color: var(--text);
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .disclaimer {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (max-width: 850px) {
+      header {
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        padding-top: 20px;
+      }
+
+      .lang-toggle {
+        width: 100%;
+      }
+
+      .lang-toggle button {
+        flex: 1 1 0;
+      }
+
+      .field-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .metric.wide {
+        grid-column: auto;
+      }
+
+      .details-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .details-row strong {
+        text-align: left;
+      }
+
+      .panel,
+      .result-top,
+      .details {
+        padding: 18px;
+      }
+
+      .metrics {
+        padding: 14px 18px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance pricing tool</p>
+        <h1 data-i18n="title">Markup &amp; margin calculator</h1>
+        <p class="intro" data-i18n="intro">Price marked-up costs without mixing up markup, margin, selling price, and profit.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="zh" aria-pressed="false">繁中</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <div class="section-title">
+          <h2 id="inputsTitle" data-i18n="inputsTitle">Pricing inputs</h2>
+          <div class="mode-toggle" aria-label="Calculator mode">
+            <button type="button" data-mode="markup" aria-pressed="true" data-i18n="modeMarkup">Cost + Markup% -&gt; price</button>
+            <button type="button" data-mode="margin" aria-pressed="false" data-i18n="modeMargin">Cost + Margin% -&gt; price</button>
+            <button type="button" data-mode="price" aria-pressed="false" data-i18n="modePrice">Cost + Price -&gt; %</button>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field full">
+            <label for="cost" data-i18n="costLabel">Cost</label>
+            <div class="input-row">
+              <select id="currency" aria-label="Currency">
+                <option value="USD">$ USD</option>
+                <option value="TWD">NT$ TWD</option>
+                <option value="EUR">??EUR</option>
+                <option value="GBP">瞿 GBP</option>
+                <option value="AUD">A$ AUD</option>
+                <option value="CAD">C$ CAD</option>
+                <option value="JPY">JP瞼 JPY</option>
+              </select>
+              <input id="cost" type="number" min="0" step="0.01" inputmode="decimal" placeholder="100">
+            </div>
+          </div>
+
+          <div class="field full">
+            <label for="secondaryValue" id="secondaryLabel">Markup percentage</label>
+            <div class="suffix-input">
+              <input id="secondaryValue" type="number" step="0.01" inputmode="decimal" placeholder="50">
+              <span id="secondarySuffix">%</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="note" data-i18n="differenceNote">Markup and margin are not the same: markup is profit over cost, while margin is profit over price. A 50% markup is only a 33.33% margin.</p>
+      </section>
+
+      <section class="card result-card" aria-live="polite" aria-labelledby="resultsTitle">
+        <div class="result-top" id="resultTop">
+          <p id="status" class="status">Enter your numbers to calculate.</p>
+          <p id="mainLabel" class="main-label">Selling price</p>
+          <p id="mainValue" class="main-value">-</p>
+          <p id="takeaway" class="takeaway">Markup and margin will appear side by side.</p>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <span id="metricOneLabel">Markup</span>
+            <strong id="metricOne">-</strong>
+          </div>
+          <div class="metric">
+            <span id="metricTwoLabel">Margin</span>
+            <strong id="metricTwo">-</strong>
+          </div>
+          <div class="metric">
+            <span id="metricThreeLabel">Profit / loss</span>
+            <strong id="metricThree">-</strong>
+          </div>
+          <div class="metric">
+            <span id="metricFourLabel">Cost basis</span>
+            <strong id="metricFour">-</strong>
+          </div>
+          <div class="metric wide">
+            <span data-i18n="formulaLabel">Plain formulas</span>
+            <strong id="formulaValue">Markup = profit / cost; margin = profit / price.</strong>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="details-row">
+            <span id="detailLabel">Rounding</span>
+            <strong id="detailValue">Displayed to 2 decimals; calculations use full precision.</strong>
+          </div>
+          <p class="disclaimer" data-i18n="disclaimer">A pricing helper, not financial advice. Markup is profit over cost; margin is profit over price - they differ.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More freelance calculators:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var storageKey = "markup_v1";
+      var defaults = {
+        lang: "en",
+        mode: "markup",
+        currency: "USD",
+        cost: "",
+        markup: "50",
+        margin: "40",
+        price: ""
+      };
+      var currencies = {
+        USD: { prefix: "$", label: "$ USD" },
+        TWD: { prefix: "NT$", label: "NT$ TWD" },
+        EUR: { prefix: "??", label: "??EUR" },
+        GBP: { prefix: "瞿", label: "瞿 GBP" },
+        AUD: { prefix: "A$", label: "A$ AUD" },
+        CAD: { prefix: "C$", label: "C$ CAD" },
+        JPY: { prefix: "JP瞼", label: "JP瞼 JPY" }
+      };
+      var text = {
+        en: {
+          eyebrow: "Freelance pricing tool",
+          title: "Markup & margin calculator",
+          intro: "Price marked-up costs without mixing up markup, margin, selling price, and profit.",
+          inputsTitle: "Pricing inputs",
+          modeMarkup: "Cost + Markup% -> price",
+          modeMargin: "Cost + Margin% -> price",
+          modePrice: "Cost + Price -> %",
+          costLabel: "Cost",
+          markupLabel: "Markup percentage",
+          marginLabel: "Target margin percentage",
+          priceLabel: "Selling price",
+          differenceNote: "Markup and margin are not the same: markup is profit over cost, while margin is profit over price. A 50% markup is only a 33.33% margin.",
+          sellingPrice: "Selling price",
+          marginResult: "Margin",
+          markup: "Markup",
+          margin: "Margin",
+          profitLoss: "Profit / loss",
+          costBasis: "Cost basis",
+          priceMetric: "Selling price",
+          formulaLabel: "Plain formulas",
+          formulaValue: "Markup = profit / cost; margin = profit / price.",
+          roundingLabel: "Rounding",
+          roundingValue: "Displayed to 2 decimals; calculations use full precision.",
+          disclaimer: "A pricing helper, not financial advice. Markup is profit over cost; margin is profit over price - they differ.",
+          footerText: "More freelance calculators:",
+          needInput: "Enter your numbers to calculate.",
+          needInputTakeaway: "Markup and margin will appear side by side.",
+          invalidNumber: "Enter valid numbers.",
+          invalidCost: "Cost must be greater than 0 to calculate markup and margin.",
+          invalidPrice: "Selling price must be greater than 0 to calculate margin.",
+          invalidMarkup: "Markup must be greater than -100% so selling price stays above 0.",
+          invalidMargin: "Margin must be below 100%; otherwise the required price would be infinite.",
+          ready: "Calculated from your inputs.",
+          loss: "Price is below cost, so this result is a loss.",
+          markupTakeaway: "A {cost} cost at {markup}% markup sells for {price} - that is a {margin}% margin, not {markup}%.",
+          marginTakeaway: "To keep a {margin}% margin on {cost} cost, sell for {price} - that is a {markup}% markup.",
+          priceTakeaway: "Selling a {cost} cost for {price} earns {profit}; markup is {markup}% and margin is {margin}%.",
+          markupLossTakeaway: "A {cost} cost at {markup}% markup sells for {price}, creating a {profit} loss; margin is {margin}%.",
+          marginLossTakeaway: "A {margin}% margin target on {cost} cost prices at {price} and creates a {profit} loss.",
+          priceLossTakeaway: "Selling a {cost} cost for {price} loses {loss}; markup is {markup}% and margin is {margin}%.",
+          dash: "-"
+        },
+        zh: {
+          eyebrow: "自由工作定價工具",
+          title: "加成與毛利率計算機",
+          intro: "幫你用成本、加成、毛利率或售價計算價格與利潤，避免把 markup 和 margin 混在一起。",
+          inputsTitle: "定價輸入",
+          modeMarkup: "成本 + 加成% -> 售價",
+          modeMargin: "成本 + 毛利率% -> 售價",
+          modePrice: "成本 + 售價 -> 百分比",
+          costLabel: "成本",
+          markupLabel: "加成百分比",
+          marginLabel: "目標毛利率",
+          priceLabel: "售價",
+          differenceNote: "加成與毛利率不同：加成是利潤除以成本，毛利率是利潤除以售價。50% 加成只等於 33.33% 毛利率。",
+          sellingPrice: "售價",
+          marginResult: "毛利率",
+          markup: "加成",
+          margin: "毛利率",
+          profitLoss: "利潤 / 虧損",
+          costBasis: "成本基準",
+          priceMetric: "售價",
+          formulaLabel: "簡明公式",
+          formulaValue: "加成 = 利潤 / 成本；毛利率 = 利潤 / 售價。",
+          roundingLabel: "四捨五入",
+          roundingValue: "畫面顯示到小數 2 位；計算過程不先四捨五入。",
+          disclaimer: "這是定價輔助工具，不是財務建議。加成是利潤除以成本；毛利率是利潤除以售價，兩者不同。",
+          footerText: "更多自由工作計算機：",
+          needInput: "請輸入數字開始計算。",
+          needInputTakeaway: "加成與毛利率會並排顯示。",
+          invalidNumber: "請輸入有效數字。",
+          invalidCost: "成本必須大於 0，才能計算加成與毛利率。",
+          invalidPrice: "售價必須大於 0，才能計算毛利率。",
+          invalidMarkup: "加成必須大於 -100%，售價才會高於 0。",
+          invalidMargin: "毛利率必須低於 100%；否則所需售價會變成無限大。",
+          ready: "已依輸入完成計算。",
+          loss: "售價低於成本，因此這筆結果是虧損。",
+          markupTakeaway: "{cost} 成本加成 {markup}% 時，售價為 {price}；毛利率是 {margin}%，不是 {markup}%。",
+          marginTakeaway: "若 {cost} 成本要保留 {margin}% 毛利率，售價應為 {price}；這等於 {markup}% 加成。",
+          priceTakeaway: "{cost} 成本賣 {price}，利潤為 {profit}；加成 {markup}%，毛利率 {margin}%。",
+          markupLossTakeaway: "{cost} 成本加成 {markup}% 時，售價為 {price}，會造成 {profit} 虧損；毛利率為 {margin}%。",
+          marginLossTakeaway: "{cost} 成本設定 {margin}% 毛利率時，售價為 {price}，會造成 {profit} 虧損。",
+          priceLossTakeaway: "{cost} 成本賣 {price} 會虧損 {loss}；加成 {markup}%，毛利率 {margin}%。",
+          dash: "-"
+        }
+      };
+
+      var el = {};
+      [
+        "currency",
+        "cost",
+        "secondaryValue",
+        "secondaryLabel",
+        "secondarySuffix",
+        "status",
+        "resultTop",
+        "mainLabel",
+        "mainValue",
+        "takeaway",
+        "metricOneLabel",
+        "metricOne",
+        "metricTwoLabel",
+        "metricTwo",
+        "metricThreeLabel",
+        "metricThree",
+        "metricFourLabel",
+        "metricFour",
+        "formulaValue",
+        "detailLabel",
+        "detailValue"
+      ].forEach(function (id) {
+        el[id] = document.getElementById(id);
+      });
+
+      var state = loadState();
+
+      bind();
+      render();
+
+      function bind() {
+        document.querySelectorAll("[data-lang]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.lang = button.getAttribute("data-lang") === "zh" ? "zh" : "en";
+            render();
+            saveState();
+          });
+        });
+
+        document.querySelectorAll("[data-mode]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            var mode = button.getAttribute("data-mode");
+            state.mode = mode === "margin" || mode === "price" ? mode : "markup";
+            render();
+            saveState();
+          });
+        });
+
+        el.currency.addEventListener("change", function () {
+          state.currency = Object.prototype.hasOwnProperty.call(currencies, el.currency.value) ? el.currency.value : defaults.currency;
+          render();
+          saveState();
+        });
+
+        el.cost.addEventListener("input", function () {
+          state.cost = el.cost.value;
+          render();
+          saveState();
+        });
+
+        el.secondaryValue.addEventListener("input", function () {
+          state[secondaryKey()] = el.secondaryValue.value;
+          render();
+          saveState();
+        });
+      }
+
+      function loadState() {
+        var clean = {
+          lang: defaults.lang,
+          mode: defaults.mode,
+          currency: defaults.currency,
+          cost: defaults.cost,
+          markup: defaults.markup,
+          margin: defaults.margin,
+          price: defaults.price
+        };
+        var raw = null;
+        try {
+          raw = window.localStorage.getItem(storageKey);
+        } catch (error) {
+          raw = null;
+        }
+        if (!raw) {
+          return clean;
+        }
+        try {
+          var saved = JSON.parse(raw);
+          if (!saved || typeof saved !== "object" || Array.isArray(saved)) {
+            return clean;
+          }
+          if (saved.lang === "zh" || saved.lang === "en") {
+            clean.lang = saved.lang;
+          }
+          if (saved.mode === "markup" || saved.mode === "margin" || saved.mode === "price") {
+            clean.mode = saved.mode;
+          }
+          if (Object.prototype.hasOwnProperty.call(currencies, saved.currency)) {
+            clean.currency = saved.currency;
+          }
+          ["cost", "markup", "margin", "price"].forEach(function (key) {
+            if (Object.prototype.hasOwnProperty.call(saved, key) && typeof saved[key] === "string") {
+              clean[key] = saved[key];
+            }
+          });
+        } catch (error) {
+          return clean;
+        }
+        return clean;
+      }
+
+      function saveState() {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (error) {
+        }
+      }
+
+      function render() {
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+        document.querySelectorAll("[data-lang]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-lang") === state.lang));
+        });
+        document.querySelectorAll("[data-mode]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-mode") === state.mode));
+        });
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          node.textContent = t(key);
+        });
+
+        el.currency.value = Object.prototype.hasOwnProperty.call(currencies, state.currency) ? state.currency : defaults.currency;
+        el.cost.value = state.cost;
+        el.secondaryValue.value = state[secondaryKey()];
+        el.secondaryLabel.textContent = secondaryLabel();
+        el.secondaryValue.placeholder = secondaryPlaceholder();
+        el.secondarySuffix.textContent = state.mode === "price" ? currencyInfo().prefix : "%";
+        el.formulaValue.textContent = t("formulaValue");
+        el.detailLabel.textContent = t("roundingLabel");
+        el.detailValue.textContent = t("roundingValue");
+
+        var output = calculate();
+        el.status.textContent = output.status;
+        el.status.classList.toggle("error", output.kind === "error");
+        el.status.classList.toggle("warn", output.kind === "loss");
+        el.resultTop.classList.toggle("loss", output.kind === "loss");
+        el.mainLabel.textContent = output.mainLabel;
+        el.mainValue.textContent = output.mainValue;
+        el.mainValue.classList.toggle("loss", output.kind === "loss");
+        el.takeaway.textContent = output.takeaway;
+        el.takeaway.classList.toggle("loss", output.kind === "loss");
+        el.metricOneLabel.textContent = output.metricOneLabel;
+        el.metricOne.textContent = output.metricOne;
+        el.metricTwoLabel.textContent = output.metricTwoLabel;
+        el.metricTwo.textContent = output.metricTwo;
+        el.metricThreeLabel.textContent = output.metricThreeLabel;
+        el.metricThree.textContent = output.metricThree;
+        el.metricThree.classList.toggle("loss", output.isLoss);
+        el.metricThree.classList.toggle("profit", output.isProfit);
+        el.metricFourLabel.textContent = output.metricFourLabel;
+        el.metricFour.textContent = output.metricFour;
+      }
+
+      function calculate() {
+        var costRaw = state.cost.trim();
+        var secondRaw = state[secondaryKey()].trim();
+        var empty = emptyOutput();
+
+        if (costRaw === "" || secondRaw === "") {
+          return empty;
+        }
+
+        var cost = readNumber(state.cost);
+        var second = readNumber(state[secondaryKey()]);
+        if (!Number.isFinite(cost) || !Number.isFinite(second)) {
+          empty.status = t("invalidNumber");
+          empty.kind = "error";
+          return empty;
+        }
+        if (cost <= 0) {
+          empty.status = t("invalidCost");
+          empty.kind = "error";
+          return empty;
+        }
+
+        if (state.mode === "markup") {
+          if (second <= -100) {
+            empty.status = t("invalidMarkup");
+            empty.kind = "error";
+            return empty;
+          }
+          return resultFromValues(cost, cost * (1 + second / 100), "markup", second);
+        }
+
+        if (state.mode === "margin") {
+          if (second >= 100) {
+            empty.status = t("invalidMargin");
+            empty.kind = "error";
+            return empty;
+          }
+          return resultFromValues(cost, cost / (1 - second / 100), "margin", second);
+        }
+
+        if (second <= 0) {
+          empty.status = t("invalidPrice");
+          empty.kind = "error";
+          return empty;
+        }
+        return resultFromValues(cost, second, "price", second);
+      }
+
+      function resultFromValues(cost, price, mode, requested) {
+        var profit = price - cost;
+        var markup = profit / cost * 100;
+        var margin = profit / price * 100;
+        var isLoss = profit < 0;
+        var output = emptyOutput();
+
+        if (!finiteAll([cost, price, profit, markup, margin])) {
+          output.status = t("invalidNumber");
+          output.kind = "error";
+          return output;
+        }
+
+        output.status = isLoss ? t("loss") : t("ready");
+        output.kind = isLoss ? "loss" : "ready";
+        output.isLoss = isLoss;
+        output.isProfit = profit > 0;
+        output.metricOneLabel = t("markup");
+        output.metricOne = percent(markup) + "%";
+        output.metricTwoLabel = t("margin");
+        output.metricTwo = percent(margin) + "%";
+        output.metricThreeLabel = t("profitLoss");
+        output.metricThree = money(profit);
+        output.metricFourLabel = mode === "price" ? t("priceMetric") : t("costBasis");
+        output.metricFour = mode === "price" ? money(price) : money(cost);
+
+        if (mode === "price") {
+          output.mainLabel = t("marginResult");
+          output.mainValue = percent(margin) + "%";
+          output.takeaway = isLoss ? template(t("priceLossTakeaway"), {
+            cost: money(cost),
+            price: money(price),
+            loss: money(Math.abs(profit)),
+            markup: percent(markup),
+            margin: percent(margin)
+          }) : template(t("priceTakeaway"), {
+            cost: money(cost),
+            price: money(price),
+            profit: money(profit),
+            markup: percent(markup),
+            margin: percent(margin)
+          });
+          return output;
+        }
+
+        output.mainLabel = t("sellingPrice");
+        output.mainValue = money(price);
+        if (mode === "markup") {
+          output.takeaway = isLoss ? template(t("markupLossTakeaway"), {
+            cost: money(cost),
+            markup: percent(requested),
+            price: money(price),
+            profit: money(Math.abs(profit)),
+            margin: percent(margin)
+          }) : template(t("markupTakeaway"), {
+            cost: money(cost),
+            markup: percent(requested),
+            price: money(price),
+            margin: percent(margin)
+          });
+          return output;
+        }
+
+        output.takeaway = isLoss ? template(t("marginLossTakeaway"), {
+          cost: money(cost),
+          margin: percent(requested),
+          price: money(price),
+          profit: money(Math.abs(profit))
+        }) : template(t("marginTakeaway"), {
+          cost: money(cost),
+          margin: percent(requested),
+          price: money(price),
+          markup: percent(markup)
+        });
+        return output;
+      }
+
+      function emptyOutput() {
+        return {
+          status: t("needInput"),
+          kind: "neutral",
+          isLoss: false,
+          isProfit: false,
+          mainLabel: state.mode === "price" ? t("marginResult") : t("sellingPrice"),
+          mainValue: t("dash"),
+          takeaway: t("needInputTakeaway"),
+          metricOneLabel: t("markup"),
+          metricOne: t("dash"),
+          metricTwoLabel: t("margin"),
+          metricTwo: t("dash"),
+          metricThreeLabel: t("profitLoss"),
+          metricThree: t("dash"),
+          metricFourLabel: state.mode === "price" ? t("priceMetric") : t("costBasis"),
+          metricFour: t("dash")
+        };
+      }
+
+      function secondaryKey() {
+        if (state.mode === "margin") {
+          return "margin";
+        }
+        if (state.mode === "price") {
+          return "price";
+        }
+        return "markup";
+      }
+
+      function secondaryLabel() {
+        if (state.mode === "margin") {
+          return t("marginLabel");
+        }
+        if (state.mode === "price") {
+          return t("priceLabel");
+        }
+        return t("markupLabel");
+      }
+
+      function secondaryPlaceholder() {
+        if (state.mode === "margin") {
+          return "40";
+        }
+        if (state.mode === "price") {
+          return "150";
+        }
+        return "50";
+      }
+
+      function t(key) {
+        var pack = text[state.lang] || text.en;
+        return pack[key] || text.en[key] || "";
+      }
+
+      function readNumber(value) {
+        if (typeof value !== "string") {
+          return NaN;
+        }
+        var trimmed = value.replace(/,/g, "").trim();
+        if (trimmed === "") {
+          return NaN;
+        }
+        var number = Number(trimmed);
+        return Number.isFinite(number) ? number : NaN;
+      }
+
+      function finiteAll(values) {
+        return values.every(function (value) {
+          return Number.isFinite(value);
+        });
+      }
+
+      function currencyInfo() {
+        return currencies[state.currency] || currencies.USD;
+      }
+
+      function formatNumber(value, digits) {
+        if (!Number.isFinite(value)) {
+          return t("dash");
+        }
+        return new Intl.NumberFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: digits
+        }).format(value);
+      }
+
+      function money(value) {
+        if (!Number.isFinite(value)) {
+          return t("dash");
+        }
+        var sign = value < 0 ? "-" : "";
+        var amount = Math.abs(value);
+        return sign + currencyInfo().prefix + new Intl.NumberFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(amount);
+      }
+
+      function percent(value) {
+        return formatNumber(value, 2);
+      }
+
+      function template(source, values) {
+        return Object.keys(values).reduce(function (result, key) {
+          return result.split("{" + key + "}").join(String(values[key]));
+        }, source);
+      }
+    }());
+  </script>
+</body>
+</html>

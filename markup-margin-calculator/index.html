@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Markup &amp; Margin Calculator — Markup vs Margin, Offline</title>
+<meta name="description" content="A free markup and margin calculator: convert between cost, markup %, margin % and selling price, and see why a 50% markup is only a 33% margin. For freelancers pricing marked-up costs. Runs in your browser, nothing uploaded.">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/markup-margin-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Markup &amp; Margin Calculator — Markup vs Margin">
+<meta property="og:description" content="Convert between cost, markup %, margin % and price — and see why markup and margin are not the same. Free, runs in your browser, nothing uploaded.">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/markup-margin-calculator/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Markup &amp; Margin Calculator — Offline">
+<meta name="twitter:description" content="Cost, markup %, margin % and price — converted both ways. Free, nothing uploaded.">
+<meta name="twitter:image" content="https://btcson66-rgb.github.io/freelance-tools/og/suite.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Markup & Margin Calculator",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web browser (Windows, macOS, Linux)",
+  "description": "A free, offline markup and margin calculator. Convert between cost, markup percentage, margin percentage and selling price in any direction, and see clearly why markup and margin differ. Runs in your browser with no account and no data upload.",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/markup-margin-calculator/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Cost + markup % to selling price",
+    "Cost + margin % to selling price",
+    "Cost + price to markup % and margin %",
+    "Shows markup vs margin side by side",
+    "Profit and loss handling",
+    "Works 100% offline"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is this markup and margin calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely free. It runs in your browser with no account and no sign-up, and nothing is uploaded. There is no paid version of the calculator." } },
+    { "@type": "Question", "name": "What is the difference between markup and margin?", "acceptedAnswer": { "@type": "Answer", "text": "Markup is profit as a percentage of cost, while margin is profit as a percentage of the selling price. They describe the same profit from different angles, so the numbers differ: a 50% markup on a $100 cost gives a $150 price, which is only a 33.3% margin." } },
+    { "@type": "Question", "name": "How do I calculate selling price from cost and markup?", "acceptedAnswer": { "@type": "Answer", "text": "Multiply the cost by one plus the markup percentage. A $100 cost with a 50% markup sells for $100 times 1.5, which is $150. To work from a target margin instead, divide the cost by one minus the margin percentage." } },
+    { "@type": "Question", "name": "Why do markup and margin matter for freelancers?", "acceptedAnswer": { "@type": "Answer", "text": "Freelancers and agencies often mark up materials, subcontracted work, or pass-through costs. Confusing markup with margin means you can think you are making 50% when you are really keeping 33%. Getting the two right protects your real profit." } },
+    { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Completely. The calculator runs entirely in your browser with zero network requests. Your costs and prices are never uploaded anywhere." } }
+  ]
+}
+</script>
+<style>
+  :root{--ink:#2a1f06;--muted:#7a6a45;--line:#efe6cf;--bg:#fdfaf1;--brand:#a16207}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:#854d0e;text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+  nav{border-bottom:1px solid var(--line);background:#fff}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px}
+  nav b{color:var(--ink)}
+  header{background:radial-gradient(900px 360px at 70% -10%,#fef3c7,transparent),linear-gradient(180deg,#fff,#fdfaf1);border-bottom:1px solid var(--line);padding:54px 0 44px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:700;color:#854d0e;background:#fef3c7;border:1px solid #fde68a;border-radius:999px;padding:5px 13px;margin-bottom:16px}
+  h1{font-size:40px;line-height:1.13;letter-spacing:-1px;font-weight:850;max-width:680px}
+  .sub{font-size:18px;color:var(--muted);max-width:620px;margin:16px 0 0}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .btn{border-radius:11px;padding:13px 20px;font-weight:700;font-size:15px;display:inline-block}
+  .btn.try{background:var(--brand);color:#fff}.btn.try:hover{filter:brightness(.95)}
+  .btn.buy{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.buy:hover{border-color:#e3d4a6}
+  .trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted);font-weight:600}
+  .trust span{display:inline-flex;gap:6px;align-items:center}
+  .dotg{color:#16a34a;font-weight:900}
+  section{padding:42px 0}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  h3{font-size:17px;font-weight:750;margin:22px 0 6px}
+  p{margin:10px 0;color:#3d3119}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:640px){.feat{grid-template-columns:1fr}h1{font-size:31px}}
+  .feat div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .feat h4{font-size:15.5px;margin-bottom:3px}
+  .feat p{font-size:14px;color:var(--muted);margin:0}
+  ol.steps{margin:10px 0 0 20px}ol.steps li{margin:8px 0}
+  table.rates{width:100%;border-collapse:collapse;margin-top:12px;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  table.rates th,table.rates td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line)}
+  table.rates th{background:#fef9ec;font-weight:750}
+  table.rates tr:last-child td{border-bottom:0}
+  .faq dt{font-weight:750;margin-top:18px}.faq dd{margin:5px 0 0;color:#4a3c20}
+  .related{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .related a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;color:var(--ink)}
+  .related a:hover{border-color:#e3d4a6}
+  .endcta{background:#2a1f06;color:#fff;border-radius:18px;padding:30px;text-align:center;margin-top:8px}
+  .endcta h2{color:#fff}.endcta p{color:#e8dcbf;max-width:520px;margin:8px auto 18px}
+  .endcta .btn.buy{background:transparent;border-color:#4d3d16;color:#fff}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px;text-align:center}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap"><a href="../"><b>◆ Freelance Tools</b></a><a href="../#tools">All tools →</a></div></nav>
+
+<header>
+  <div class="wrap">
+    <span class="pill">Free · No sign-up · 100% offline</span>
+    <h1>Free markup &amp; margin calculator</h1>
+    <p class="sub">Markup and margin are not the same number — and confusing them quietly eats your profit. Convert between cost, markup %, margin % and selling price in any direction, and see exactly why a 50% markup is only a 33% margin. Runs in your browser, nothing uploaded.</p>
+    <div class="cta">
+      <a class="btn try" href="tool.html">Open the calculator →</a>
+      <a class="btn buy" href="../project-quote-builder/">Then build the quote →</a>
+    </div>
+    <div class="trust">
+      <span><span class="dotg">●</span> Markup ↔ margin ↔ price</span>
+      <span><span class="dotg">●</span> Shows both side by side</span>
+      <span><span class="dotg">●</span> EN + 繁體中文</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>The mistake that quietly costs you money</h2>
+    <p>Ask for a "50% margin" and apply a 50% markup, and you've just undercharged. Markup is profit measured against your <em>cost</em>; margin is profit measured against the <em>selling price</em>. They describe the same profit from two angles, so the percentages never match — a 50% markup is only a 33.3% margin, and a 50% margin needs a 100% markup. For freelancers and agencies marking up materials, subcontractors or pass-through costs, that gap is real money.</p>
+    <p>This calculator keeps the two straight. Enter a cost and a markup % to get the price, margin and profit; enter a cost and a target margin % to get the price and the markup you need; or enter cost and price to get both percentages. It always shows markup and margin side by side so you can see the difference at a glance.</p>
+
+    <h2>Markup vs margin at a glance</h2>
+    <table class="rates">
+      <tr><th>Markup on cost</th><th>Equivalent margin on price</th></tr>
+      <tr><td>25%</td><td>20%</td></tr>
+      <tr><td>50%</td><td>33.3%</td></tr>
+      <tr><td>100%</td><td>50%</td></tr>
+      <tr><td>200%</td><td>66.7%</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted)">Markup = profit ÷ cost. Margin = profit ÷ price. The bigger the markup, the wider the gap.</p>
+
+    <h2>What it works out</h2>
+    <div class="feat">
+      <div><h4>Selling price</h4><p>From a cost plus a markup %, or a cost and a target margin %.</p></div>
+      <div><h4>Markup &amp; margin</h4><p>Both percentages shown together so you never confuse the two.</p></div>
+      <div><h4>Profit amount</h4><p>The actual money you keep on the sale, with losses flagged clearly.</p></div>
+      <div><h4>Reverse from price</h4><p>Enter cost and price to get the markup % and margin % you're actually running.</p></div>
+      <div><h4>Any currency</h4><p>Prefix-only currency picker for clean quotes in your market.</p></div>
+      <div><h4>Private &amp; offline</h4><p>Runs entirely in your browser. Your costs and prices never leave your computer.</p></div>
+    </div>
+
+    <h2>How to use it in 3 steps</h2>
+    <ol class="steps">
+      <li><strong>Pick a mode</strong> — price from markup, price from margin, or percentages from cost and price.</li>
+      <li><strong>Enter your numbers</strong> — cost plus one other value.</li>
+      <li><strong>Read the result</strong> — price, profit, and markup % next to margin % so the difference is obvious.</li>
+    </ol>
+
+    <h2>From price to sent</h2>
+    <p>Once your marked-up price is right, the rest stays offline too: drop the figure into a line-item <a href="../project-quote-builder/">quote</a>, set your base rate with the <a href="../freelance-rate-calculator/">rate calculator</a>, turn the accepted quote into an <a href="../free-invoice-generator/">invoice</a>, and check what you net after <a href="../payment-fee-calculator/">payment fees</a>. All offline, one-time purchases, no subscription. Get the core five in the <a href="https://bitsonic1.gumroad.com/l/freelance-suite" target="_blank" rel="noopener">$39 Freelance Tools Suite</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <dl class="faq">
+      <dt>Is this calculator free?</dt>
+      <dd>Yes, completely. It runs in your browser with no account and nothing uploaded. There is no paid version of the calculator itself.</dd>
+      <dt>What's the difference between markup and margin?</dt>
+      <dd>Markup is profit as a percentage of cost; margin is profit as a percentage of price. A 50% markup on $100 gives a $150 price — a 33.3% margin, not 50%.</dd>
+      <dt>How do I get selling price from cost and markup?</dt>
+      <dd>Multiply cost by (1 + markup%). $100 at 50% markup = $150. To hit a target margin instead, divide cost by (1 − margin%).</dd>
+      <dt>Why does this matter for freelancers?</dt>
+      <dd>Marking up materials or subcontracted work using margin maths as if it were markup (or vice versa) means under- or over-charging. Getting it right protects your real profit.</dd>
+      <dt>Is my data private?</dt>
+      <dd>Completely. Zero network requests — your costs and prices stay on your computer.</dd>
+    </dl>
+
+    <h2>More free tools for freelancers</h2>
+    <p>Part of a set of offline, no-subscription tools that cover the whole freelance workflow:</p>
+    <div class="related">
+      <a href="../project-quote-builder/">▤ Project quote builder</a>
+      <a href="../freelance-rate-calculator/">⌁ Rate calculator</a>
+      <a href="../payment-fee-calculator/">↺ Payment fee calculator</a>
+      <a href="../deposit-milestone-calculator/">◷ Deposit &amp; milestone calc</a>
+      <a href="../free-invoice-generator/">▦ Free invoice generator</a>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="endcta">
+      <h2>Stop confusing markup and margin</h2>
+      <p>See both numbers side by side and price for the profit you actually want. Free, no account, nothing uploaded.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn try" href="tool.html">Open the calculator →</a>
+        <a class="btn buy" href="../">See all the tools →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a href="../">Freelance Tools</a> · Offline, one-time-purchase tools for freelancers · Free Lite versions, Pro on Gumroad</div></footer>
+
+</body>
+</html>
