@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel 格式不一致怎麼辦？日期文字數字整理法</title>
+<meta name="description" content="Excel 同欄格式混亂會讓排序、篩選、加總與匯入出錯。整理日期、文字大小寫、數字文字與空白。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-inconsistent-format-fix/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Excel 格式不一致怎麼辦？日期文字數字整理法">
+<meta property="og:description" content="Excel 同欄格式混亂會讓排序、篩選、加總與匯入出錯。整理日期、文字大小寫、數字文字與空白。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-inconsistent-format-fix/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Excel 資料格式不一致怎麼辦？日期、文字、數字、空白整理法",
+  "description": "Excel 同欄格式混亂會讓排序、篩選、加總與匯入出錯。整理日期、文字大小寫、數字文字與空白。",
+  "author": {"@type": "Person", "name": "bitsonic1"},
+  "datePublished": "2026-06-08",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-inconsistent-format-fix/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"excel 格式整理最先要做什麼？","acceptedAnswer":{"@type":"Answer","text":"先備份原始檔，確認欄位定義與清理目的，再開始排序、篩選、標示或刪除。"}},
+    {"@type":"Question","name":"excel 格式整理一定要會公式嗎？","acceptedAnswer":{"@type":"Answer","text":"不一定。多數日常清理可以用篩選、排序、條件式格式、尋找取代與工具完成，公式只是其中一種方法。"}},
+    {"@type":"Question","name":"清理後要怎麼避免誤刪？","acceptedAnswer":{"@type":"Answer","text":"保留原始筆數、刪除筆數、待確認清單與抽樣紀錄；重要資料不要直接覆蓋原始檔。"}},
+    {"@type":"Question","name":"使用 Excel Cleaner Pro 會把資料上傳到雲端嗎？","acceptedAnswer":{"@type":"Answer","text":"不會。Excel Cleaner Pro 是 Windows 桌面工具，資料清理在本機完成，只有一次性授權啟用需要連線。"}},
+    {"@type":"Question","name":"清理資料前一定要備份嗎？","acceptedAnswer":{"@type":"Answer","text":"建議一定要備份原始檔，或至少另存新檔。任何刪除、合併、取代與格式調整，都應保留可追溯版本。"}}
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>Excel 資料格式不一致怎麼辦？日期、文字、數字、空白整理法</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-08</p>
+</header>
+<article class="wrap">
+<p><strong>excel 格式整理</strong>的重點不是把表格排得好看，而是把資料整理到可以篩選、比對、統計、匯入系統，也能讓同事看懂你改了什麼。對接手別人表格、跨部門彙整資料或每月做報表的人來說，最常見的壓力是時間很趕、規則不明確、又怕一刪就回不去了。</p><p>這篇聚焦在日期、文字、數字格式混亂。你通常會遇到數字靠左、日期不能篩選、前後空白、全半形混用、代碼前導 0 消失等狀況。先不要急著按刪除或全部取代，因為資料清理最重要的是可回復、可說明、可抽查。</p><h2>先判斷這份表格髒在哪裡</h2><p>開始前先用三到五分鐘看資料狀態。你不需要先會公式，只要用篩選、排序和肉眼抽查，就能把問題分成幾類，後面才不會越清越亂。</p><ul><li>數字靠左</li><li>日期不能篩選</li><li>前後空白</li><li>全半形混用</li><li>代碼前導 0 消失</li><li>前後空白或全半形混用</li><li>清理後需要交給主管或系統使用</li></ul><h2>手動做法：先用看得懂的流程處理</h2><p>逐欄確認資料類型，日期轉日期，金額轉數字，代碼與電話保留文字。手動流程雖然慢，但很適合第一次建立規則，因為每一步你都知道自己為什麼這樣做。</p><ol><li>複製原始檔，檔名加上日期與未清理字樣。</li><li>確認每一欄只放一種資料，不要把備註和主要欄位混在一起。</li><li>開啟篩選，逐欄找空白、異常值、格式不同與看起來重複的資料。</li><li>先標示疑似問題，不要一開始就刪除整列。</li><li>把規則寫在清理紀錄欄，例如判斷欄位、保留條件與人工確認原因。</li><li>處理後記錄原始筆數、刪除筆數、待確認筆數與完成筆數。</li><li>抽樣檢查前段、中段、後段資料，再另存清理後版本。</li></ol><table><thead><tr><th>檢查項目</th><th>手動檢查方式</th><th>處理方向</th></tr></thead><tbody><tr><td>格式</td><td>篩選同欄不同寫法</td><td>先選定公司標準格式</td></tr><tr><td>重複</td><td>排序或標示重複值</td><td>先審核再刪除或合併</td></tr><tr><td>空白</td><td>篩選空白儲存格</td><td>判斷是缺漏還是不適用</td></tr><tr><td>交付</td><td>比對筆數與抽樣資料</td><td>留下清理紀錄</td></tr></tbody></table><h2>常見錯誤與檢查重點</h2><p>全表套格式會誤改電話、編號或身分證字號。另一個常見錯誤，是只修畫面上看得到的列，卻忘記取消篩選後還有其他資料。清理完也要重新檢查總筆數、總金額或關鍵欄位，不要只相信畫面看起來乾淨。</p><ul><li>直接在原始檔操作，事後無法追查。</li><li>沒有先定義唯一欄位，導致誤刪或漏刪。</li><li>把電話、編號、身分證字號當成數字，造成前導 0 消失。</li><li>用全表尋找取代，誤改地址、備註或品號。</li></ul><h2>簡單做法：把重複工作交給工具</h2><p>等你知道規則後，就可以把重複、固定、容易手滑的步驟交給工具。Excel Cleaner Pro 是 Windows 桌面工具，資料 100% 在本機離線清理，只有一次性授權啟用需要連線；它的定位不是取代你的業務判斷，而是把可重複的清理流程做得更穩。</p><p>在這個情境下，你可以用 Excel Cleaner Pro 處理格式標準化、缺失值與異常偵測。如果資料涉及客戶、員工、薪資或身分資料，本機處理也比把檔案上傳到不明線上工具更安心。免費試用可清理每張工作表 200 列，報告會加浮水印，適合先確認流程。</p><h2>交付前檢查清單</h2><ul><li>原始檔是否保留，而且沒有被覆蓋。</li><li>欄位規則是否寫得出來，別人能不能照著重做。</li><li>刪除、合併、取代的筆數是否有紀錄。</li><li>待確認資料是否另外標示，沒有混進完成檔。</li><li>清理後的日期、電話、金額或編號是否能正確排序、比對或匯入。</li></ul><p>實務上，建議先拿 50 到 100 列試跑。確認欄位、格式與刪除規則合理後，再處理完整檔案。若清理後要匯入系統，也先用小檔測試欄位要求，因為很多匯入失敗不是內容錯，而是格式不符合系統規則。</p><p>另一個好習慣，是把規則寫成普通人看得懂的句子，例如「以手機加 email 判斷同一人」、「保留更新日期最新的資料」、「電話欄一律轉成 09 開頭」。規則越明確，下次交接、複查或批次處理越省時間。</p><p><strong>想少花時間在重複清資料上？</strong><a href="https://bitsonic1.gumroad.com/l/excelcleaner">下載 Excel Cleaner Pro</a>，先用免費試用清理每張工作表 200 列資料，確認流程適合你的工作，再決定是否升級 US$39 一次買斷版。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>excel 格式整理最先要做什麼？</summary><p>先備份原始檔，確認欄位定義與清理目的，再開始排序、篩選、標示或刪除。</p></details>
+<details class="faq-item"><summary>excel 格式整理一定要會公式嗎？</summary><p>不一定。多數日常清理可以用篩選、排序、條件式格式、尋找取代與工具完成，公式只是其中一種方法。</p></details>
+<details class="faq-item"><summary>清理後要怎麼避免誤刪？</summary><p>保留原始筆數、刪除筆數、待確認清單與抽樣紀錄；重要資料不要直接覆蓋原始檔。</p></details>
+<details class="faq-item"><summary>使用 Excel Cleaner Pro 會把資料上傳到雲端嗎？</summary><p>不會。Excel Cleaner Pro 是 Windows 桌面工具，資料清理在本機完成，只有一次性授權啟用需要連線。</p></details>
+<details class="faq-item"><summary>清理資料前一定要備份嗎？</summary><p>建議一定要備份原始檔，或至少另存新檔。任何刪除、合併、取代與格式調整，都應保留可追溯版本。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>
