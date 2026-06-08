@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sales Tax &amp; VAT Calculator - Add or Remove Tax</title>
+  <meta name="description" content="Free offline sales tax and VAT calculator for freelancers. Add tax to a net invoice amount or remove tax from a tax-inclusive gross total.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --soft: #fdf2f8;
+      --accent: #a21caf;
+      --accent-dark: #86198f;
+      --danger: #b91c1c;
+      --warn: #92400e;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-underline-offset: 0.18em;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      max-width: 780px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 70ch;
+    }
+
+    .lang-toggle,
+    .mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--card);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+    }
+
+    .lang-toggle {
+      flex: 0 0 auto;
+    }
+
+    .lang-toggle button,
+    .mode-toggle button {
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .lang-toggle button[aria-pressed="true"],
+    .mode-toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .lang-toggle button:focus-visible,
+    .mode-toggle button:focus-visible,
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(162, 28, 175, 0.17);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      padding: 11px 12px;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .suffix-input {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .suffix-input:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(162, 28, 175, 0.17);
+    }
+
+    .suffix-input input {
+      min-height: 42px;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .suffix-input input:focus {
+      box-shadow: none;
+    }
+
+    .suffix-input span {
+      padding: 0 12px;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .preset-note {
+      margin: 14px 0 0;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: var(--soft);
+      padding: 12px 14px;
+      color: #701a75;
+      font-size: 0.92rem;
+    }
+
+    .result-card {
+      overflow: hidden;
+    }
+
+    .result-top {
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fae8ff 0%, #ffffff 100%);
+    }
+
+    .status {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.warn {
+      color: var(--warn);
+    }
+
+    .main-label {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 750;
+    }
+
+    .main-value {
+      margin: 2px 0 0;
+      color: var(--accent-dark);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .takeaway {
+      margin: 12px 0 0;
+      color: #701a75;
+      font-weight: 750;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px 22px 4px;
+    }
+
+    .metric {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 750;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.2rem;
+      overflow-wrap: anywhere;
+    }
+
+    .details {
+      padding: 18px 22px 22px;
+    }
+
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .details-row strong {
+      color: var(--text);
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .disclaimer {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (max-width: 850px) {
+      header {
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        padding-top: 20px;
+      }
+
+      .lang-toggle,
+      .mode-toggle {
+        width: 100%;
+      }
+
+      .lang-toggle button,
+      .mode-toggle button {
+        flex: 1 1 0;
+      }
+
+      .section-title {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .field-grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .details-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .details-row strong {
+        text-align: left;
+      }
+
+      .panel,
+      .result-top,
+      .details {
+        padding: 18px;
+      }
+
+      .metrics {
+        padding: 14px 18px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance invoice tool</p>
+        <h1 data-i18n="title">Sales tax &amp; VAT calculator</h1>
+        <p class="intro" data-i18n="intro">Add tax to a net invoice amount, or remove tax from a tax-inclusive total for reverse VAT checks.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="zh" aria-pressed="false">繁中</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <div class="section-title">
+          <h2 id="inputsTitle" data-i18n="inputsTitle">Tax inputs</h2>
+          <div class="mode-toggle" aria-label="Calculator mode">
+            <button type="button" data-mode="add" aria-pressed="true" data-i18n="modeAdd">Add tax</button>
+            <button type="button" data-mode="remove" aria-pressed="false" data-i18n="modeRemove">Remove tax</button>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field full">
+            <label for="amount" id="amountLabel">Net amount</label>
+            <div class="input-row">
+              <select id="currency" aria-label="Currency">
+                <option value="USD">$ USD</option>
+                <option value="TWD">NT$ TWD</option>
+                <option value="EUR">€ EUR</option>
+                <option value="GBP">£ GBP</option>
+                <option value="AUD">A$ AUD</option>
+                <option value="CAD">C$ CAD</option>
+                <option value="JPY">JP¥ JPY</option>
+              </select>
+              <input id="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="100">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="ratePreset" data-i18n="ratePresetLabel">Common rate examples</label>
+            <select id="ratePreset">
+              <option value="0">0%</option>
+              <option value="5">5% (e.g. Taiwan)</option>
+              <option value="7">7%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+              <option value="19">19%</option>
+              <option value="20">20% (e.g. UK)</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="taxRate" data-i18n="taxRateLabel">Tax rate</label>
+            <div class="suffix-input">
+              <input id="taxRate" type="number" step="0.01" inputmode="decimal" value="5">
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="preset-note" data-i18n="presetNote">Preset rates are examples only. Rates and rules vary by country, product, customer, and registration status; this is not tax advice.</p>
+      </section>
+
+      <section class="card result-card" aria-live="polite" aria-labelledby="resultsTitle">
+        <div class="result-top">
+          <p id="status" class="status">Enter an amount to start.</p>
+          <p id="mainLabel" class="main-label">Gross total</p>
+          <p id="mainValue" class="main-value">-</p>
+          <p id="takeaway" class="takeaway">-</p>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <span id="metricOneLabel">Net amount</span>
+            <strong id="metricOne">-</strong>
+          </div>
+          <div class="metric">
+            <span id="metricTwoLabel">Tax amount</span>
+            <strong id="metricTwo">-</strong>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="details-row">
+            <span id="detailLabel">Calculation</span>
+            <strong id="detailValue">Net + tax = gross.</strong>
+          </div>
+          <p id="disclaimer" class="disclaimer" data-i18n="disclaimer">Tax rates and rules vary by country and product. This is a calculation helper, not tax advice - confirm the right rate and your registration status with a professional.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More freelance calculators:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var storageKey = "salestax_v1";
+      var defaults = {
+        lang: "en",
+        mode: "add",
+        currency: "USD",
+        amount: "",
+        taxRate: "5",
+        ratePreset: "5"
+      };
+
+      var currencies = {
+        USD: { prefix: "$", label: "$ USD" },
+        TWD: { prefix: "NT$", label: "NT$ TWD" },
+        EUR: { prefix: "€", label: "€ EUR" },
+        GBP: { prefix: "£", label: "£ GBP" },
+        AUD: { prefix: "A$", label: "A$ AUD" },
+        CAD: { prefix: "C$", label: "C$ CAD" },
+        JPY: { prefix: "JP¥", label: "JP¥ JPY" }
+      };
+
+      var presetRates = {
+        "0": "0",
+        "5": "5",
+        "7": "7",
+        "10": "10",
+        "15": "15",
+        "19": "19",
+        "20": "20",
+        custom: "custom"
+      };
+
+      var text = {
+        en: {
+          eyebrow: "Freelance invoice tool",
+          title: "Sales tax & VAT calculator",
+          intro: "Add tax to a net invoice amount, or remove tax from a tax-inclusive total for reverse VAT checks.",
+          inputsTitle: "Tax inputs",
+          modeAdd: "Add tax",
+          modeRemove: "Remove tax",
+          netAmountLabel: "Net amount",
+          grossAmountLabel: "Tax-inclusive amount",
+          ratePresetLabel: "Common rate examples",
+          taxRateLabel: "Tax rate",
+          presetNote: "Preset rates are examples only. Rates and rules vary by country, product, customer, and registration status; this is not tax advice.",
+          grossTotal: "Gross total",
+          netAmount: "Net amount",
+          taxAmount: "Tax amount",
+          grossAmount: "Gross amount",
+          calculationLabel: "Calculation",
+          addFormula: "Net + tax = gross.",
+          removeFormula: "Gross / (1 + rate) = net.",
+          disclaimer: "Tax rates and rules vary by country and product. This is a calculation helper, not tax advice - confirm the right rate and your registration status with a professional.",
+          footerText: "More freelance calculators:",
+          needInput: "Enter an amount to start.",
+          needInputTakeaway: "Net, tax, and gross will appear here.",
+          invalidAmount: "Enter a valid amount of 0 or more.",
+          invalidRate: "Enter a valid tax rate.",
+          invalidRateTooLow: "Tax rate must be greater than -100% so the reverse calculation stays valid.",
+          ready: "Calculated from your inputs.",
+          unusualNegativeRate: "Calculated with a negative tax rate above -100%. Check that this is intended.",
+          addTakeaway: "Net {net} + {rate}% tax = {tax} tax, {gross} total.",
+          removeTakeaway: "{gross} includes {tax} tax; net is {net}.",
+          dash: "-"
+        },
+        zh: {
+          eyebrow: "自由工作發票工具",
+          title: "銷售稅與 VAT 計算器",
+          intro: "將稅額加到未稅金額，或從含稅總額反推出未稅金額與稅額。",
+          inputsTitle: "稅額輸入",
+          modeAdd: "加上稅額",
+          modeRemove: "移除稅額",
+          netAmountLabel: "未稅金額",
+          grossAmountLabel: "含稅金額",
+          ratePresetLabel: "常見稅率範例",
+          taxRateLabel: "稅率",
+          presetNote: "預設稅率只是範例。稅率與規則會依國家、商品、客戶與登記狀態而不同；這不是稅務建議。",
+          grossTotal: "含稅總額",
+          netAmount: "未稅金額",
+          taxAmount: "稅額",
+          grossAmount: "含稅金額",
+          calculationLabel: "計算方式",
+          addFormula: "未稅金額 + 稅額 = 含稅總額。",
+          removeFormula: "含稅總額 / (1 + 稅率) = 未稅金額。",
+          disclaimer: "各國與不同商品的稅率和規則都可能不同。本工具只是計算輔助，不是稅務建議；請向專業人士確認正確稅率與你的登記狀態。",
+          footerText: "更多自由工作計算器：",
+          needInput: "請輸入金額開始計算。",
+          needInputTakeaway: "未稅金額、稅額與含稅總額會顯示在這裡。",
+          invalidAmount: "請輸入有效且不小於 0 的金額。",
+          invalidRate: "請輸入有效稅率。",
+          invalidRateTooLow: "稅率必須大於 -100%，反推計算才有效。",
+          ready: "已依你的輸入計算。",
+          unusualNegativeRate: "已使用大於 -100% 的負稅率計算。請確認這是你想要的設定。",
+          addTakeaway: "未稅 {net} + {rate}% 稅率 = {tax} 稅額，總額 {gross}。",
+          removeTakeaway: "{gross} 已包含 {tax} 稅額；未稅金額為 {net}。",
+          dash: "-"
+        }
+      };
+
+      var el = {};
+      [
+        "currency",
+        "amount",
+        "ratePreset",
+        "taxRate",
+        "amountLabel",
+        "status",
+        "mainLabel",
+        "mainValue",
+        "takeaway",
+        "metricOneLabel",
+        "metricOne",
+        "metricTwoLabel",
+        "metricTwo",
+        "detailLabel",
+        "detailValue"
+      ].forEach(function (id) {
+        el[id] = document.getElementById(id);
+      });
+
+      var state = loadState();
+
+      bind();
+      render();
+
+      function bind() {
+        document.querySelectorAll("[data-lang]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.lang = button.getAttribute("data-lang") === "zh" ? "zh" : "en";
+            render();
+            saveState();
+          });
+        });
+
+        document.querySelectorAll("[data-mode]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.mode = button.getAttribute("data-mode") === "remove" ? "remove" : "add";
+            render();
+            saveState();
+          });
+        });
+
+        el.currency.addEventListener("change", function () {
+          state.currency = Object.prototype.hasOwnProperty.call(currencies, el.currency.value) ? el.currency.value : defaults.currency;
+          render();
+          saveState();
+        });
+
+        el.amount.addEventListener("input", function () {
+          state.amount = el.amount.value;
+          render();
+          saveState();
+        });
+
+        el.ratePreset.addEventListener("change", function () {
+          state.ratePreset = Object.prototype.hasOwnProperty.call(presetRates, el.ratePreset.value) ? el.ratePreset.value : "custom";
+          if (state.ratePreset !== "custom") {
+            state.taxRate = presetRates[state.ratePreset];
+          }
+          render();
+          saveState();
+        });
+
+        el.taxRate.addEventListener("input", function () {
+          state.taxRate = el.taxRate.value;
+          state.ratePreset = "custom";
+          render();
+          saveState();
+        });
+      }
+
+      function loadState() {
+        var clean = {
+          lang: defaults.lang,
+          mode: defaults.mode,
+          currency: defaults.currency,
+          amount: defaults.amount,
+          taxRate: defaults.taxRate,
+          ratePreset: defaults.ratePreset
+        };
+        var raw = null;
+        try {
+          raw = window.localStorage.getItem(storageKey);
+        } catch (error) {
+          raw = null;
+        }
+        if (!raw) {
+          return clean;
+        }
+        try {
+          var saved = JSON.parse(raw);
+          if (!saved || typeof saved !== "object" || Array.isArray(saved)) {
+            return clean;
+          }
+          if (saved.lang === "zh" || saved.lang === "en") {
+            clean.lang = saved.lang;
+          }
+          if (saved.mode === "remove" || saved.mode === "add") {
+            clean.mode = saved.mode;
+          }
+          if (Object.prototype.hasOwnProperty.call(currencies, saved.currency)) {
+            clean.currency = saved.currency;
+          }
+          if (Object.prototype.hasOwnProperty.call(saved, "amount") && typeof saved.amount === "string") {
+            clean.amount = saved.amount;
+          }
+          if (Object.prototype.hasOwnProperty.call(saved, "taxRate") && typeof saved.taxRate === "string") {
+            clean.taxRate = saved.taxRate;
+          }
+          if (Object.prototype.hasOwnProperty.call(presetRates, saved.ratePreset)) {
+            clean.ratePreset = saved.ratePreset;
+          }
+        } catch (error) {
+          return clean;
+        }
+        return clean;
+      }
+
+      function saveState() {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (error) {
+        }
+      }
+
+      function render() {
+        document.documentElement.lang = state.lang === "zh" ? "zh-Hant" : "en";
+        document.querySelectorAll("[data-lang]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-lang") === state.lang));
+        });
+        document.querySelectorAll("[data-mode]").forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-mode") === state.mode));
+        });
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          node.textContent = t(key);
+        });
+
+        updatePresetOptions();
+
+        el.currency.value = Object.prototype.hasOwnProperty.call(currencies, state.currency) ? state.currency : defaults.currency;
+        el.amount.value = state.amount;
+        el.amount.placeholder = state.mode === "remove" ? "120" : "100";
+        el.amountLabel.textContent = state.mode === "remove" ? t("grossAmountLabel") : t("netAmountLabel");
+        el.ratePreset.value = Object.prototype.hasOwnProperty.call(presetRates, state.ratePreset) ? state.ratePreset : "custom";
+        el.taxRate.value = state.taxRate;
+
+        var output = calculate();
+        el.status.textContent = output.status;
+        el.status.classList.toggle("error", output.kind === "error");
+        el.status.classList.toggle("warn", output.kind === "warn");
+        el.mainLabel.textContent = output.mainLabel;
+        el.mainValue.textContent = output.mainValue;
+        el.takeaway.textContent = output.takeaway;
+        el.metricOneLabel.textContent = output.metricOneLabel;
+        el.metricOne.textContent = output.metricOne;
+        el.metricTwoLabel.textContent = output.metricTwoLabel;
+        el.metricTwo.textContent = output.metricTwo;
+        el.detailLabel.textContent = t("calculationLabel");
+        el.detailValue.textContent = state.mode === "remove" ? t("removeFormula") : t("addFormula");
+      }
+
+      function updatePresetOptions() {
+        var labels = {
+          "0": "0%",
+          "5": state.lang === "zh" ? "5%（例如台灣）" : "5% (e.g. Taiwan)",
+          "7": "7%",
+          "10": "10%",
+          "15": "15%",
+          "19": "19%",
+          "20": state.lang === "zh" ? "20%（例如英國）" : "20% (e.g. UK)",
+          custom: state.lang === "zh" ? "自訂" : "Custom"
+        };
+        Array.prototype.forEach.call(el.ratePreset.options, function (option) {
+          option.textContent = labels[option.value] || option.textContent;
+        });
+      }
+
+      function calculate() {
+        var amountRaw = state.amount.trim();
+        var rateRaw = state.taxRate.trim();
+        var empty = emptyOutput();
+        if (amountRaw === "") {
+          return empty;
+        }
+
+        var amount = readNumber(state.amount);
+        var rate = readNumber(state.taxRate);
+        if (!Number.isFinite(amount) || amount < 0) {
+          empty.status = t("invalidAmount");
+          empty.kind = "error";
+          return empty;
+        }
+        if (rateRaw === "" || !Number.isFinite(rate)) {
+          empty.status = t("invalidRate");
+          empty.kind = "error";
+          return empty;
+        }
+        if (rate <= -100) {
+          empty.status = t("invalidRateTooLow");
+          empty.kind = "error";
+          return empty;
+        }
+
+        var r = rate / 100;
+        var net = 0;
+        var tax = 0;
+        var gross = 0;
+        if (state.mode === "remove") {
+          gross = amount;
+          net = gross / (1 + r);
+          tax = gross - net;
+        } else {
+          net = amount;
+          tax = net * r;
+          gross = net + tax;
+        }
+
+        if (!finiteAll([net, tax, gross])) {
+          empty.status = t("invalidRate");
+          empty.kind = "error";
+          return empty;
+        }
+
+        var isNegativeRate = rate < 0;
+        var output = {
+          status: isNegativeRate ? t("unusualNegativeRate") : t("ready"),
+          kind: isNegativeRate ? "warn" : "ready",
+          mainLabel: state.mode === "remove" ? t("netAmount") : t("grossTotal"),
+          mainValue: state.mode === "remove" ? money(net) : money(gross),
+          takeaway: "",
+          metricOneLabel: state.mode === "remove" ? t("grossAmount") : t("netAmount"),
+          metricOne: state.mode === "remove" ? money(gross) : money(net),
+          metricTwoLabel: t("taxAmount"),
+          metricTwo: money(tax)
+        };
+
+        if (state.mode === "remove") {
+          output.takeaway = template(t("removeTakeaway"), {
+            gross: money(gross),
+            tax: money(tax),
+            net: money(net),
+            rate: percent(rate)
+          });
+          return output;
+        }
+
+        output.takeaway = template(t("addTakeaway"), {
+          net: money(net),
+          rate: percent(rate),
+          tax: money(tax),
+          gross: money(gross)
+        });
+        return output;
+      }
+
+      function emptyOutput() {
+        return {
+          status: t("needInput"),
+          kind: "neutral",
+          mainLabel: state.mode === "remove" ? t("netAmount") : t("grossTotal"),
+          mainValue: t("dash"),
+          takeaway: t("needInputTakeaway"),
+          metricOneLabel: state.mode === "remove" ? t("grossAmount") : t("netAmount"),
+          metricOne: t("dash"),
+          metricTwoLabel: t("taxAmount"),
+          metricTwo: t("dash")
+        };
+      }
+
+      function t(key) {
+        var pack = text[state.lang] || text.en;
+        return pack[key] || text.en[key] || "";
+      }
+
+      function readNumber(value) {
+        if (typeof value !== "string") {
+          return NaN;
+        }
+        var trimmed = value.replace(/,/g, "").trim();
+        if (trimmed === "") {
+          return NaN;
+        }
+        var number = Number(trimmed);
+        return Number.isFinite(number) ? number : NaN;
+      }
+
+      function finiteAll(values) {
+        return values.every(function (value) {
+          return Number.isFinite(value);
+        });
+      }
+
+      function currencyInfo() {
+        return currencies[state.currency] || currencies.USD;
+      }
+
+      function money(value) {
+        if (!Number.isFinite(value)) {
+          return t("dash");
+        }
+        var sign = value < 0 ? "-" : "";
+        return sign + currencyInfo().prefix + new Intl.NumberFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(Math.abs(value));
+      }
+
+      function percent(value) {
+        if (!Number.isFinite(value)) {
+          return t("dash");
+        }
+        return new Intl.NumberFormat(state.lang === "zh" ? "zh-TW" : "en-US", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        }).format(value);
+      }
+
+      function template(source, values) {
+        return Object.keys(values).reduce(function (result, key) {
+          return result.split("{" + key + "}").join(String(values[key]));
+        }, source);
+      }
+    }());
+  </script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freelance Break-Even & Runway Calculator</title>
+  <meta name="description" content="Free break-even and runway calculator for freelancers. Work out how much you must bill each month to break even, and how many months your savings will last.">
+  <style>
+    :root{
+      color-scheme: light;
+      --bg:#fdf8f3; --card:#ffffff; --text:#2a1c06; --muted:#7a6647; --line:#f0e4d3;
+      --soft:#fff7ed; --accent:#b45309; --accent-dark:#92400e; --danger:#b91c1c; --ok:#15803d;
+      --shadow:0 18px 40px rgba(42,28,6,.09);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif,"PingFang TC","Microsoft JhengHei";line-height:1.5}
+    a{color:var(--accent-dark)}
+    .page{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:32px 0 24px}
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}
+    .title-block{max-width:780px}
+    .eyebrow{margin:0 0 8px;color:var(--accent-dark);font-size:.82rem;font-weight:800;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(2rem,4vw,3.2rem);line-height:1.06}
+    .intro{margin:14px 0 0;color:var(--muted);font-size:1.05rem;max-width:70ch}
+    .lang-toggle,.mode-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--line);
+      border-radius:999px;background:var(--card);box-shadow:0 8px 22px rgba(42,28,6,.06)}
+    .lang-toggle{flex:0 0 auto}
+    .lang-toggle button,.mode-toggle button{border:0;border-radius:999px;padding:8px 12px;background:transparent;
+      color:var(--muted);font:inherit;font-size:.92rem;font-weight:800;cursor:pointer}
+    .lang-toggle button.active,.mode-toggle button.active{background:var(--accent);color:#fff}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.84fr);gap:20px;align-items:start}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+    .panel{padding:22px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+    h2{margin:0;font-size:1.2rem}
+    .field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+    label{color:#3f2e12;font-size:.92rem;font-weight:750}
+    input,select{width:100%;border:1px solid #e3d2b6;border-radius:8px;background:#fff;color:var(--text);font:inherit;
+      padding:11px 12px;outline:none;transition:border-color .16s,box-shadow .16s}
+    input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(180,83,9,.16)}
+    .input-row{display:grid;grid-template-columns:116px minmax(0,1fr);gap:8px}
+    .hint{font-size:.82rem;color:var(--muted);margin:-4px 0 0}
+    .result-top{padding:22px;background:linear-gradient(180deg,#fff7ed 0%,#fff 100%);border-bottom:1px solid var(--line)}
+    .status{margin:0 0 12px;color:var(--muted);font-weight:700}.status.error{color:var(--danger)}
+    .status.ok{color:var(--ok)}
+    .main-label{margin:0;color:var(--muted);font-size:.94rem;font-weight:750}
+    .main-value{margin:2px 0 0;color:var(--accent-dark);font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;font-weight:900;overflow-wrap:anywhere}
+    .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 22px 20px}
+    .metric{padding:13px;border:1px solid var(--line);border-radius:8px;background:#fff}
+    .metric.wide{grid-column:1 / -1;background:var(--soft);border-color:#fed7aa}
+    .metric span{display:block;color:var(--muted);font-size:.85rem;font-weight:750}
+    .metric strong{display:block;margin-top:4px;font-size:1.2rem;overflow-wrap:anywhere}
+    .reality{padding:18px 22px 22px;border-top:1px solid var(--line)}
+    .reality p{margin:0;color:var(--muted);font-size:.93rem}
+    footer{margin-top:22px;color:var(--muted);font-size:.95rem;text-align:center}
+    @media(max-width:850px){header{flex-direction:column}.grid{grid-template-columns:1fr}}
+    @media(max-width:580px){.page{width:min(100% - 20px,1120px);padding-top:20px}.metrics{grid-template-columns:1fr}
+      .input-row{grid-template-columns:1fr}.metric.wide{grid-column:auto}.panel,.result-top,.reality{padding:18px}.metrics{padding:14px 18px 18px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="title-block">
+        <p class="eyebrow" data-i18n="eyebrow">Freelance money tool</p>
+        <h1 data-i18n="title">Break-even &amp; runway calculator</h1>
+        <p class="intro" data-i18n="intro">Two numbers every freelancer should know: how much you must bill each month to break even, and how long your savings would last if work dried up.</p>
+      </div>
+      <div class="lang-toggle" aria-label="Language">
+        <button type="button" id="langEn" class="active">EN</button>
+        <button type="button" id="langZh">中文</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card panel" aria-labelledby="inputsTitle">
+        <div class="section-title">
+          <h2 id="inputsTitle" data-i18n="inputsTitle">Inputs</h2>
+          <div class="mode-toggle" aria-label="Mode">
+            <button type="button" id="modeBreakeven" class="active" data-i18n="modeBreakeven">Monthly break-even</button>
+            <button type="button" id="modeRunway" data-i18n="modeRunway">Savings runway</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="currency" data-i18n="currencyLabel">Currency</label>
+          <select id="currency" aria-label="Currency">
+            <option value="$ USD">$ USD</option>
+            <option value="NT$ TWD">NT$ TWD</option>
+            <option value="€ EUR">€ EUR</option>
+            <option value="£ GBP">£ GBP</option>
+            <option value="A$ AUD">A$ AUD</option>
+            <option value="C$ CAD">C$ CAD</option>
+            <option value="JP¥ JPY">JP¥ JPY</option>
+          </select>
+        </div>
+
+        <!-- break-even fields -->
+        <div id="beFields">
+          <div class="field">
+            <label for="bizExp" data-i18n="bizExpLabel">Monthly business expenses</label>
+            <input id="bizExp" type="number" min="0" step="any" inputmode="decimal" placeholder="600">
+            <p class="hint" data-i18n="bizExpHint">Software, tools, subscriptions, fees.</p>
+          </div>
+          <div class="field">
+            <label for="living" data-i18n="livingLabel">Monthly living costs</label>
+            <input id="living" type="number" min="0" step="any" inputmode="decimal" placeholder="2800">
+            <p class="hint" data-i18n="livingHint">Rent, food, bills — what you need to take home.</p>
+          </div>
+          <div class="field">
+            <label for="tax" data-i18n="taxLabel">Tax set-aside (%)</label>
+            <input id="tax" type="number" min="0" max="99" step="any" inputmode="decimal" placeholder="25">
+          </div>
+          <div class="field">
+            <label for="dayRate" data-i18n="dayRateLabel">Your day rate (optional)</label>
+            <input id="dayRate" type="number" min="0" step="any" inputmode="decimal" placeholder="400">
+            <p class="hint" data-i18n="dayRateHint">If set, we show how many billable days a month you need.</p>
+          </div>
+        </div>
+
+        <!-- runway fields -->
+        <div id="rwFields" style="display:none">
+          <div class="field">
+            <label for="savings" data-i18n="savingsLabel">Current savings / cash</label>
+            <input id="savings" type="number" min="0" step="any" inputmode="decimal" placeholder="12000">
+          </div>
+          <div class="field">
+            <label for="burn" data-i18n="burnLabel">Total monthly spending</label>
+            <input id="burn" type="number" min="0" step="any" inputmode="decimal" placeholder="3400">
+            <p class="hint" data-i18n="burnHint">Business + living costs combined.</p>
+          </div>
+          <div class="field">
+            <label for="income" data-i18n="incomeLabel">Reliable monthly income (optional)</label>
+            <input id="income" type="number" min="0" step="any" inputmode="decimal" placeholder="0">
+            <p class="hint" data-i18n="incomeHint">Retainers or other income you can count on while work is slow.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card result-card" aria-labelledby="resultsTitle">
+        <div class="result-top">
+          <p id="status" class="status">Enter your numbers to start.</p>
+          <p id="mainLabel" class="main-label">Bill per month to break even</p>
+          <p id="mainValue" class="main-value">—</p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span id="m1Label">Monthly costs</span><strong id="m1">—</strong></div>
+          <div class="metric"><span id="m2Label">Tax to set aside</span><strong id="m2">—</strong></div>
+          <div class="metric wide"><span id="m3Label">Billable days needed</span><strong id="m3">—</strong></div>
+        </div>
+        <div class="reality">
+          <h2 id="resultsTitle" data-i18n="realityTitle" style="font-size:1.05rem;margin-bottom:6px">Know your number</h2>
+          <p id="realityText">Your break-even is the floor — bill below it and you lose money. Runway is your safety net — it tells you how long you can survive a dry spell. A planning estimate, not financial advice.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span data-i18n="footerText">More free freelance tools:</span>
+      <a href="https://btcson66-rgb.github.io/freelance-tools/">freelance-tools</a>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      "use strict";
+      var storageKey="runway_v1";
+      var state={ lang:"en", mode:"be", currency:"$ USD",
+        bizExp:"", living:"", tax:"25", dayRate:"",
+        savings:"", burn:"", income:"" };
+
+      var text={
+        en:{
+          eyebrow:"Freelance money tool",
+          title:"Break-even & runway calculator",
+          intro:"Two numbers every freelancer should know: how much you must bill each month to break even, and how long your savings would last if work dried up.",
+          inputsTitle:"Inputs",
+          modeBreakeven:"Monthly break-even",
+          modeRunway:"Savings runway",
+          currencyLabel:"Currency",
+          bizExpLabel:"Monthly business expenses", bizExpHint:"Software, tools, subscriptions, fees.",
+          livingLabel:"Monthly living costs", livingHint:"Rent, food, bills — what you need to take home.",
+          taxLabel:"Tax set-aside (%)",
+          dayRateLabel:"Your day rate (optional)", dayRateHint:"If set, we show how many billable days a month you need.",
+          savingsLabel:"Current savings / cash",
+          burnLabel:"Total monthly spending", burnHint:"Business + living costs combined.",
+          incomeLabel:"Reliable monthly income (optional)", incomeHint:"Retainers or other income you can count on while work is slow.",
+          beMain:"Bill per month to break even",
+          rwMain:"Your savings runway",
+          monthlyCosts:"Monthly costs",
+          taxAside:"Tax to set aside",
+          daysNeeded:"Billable days needed",
+          netBurn:"Net monthly burn",
+          runsOut:"Cash runs out in",
+          surplus:"Monthly surplus",
+          realityTitle:"Know your number",
+          realityText:"Your break-even is the floor — bill below it and you lose money. Runway is your safety net — it tells you how long you can survive a dry spell. A planning estimate, not financial advice.",
+          needInput:"Enter your numbers to start.",
+          invalidInput:"Enter valid positive numbers.",
+          taxTooHigh:"Tax set-aside must be below 100%.",
+          ready:"Calculated from your inputs.",
+          beTakeaway:"You need to bill about {rev} a month to cover {cost} of costs after a {tax}% tax set-aside.",
+          daysText:"{days} days/mo at {rate}",
+          daysNa:"Add a day rate to see this",
+          rwInfinite:"Indefinite — income covers spending",
+          rwMonths:"{months} months",
+          rwTakeawayFinite:"At {burn}/mo net burn, {savings} lasts about {months} months.",
+          rwTakeawaySurplus:"Your income covers your spending — savings aren't being drawn down.",
+          footerText:"More free freelance tools:"
+        },
+        zh:{
+          eyebrow:"自由工作者財務工具",
+          title:"損益兩平與存款撐多久計算器",
+          intro:"每個自由工作者都該知道的兩個數字：每月至少要接多少才不虧錢，以及萬一沒案子，存款能撐多久。",
+          inputsTitle:"輸入",
+          modeBreakeven:"每月損益兩平",
+          modeRunway:"存款可撐月數",
+          currencyLabel:"幣別",
+          bizExpLabel:"每月營業支出", bizExpHint:"軟體、工具、訂閱、手續費。",
+          livingLabel:"每月生活開銷", livingHint:"房租、伙食、帳單——你需要實拿的金額。",
+          taxLabel:"預留稅金（%）",
+          dayRateLabel:"你的日薪（選填）", dayRateHint:"填了就會顯示每月需要幾個可收費工作天。",
+          savingsLabel:"目前存款／現金",
+          burnLabel:"每月總支出", burnHint:"營業支出＋生活開銷合計。",
+          incomeLabel:"可靠的每月收入（選填）", incomeHint:"沒案子時仍能穩定進帳的月費或其他收入。",
+          beMain:"每月需接案金額（損益兩平）",
+          rwMain:"存款可撐多久",
+          monthlyCosts:"每月成本",
+          taxAside:"需預留稅金",
+          daysNeeded:"需要的可收費天數",
+          netBurn:"每月淨消耗",
+          runsOut:"現金將在",
+          surplus:"每月結餘",
+          realityTitle:"先搞清楚你的數字",
+          realityText:"損益兩平是底線——接低於它就在虧錢。可撐月數是安全網——告訴你沒案子時能撐多久。這是規劃估算，並非財務建議。",
+          needInput:"請輸入數字開始計算。",
+          invalidInput:"請輸入有效且大於 0 的數字。",
+          taxTooHigh:"預留稅金比例必須低於 100%。",
+          ready:"已依你的輸入完成計算。",
+          beTakeaway:"在預留 {tax}% 稅金後，你每月大約要接 {rev} 才能涵蓋 {cost} 的成本。",
+          daysText:"以 {rate} 計，每月 {days} 天",
+          daysNa:"填入日薪即可看到",
+          rwInfinite:"無限期——收入足以涵蓋支出",
+          rwMonths:"{months} 個月",
+          rwTakeawayFinite:"以每月淨消耗 {burn} 計，{savings} 大約可撐 {months} 個月。",
+          rwTakeawaySurplus:"你的收入已涵蓋支出——並沒有在動用存款。",
+          footerText:"更多免費自由工作者工具："
+        }
+      };
+
+      var ids=["currency","bizExp","living","tax","dayRate","savings","burn","income"];
+      var el={};
+      ids.forEach(function(id){el[id]=document.getElementById(id);});
+      ["langEn","langZh","modeBreakeven","modeRunway","beFields","rwFields","status","mainLabel","mainValue",
+       "m1Label","m1","m2Label","m2","m3Label","m3","realityText"].forEach(function(id){el[id]=document.getElementById(id);});
+
+      load(); bind(); render();
+
+      function bind(){
+        ids.forEach(function(id){el[id].addEventListener(id==="currency"?"change":"input",function(){state[id]=el[id].value;render();save();});});
+        el.langEn.addEventListener("click",function(){state.lang="en";render();save();});
+        el.langZh.addEventListener("click",function(){state.lang="zh";render();save();});
+        el.modeBreakeven.addEventListener("click",function(){state.mode="be";render();save();});
+        el.modeRunway.addEventListener("click",function(){state.mode="rw";render();save();});
+      }
+      function load(){
+        try{var raw=localStorage.getItem(storageKey);if(!raw)return;var s=JSON.parse(raw);if(!s||typeof s!=="object")return;
+          if(s.lang==="zh"||s.lang==="en")state.lang=s.lang;
+          if(s.mode==="rw"||s.mode==="be")state.mode=s.mode;
+          ids.forEach(function(k){if(typeof s[k]==="string")state[k]=s[k];});
+        }catch(e){}
+      }
+      function save(){try{localStorage.setItem(storageKey,JSON.stringify(state));}catch(e){}}
+      function t(k){var p=text[state.lang]||text.en;return p[k]||text.en[k]||"";}
+      function num(v){if(typeof v!=="string")return NaN;var n=Number(v.replace(/,/g,"").trim());return Number.isFinite(n)?n:NaN;}
+      function pos(v){return Number.isFinite(v)&&v>0;}
+      function nonneg(v){return Number.isFinite(v)&&v>=0;}
+      function money(v){if(!Number.isFinite(v))return "—";return state.currency+" "+v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+      function render(){
+        document.documentElement.lang=state.lang==="zh"?"zh-Hant":"en";
+        el.langEn.classList.toggle("active",state.lang==="en");
+        el.langZh.classList.toggle("active",state.lang==="zh");
+        el.modeBreakeven.classList.toggle("active",state.mode==="be");
+        el.modeRunway.classList.toggle("active",state.mode==="rw");
+        document.querySelectorAll("[data-i18n]").forEach(function(n){n.textContent=t(n.getAttribute("data-i18n"));});
+        ids.forEach(function(id){el[id].value=state[id];});
+        el.realityText.textContent=t("realityText");
+        el.beFields.style.display=state.mode==="be"?"":"none";
+        el.rwFields.style.display=state.mode==="rw"?"":"none";
+        state.mode==="be"?renderBE():renderRW();
+      }
+
+      function renderBE(){
+        el.mainLabel.textContent=t("beMain");
+        el.m1Label.textContent=t("monthlyCosts");
+        el.m2Label.textContent=t("taxAside");
+        el.m3Label.textContent=t("daysNeeded");
+        var biz=num(state.bizExp), live=num(state.living), tax=num(state.tax), rate=num(state.dayRate);
+        if(state.bizExp.trim()===""&&state.living.trim()===""){reset(t("needInput"),false);return;}
+        if(!nonneg(biz)||!nonneg(live)||!(biz+live>0)||!nonneg(tax)){reset(t("invalidInput"),true);return;}
+        if(tax>=100){reset(t("taxTooHigh"),true);return;}
+        var cost=biz+live;
+        var revenue=cost/(1-tax/100);
+        var taxAmt=revenue-cost;
+        el.status.textContent=t("ready");el.status.className="status";
+        el.mainValue.textContent=money(revenue);
+        el.m1.textContent=money(cost);
+        el.m2.textContent=money(taxAmt);
+        if(pos(rate)){el.m3.textContent=t("daysText").replace("{days}",(revenue/rate).toLocaleString(undefined,{maximumFractionDigits:1})).replace("{rate}",money(rate));}
+        else{el.m3.textContent=t("daysNa");}
+        el.realityText.textContent=t("beTakeaway").replace("{rev}",money(revenue)).replace("{cost}",money(cost)).replace("{tax}",(tax).toLocaleString());
+      }
+
+      function renderRW(){
+        el.mainLabel.textContent=t("rwMain");
+        el.m1Label.textContent=t("netBurn");
+        el.m2Label.textContent=t("monthlyCosts");
+        el.m3Label.textContent=t("runsOut");
+        var savings=num(state.savings), burn=num(state.burn), income=num(state.income||"0");
+        if(state.savings.trim()===""||state.burn.trim()===""){reset(t("needInput"),false);return;}
+        if(!nonneg(savings)||!pos(burn)||!nonneg(income)){reset(t("invalidInput"),true);return;}
+        var net=burn-income;
+        if(net<=0){
+          el.status.textContent=t("ready");el.status.className="status ok";
+          el.mainValue.textContent=t("rwInfinite");
+          el.m1.textContent=money(net);
+          el.m2.textContent=money(burn);
+          el.m3.textContent="—";
+          el.realityText.textContent=t("rwTakeawaySurplus");
+          return;
+        }
+        var months=savings/net;
+        el.status.textContent=t("ready");el.status.className="status";
+        el.mainValue.textContent=t("rwMonths").replace("{months}",months.toLocaleString(undefined,{maximumFractionDigits:1}));
+        el.m1.textContent=money(net);
+        el.m2.textContent=money(burn);
+        // run-out date
+        var d=new Date(); d.setMonth(d.getMonth()+Math.floor(months));
+        var extraDays=Math.round((months-Math.floor(months))*30); d.setDate(d.getDate()+extraDays);
+        el.m3.textContent=d.toLocaleDateString(state.lang==="zh"?"zh-TW":"en-CA",{year:"numeric",month:"short"});
+        el.realityText.textContent=t("rwTakeawayFinite").replace("{burn}",money(net)).replace("{savings}",money(savings)).replace("{months}",months.toLocaleString(undefined,{maximumFractionDigits:1}));
+      }
+
+      function reset(msg,isErr){
+        el.status.textContent=msg;el.status.className="status"+(isErr?" error":"");
+        el.mainValue.textContent="—";el.m1.textContent="—";el.m2.textContent="—";el.m3.textContent="—";
+        el.realityText.textContent=t("realityText");
+      }
+    }());
+  </script>
+</body>
+</html>
