@@ -1,0 +1,30 @@
+You are working in D:\Claude\money\_github_site — a live GitHub Pages static site (freelance/office tools funnel, English-first). Task: add SEO landing pages for our NEW product "FilePilot Local" and wire them into the site. Commit at the end; do NOT push.
+
+FIRST: study the existing pattern. Read these before writing anything:
+- excel-cleaner-pro/index.html (product hub page pattern for a Windows desktop app — closest sibling product)
+- excel-cleaner-pro/faq/index.html and excel-cleaner-pro/free-trial/index.html if present (subpage pattern)
+- index.html (homepage product grid), sitemap.xml, llms.txt, robots.txt
+Match the existing HTML structure, CSS approach, head meta (title/description/canonical/OG/JSON-LD Product+FAQPage schema), nav/footer, and the Gumroad buy-button style used by excel-cleaner-pro — copy that structure, do not invent a new design system.
+
+Product facts (use these, do not invent features):
+- FilePilot Local — offline Windows desktop app (Electron). Auto-renames and auto-files messy documents: scanned PDFs, invoices, receipts, contracts, quotes, bank documents, images (OCR), DOCX, XLSX, CSV, TXT.
+- Reads each file locally (PDF text extraction; OCR for scans/photos in Traditional Chinese + English), extracts date / company / amount / document type, then renames using templates like {date}_{company}_{documentType}_{amount} and files into category folders (Invoices, Receipts, Contracts, Quotes, Bank…).
+- 100% offline: no cloud AI API, no upload. Every rename/move logged and reversible (batch undo). Never auto-deletes; duplicates flagged to a Duplicates folder; low-confidence files go to "Needs Review".
+- Taiwan-aware extraction: ROC (民國) dates, NT$ and Chinese-numeral amounts, 統一編號 (8-digit tax ID with checksum), invoice numbers — plus normal English documents.
+- UI: English + Traditional Chinese, switchable. Windows 10/11 64-bit. Installer + portable exe.
+- Pricing: Free trial (20 files per task, no license needed) / Standard US$19 one-time / Pro US$49 one-time (Pro adds: watch folders auto-organizing, rules import/export, Excel reports, batch undo).
+- Buy link: https://btcson66.gumroad.com/l/filepilot (same Gumroad account pattern as excelcleaner — verify exact account URL from the excel-cleaner-pro pages and reuse it with slug "filepilot").
+
+Pages to create (English, match site tone — practical, honest, no hype):
+1. /filepilot/ — product hub: hero, before/after filename example block, feature sections, privacy promise section, pricing table (Free/Standard/Pro), FAQ block with FAQPage JSON-LD, screenshots placeholders NOT needed — use text/code blocks instead, buy CTA.
+2. /filepilot/free-trial/ — what the free trial includes, download/buy CTA.
+3. /filepilot/faq/ — 10-15 real questions (offline/privacy, OCR languages, undo safety, duplicates, license tiers, Windows versions, Taiwanese document support).
+4. /document-renamer-for-invoices/ — keyword landing page targeting "automatically rename invoices and receipts" intent; explains workflow, links to /filepilot/.
+5. /receipt-organizer-offline/ — keyword landing page for "offline receipt organizer no cloud" intent; links to /filepilot/.
+
+Wiring:
+- Add FilePilot card to homepage index.html product grid (match existing card markup).
+- Add all 5 URLs to sitemap.xml (lastmod 2026-06-10) and llms.txt following existing entry format.
+- If the site has a products nav or footer links, add FilePilot there too.
+
+Constraints: pure static HTML consistent with the site; absolute canonical URLs matching the site's existing canonical domain; no external JS; no fake testimonials, no fabricated review counts or ratings in JSON-LD (Product schema without aggregateRating). git add the new/changed files and commit with a conventional message. Do NOT push.
