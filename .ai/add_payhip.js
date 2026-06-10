@@ -11,7 +11,8 @@ const prodMap = {
   cashflow: '7rlYt',
   timetrack: 'fOGRP',
   leadtrack: 'UcLxN',
-  proposalpro: 'oRQ6Y'
+  proposalpro: 'oRQ6Y',
+  filepilot: 'IhSms'
 };
 
 let changed = 0;
