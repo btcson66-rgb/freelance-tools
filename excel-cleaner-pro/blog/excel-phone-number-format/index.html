@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel 電話號碼格式統一：市話、手機、區碼一次整理</title>
+<meta name="description" content="匯入的名單裡電話有的加區碼、有的沒有、開頭 0 還被吃掉。本文教你用文字格式、公式與批次工具統一台灣電話號碼格式，並說明常見的開頭 0 消失問題。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-phone-number-format/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Excel 電話號碼格式統一：市話、手機、區碼一次整理">
+<meta property="og:description" content="匯入的名單裡電話有的加區碼、有的沒有、開頭 0 還被吃掉。本文教你用文字格式、公式與批次工具統一台灣電話號碼格式，並說明常見的開頭 0 消失問題。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-phone-number-format/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Excel 電話號碼格式統一：市話、手機、區碼一次整理",
+  "description": "匯入的名單裡電話有的加區碼、有的沒有、開頭 0 還被吃掉。本文教你用文字格式、公式與批次工具統一台灣電話號碼格式，並說明常見的開頭 0 消失問題。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-phone-number-format/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "電話號碼開頭的 0 為什麼會不見？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "因為 Excel 把它當數字處理，開頭 0 被去掉。把欄位先設成文字格式再輸入或貼上，就能保留開頭 0。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "怎麼把電話統一成同一種格式？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先決定目標格式（要不要分隔、市話要不要含區碼），再用 SUBSTITUTE 清除雜訊或用批次工具一次正規化整欄。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "市話要補區碼怎麼做？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "要依號碼長度判斷，公式會較複雜且資料不一致時易錯。建議先處理規則明確的，少數特例再人工補。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "處理大量電話會外洩嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用離線工具或本機 Excel 處理，資料都在自己電腦上，不會上傳，適合含客戶聯絡資訊的名單。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "整理完要檢查什麼？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "抽查開頭 0 是否保留、碼數是否合理、有沒有誤刪分機或國碼，確認撥得通再交付使用。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>統一 Excel 裡的電話號碼格式</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>電話號碼是名單裡最容易亂的欄位：開頭的 0 不見了、市話手機混排、有人加區碼有人沒加。格式不一致，撥號、比對、匯入系統都會出問題。</p>
+<h2>為什麼開頭的 0 會消失</h2>
+<p>最常見的困擾是手機號碼 0912345678 變成 912345678。原因是 Excel 把它當成「數字」，而數字開頭的 0 沒有意義就被去掉了。解法是把電話欄位先設成「文字」格式再貼上，或在輸入時讓整欄維持文字屬性，0 就會被保留下來。電話號碼本質上是代號不是數量，本來就該用文字存。</p>
+<h2>先決定一個統一格式</h2>
+<p>整理前先定義目標格式：手機要不要加區隔（0912-345-678 還是 0912345678）、市話要不要含區碼（02-1234-5678）。把規則訂清楚，整份名單照同一套走，後續無論是匯入系統還是人工撥號都會順很多。沒有絕對正確的格式，重點是「一致」。</p>
+<h2>用公式做基本清理</h2>
+<p>如果只是要去掉多餘的空白、括號或分隔符號，可以用 SUBSTITUTE 把不要的字元換掉，例如 =SUBSTITUTE(SUBSTITUTE(A2," ",""),"-","") 先清成純數字串，再依需要重新加上分隔。市話補區碼則比較麻煩，因為要判斷號碼長度，公式會變長，資料不一致時容易出錯。</p>
+<h2>大量名單用批次工具</h2>
+<p>當名單動輒上千筆、格式又五花八門時，用<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">離線的 Excel 整理工具</a>把整欄電話一次正規化（保留開頭 0、統一分隔、清掉雜訊）會比逐格修公式快很多，而且資料都在自己電腦上處理，客戶電話不會外流。這只是其中一種做法，重點是先把規則定清楚。</p>
+<h2>市話與手機的判斷</h2>
+<p>台灣手機是 10 碼、09 開頭，市話則含區碼長度不一。批次整理時若要區分兩者，可依長度和開頭判斷，但遇到分機、國碼 +886、舊式號碼就要特別處理。建議先把明顯規則的處理掉，剩下少數特例再人工檢查，不必硬要一條規則涵蓋所有狀況。</p>
+<h2>整理完的檢查重點</h2>
+<p>清完後抽查幾筆，確認開頭 0 都還在、號碼碼數合理（手機 10 碼）、沒有把分機號或國碼誤刪。電話資料牽涉聯絡得上聯絡不上，寧可整理後多花幾分鐘核對，也不要等到撥不通才發現號碼被改壞了。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>電話號碼開頭的 0 為什麼會不見？</summary><p>因為 Excel 把它當數字處理，開頭 0 被去掉。把欄位先設成文字格式再輸入或貼上，就能保留開頭 0。</p></details>
+<details class="faq-item"><summary>怎麼把電話統一成同一種格式？</summary><p>先決定目標格式（要不要分隔、市話要不要含區碼），再用 SUBSTITUTE 清除雜訊或用批次工具一次正規化整欄。</p></details>
+<details class="faq-item"><summary>市話要補區碼怎麼做？</summary><p>要依號碼長度判斷，公式會較複雜且資料不一致時易錯。建議先處理規則明確的，少數特例再人工補。</p></details>
+<details class="faq-item"><summary>處理大量電話會外洩嗎？</summary><p>用離線工具或本機 Excel 處理，資料都在自己電腦上，不會上傳，適合含客戶聯絡資訊的名單。</p></details>
+<details class="faq-item"><summary>整理完要檢查什麼？</summary><p>抽查開頭 0 是否保留、碼數是否合理、有沒有誤刪分機或國碼，確認撥得通再交付使用。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

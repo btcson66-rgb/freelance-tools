@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel 去除多餘空白與換行：讓欄位乾淨可比對</title>
+<meta name="description" content="儲存格裡看不見的空白和換行，會讓比對、篩選和 VLOOKUP 失敗。本文教你用 TRIM、CLEAN、SUBSTITUTE 清除空白與換行，以及批次處理整份檔案的做法。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-remove-whitespace/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Excel 去除多餘空白與換行：讓欄位乾淨可比對">
+<meta property="og:description" content="儲存格裡看不見的空白和換行，會讓比對、篩選和 VLOOKUP 失敗。本文教你用 TRIM、CLEAN、SUBSTITUTE 清除空白與換行，以及批次處理整份檔案的做法。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-remove-whitespace/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Excel 去除多餘空白與換行：讓欄位乾淨可比對",
+  "description": "儲存格裡看不見的空白和換行，會讓比對、篩選和 VLOOKUP 失敗。本文教你用 TRIM、CLEAN、SUBSTITUTE 清除空白與換行，以及批次處理整份檔案的做法。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-remove-whitespace/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "為什麼兩個看起來一樣的值對不到？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "多半是前後有空白、夾了全形空白或換行字元。這些看不見的雜訊會讓比對與 VLOOKUP 失敗。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "TRIM 和 CLEAN 有什麼差別？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "TRIM 清除多餘的半形空白，CLEAN 清除換行等控制字元。常一起用：=TRIM(CLEAN(A2))。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "全形空白要怎麼清？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "TRIM 不處理全形空白，要用 SUBSTITUTE 把全形空白換成空字串，再搭配 TRIM 處理半形空白。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "整份檔案有很多欄怎麼一次清？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可用離線批次工具把整份檔的空白、換行、全形半形一次正規化；函數逐欄處理同樣可行，只是較費時。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "清完怎麼確認有效？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "重新做一次原本失敗的比對或 VLOOKUP，並用 LEN 比較清理前後字數，確認多餘字元已移除。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>清除 Excel 裡的多餘空白與換行</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>「明明一樣的兩個值，VLOOKUP 卻對不到」——很多時候兇手是看不見的空白或換行。把這些隱形雜訊清掉，是讓資料能正確比對的關鍵一步。</p>
+<h2>看不見的空白為什麼這麼麻煩</h2>
+<p>儲存格前後多一個空白、字中間夾了全形空白，或從網頁、系統複製時帶進了換行字元，這些肉眼幾乎看不出來，卻會讓「台北市」和「台北市 」被當成不同的值。結果就是比對失敗、篩選漏抓、樞紐分析把同一類拆成兩類。清雜訊往往是資料整理最該先做的一步。</p>
+<h2>用 TRIM 清除多餘空白</h2>
+<p>TRIM 函數會去掉文字前後的空白，並把字中間連續多個空白縮成一個。例如 =TRIM(A2) 就能把「  王小明  」整理成「王小明」。要注意 TRIM 處理的是半形空白，對全形空白（常見於中文輸入）不一定有效，這也是很多人用了 TRIM 還是對不到的原因。</p>
+<h2>用 CLEAN 清掉換行與控制字元</h2>
+<p>從別的系統貼進來的資料常夾帶換行或其他看不見的控制字元，TRIM 清不掉這些，要用 CLEAN。常見做法是兩個一起用：=TRIM(CLEAN(A2))，先清控制字元再清空白。如果還有頑固的全形空白或特定符號，再用 SUBSTITUTE 指定把它換成空字串。</p>
+<h2>全形空白要特別處理</h2>
+<p>中文資料最常見的漏網之魚就是全形空白。它和半形空白是不同字元，TRIM 不會處理。可以用 SUBSTITUTE(A2,"　","") 把全形空白換掉（引號中是一個全形空白），再搭配 TRIM 處理半形。把這幾個函數組起來，才能真正把欄位清乾淨。</p>
+<h2>整份檔案怎麼一次清</h2>
+<p>欄位一多、雜訊種類又雜時，逐欄套函數很費工。用<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">離線的 Excel 整理工具</a>可以把整份檔案的空白、換行、全形半形一次正規化，特別適合要餵進其他系統前的前處理。所有處理都在本機完成，資料不會外傳。這只是其中一種方法，函數同樣能達成，只是手動處理大檔比較花時間。</p>
+<h2>清完後的驗證</h2>
+<p>清理後，挑幾個原本對不到的值重新做一次比對或 VLOOKUP，確認問題解決。也可以用 LEN 比較清理前後的字數差，確認多餘字元真的被移除。把「先清雜訊、再比對」變成習慣，可以省下大量「為什麼對不到」的除錯時間。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>為什麼兩個看起來一樣的值對不到？</summary><p>多半是前後有空白、夾了全形空白或換行字元。這些看不見的雜訊會讓比對與 VLOOKUP 失敗。</p></details>
+<details class="faq-item"><summary>TRIM 和 CLEAN 有什麼差別？</summary><p>TRIM 清除多餘的半形空白，CLEAN 清除換行等控制字元。常一起用：=TRIM(CLEAN(A2))。</p></details>
+<details class="faq-item"><summary>全形空白要怎麼清？</summary><p>TRIM 不處理全形空白，要用 SUBSTITUTE 把全形空白換成空字串，再搭配 TRIM 處理半形空白。</p></details>
+<details class="faq-item"><summary>整份檔案有很多欄怎麼一次清？</summary><p>可用離線批次工具把整份檔的空白、換行、全形半形一次正規化；函數逐欄處理同樣可行，只是較費時。</p></details>
+<details class="faq-item"><summary>清完怎麼確認有效？</summary><p>重新做一次原本失敗的比對或 VLOOKUP，並用 LEN 比較清理前後字數，確認多餘字元已移除。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

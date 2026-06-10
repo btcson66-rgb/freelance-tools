@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel 報表前處理常見問題：匯出資料怎麼變乾淨</title>
+<meta name="description" content="從系統匯出的 Excel 常有合併儲存格、標題列雜亂、文字型數字等問題。本文整理報表前處理的常見狀況與解法，讓資料能順利進行樞紐分析與計算。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-report-preprocessing/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Excel 報表前處理常見問題：匯出資料怎麼變乾淨">
+<meta property="og:description" content="從系統匯出的 Excel 常有合併儲存格、標題列雜亂、文字型數字等問題。本文整理報表前處理的常見狀況與解法，讓資料能順利進行樞紐分析與計算。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-report-preprocessing/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Excel 報表前處理常見問題：匯出資料怎麼變乾淨",
+  "description": "從系統匯出的 Excel 常有合併儲存格、標題列雜亂、文字型數字等問題。本文整理報表前處理的常見狀況與解法，讓資料能順利進行樞紐分析與計算。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-report-preprocessing/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "為什麼系統匯出的 Excel 不能直接分析？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "匯出檔是給人看的排版，常有多列標題、合併儲存格、文字型數字和空白列，會讓樞紐分析與公式失靈，需先前處理。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "合併儲存格要怎麼處理？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先取消合併，再把原本靠合併延續的值補回每一列，否則排序、篩選與樞紐分析都會出錯。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "加總變成 0 是怎麼回事？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "通常是數字被存成文字。用資料剖析或乘以 1 轉成真正的數字，加總就會正確。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "小計列和空白列要刪嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "分析前建議刪除或另外標記，因為它們是雜訊，會干擾範圍判斷與加總。明細和彙總要分開。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "每月固定報表怎麼處理比較有效率？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "把前處理步驟記下來、固定用同一套流程或工具，每次照表操課，減少重複摸索與出錯。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>把匯出報表整理成可分析的資料</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>從 ERP、POS 或各種系統匯出的報表，往往不能直接拿來分析：標題卡好幾列、數字其實是文字、欄位還合併在一起。報表前處理，就是把這些坑先填平。</p>
+<h2>匯出資料為什麼不能直接用</h2>
+<p>系統匯出的檔案是「給人看」的排版，不是「給電腦算」的資料。常見問題包括：上方有好幾列說明文字、欄位用合併儲存格美化、數字被存成文字、空白列分隔區塊。這些排版讓樞紐分析、公式和篩選通通失靈，所以分析前一定要先做前處理，把它還原成乾淨的表格。</p>
+<h2>處理多餘的標題與說明列</h2>
+<p>很多報表前幾列是公司名稱、報表期間、列印日期等說明。做分析前，先把真正的欄位標題列移到第一列，刪掉上方多餘的說明列，讓資料從第一列標題、第二列開始就是內容。標題列乾淨，後續轉成表格或樞紐分析才不會把說明文字誤當資料。</p>
+<h2>拆開合併儲存格</h2>
+<p>合併儲存格是分析的大敵，會讓排序、篩選、樞紐全部出錯。要先取消合併，再把原本靠合併「視覺上延續」的值補回每一列（例如部門名稱要每列都填）。這一步沒做，整份資料在電腦眼中就是一堆破洞，怎麼算都不對。</p>
+<h2>文字型數字與日期</h2>
+<p>匯出資料最常見的雷，是「看起來是數字、其實是文字」，導致加總變成 0、排序變成照字串排。可以用「資料剖析」或乘以 1 的方式把文字轉成真正的數字，日期則需確認是真正的日期格式而非文字。<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">離線的 Excel 整理工具</a>可以把整份檔的文字型數字、日期、空白一次正規化，是進分析前很實用的前處理。</p>
+<h2>清掉空白列與小計列</h2>
+<p>報表為了易讀常插入空白列或夾雜「小計」「合計」列，這些在分析時都是雜訊，會干擾範圍判斷和加總。前處理時把它們找出來刪除或另外標記，只留下乾淨的明細資料。把明細和彙總分開，分析才會準。</p>
+<h2>建立可重複的前處理流程</h2>
+<p>如果是每月都要處理的固定報表，建議把前處理步驟記下來，甚至固定用同一套工具流程，這樣每次匯出只要照表操課，不必每次重新摸索。報表前處理最大的價值，不是處理單一檔案，而是把它變成穩定、可重複、不易出錯的例行作業。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>為什麼系統匯出的 Excel 不能直接分析？</summary><p>匯出檔是給人看的排版，常有多列標題、合併儲存格、文字型數字和空白列，會讓樞紐分析與公式失靈，需先前處理。</p></details>
+<details class="faq-item"><summary>合併儲存格要怎麼處理？</summary><p>先取消合併，再把原本靠合併延續的值補回每一列，否則排序、篩選與樞紐分析都會出錯。</p></details>
+<details class="faq-item"><summary>加總變成 0 是怎麼回事？</summary><p>通常是數字被存成文字。用資料剖析或乘以 1 轉成真正的數字，加總就會正確。</p></details>
+<details class="faq-item"><summary>小計列和空白列要刪嗎？</summary><p>分析前建議刪除或另外標記，因為它們是雜訊，會干擾範圍判斷與加總。明細和彙總要分開。</p></details>
+<details class="faq-item"><summary>每月固定報表怎麼處理比較有效率？</summary><p>把前處理步驟記下來、固定用同一套流程或工具，每次照表操課，減少重複摸索與出錯。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel 西元轉民國公式：報表、單據通用寫法</title>
+<meta name="description" content="報表或政府單據常要求填民國年，本文教你用 Excel 公式把西元日期轉成民國，包含純年份、完整日期與自動補零的寫法，並提醒列印與格式注意事項。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/ad-date-to-roc-formula/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Excel 西元轉民國公式：報表、單據通用寫法">
+<meta property="og:description" content="報表或政府單據常要求填民國年，本文教你用 Excel 公式把西元日期轉成民國，包含純年份、完整日期與自動補零的寫法，並提醒列印與格式注意事項。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/ad-date-to-roc-formula/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Excel 西元轉民國公式：報表、單據通用寫法",
+  "description": "報表或政府單據常要求填民國年，本文教你用 Excel 公式把西元日期轉成民國，包含純年份、完整日期與自動補零的寫法，並提醒列印與格式注意事項。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/ad-date-to-roc-formula/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "西元怎麼轉民國？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "西元年減 1911 就是民國年。標準日期可用 =YEAR(A1)-1911 取得民國年數字。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "要顯示成「113/05/20」怎麼寫？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用 =YEAR(A1)-1911&\"/\"&TEXT(A1,\"MM/dd\")，TEXT 會自動補零讓月日整齊。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "為什麼 YEAR 函數抓不到我的日期？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "通常是因為該欄是文字而不是真正的日期格式。先把來源欄轉成日期，函數才會正確運作。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "轉成民國文字後還能計算嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不能直接計算，因為它變成文字。建議保留一欄西元日期供計算，另一欄民國文字供顯示。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "報表量大時公式很慢怎麼辦？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可改用離線批次工具一次轉整欄並統一格式，減少逐格修公式的時間；公式仍是可行的替代做法。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>用公式把西元日期轉成民國年</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>很多公司內部用西元，但對外的單據、申報或報表又要填民國年。與其每次手動減 1911，不如用一條公式自動換算，整份報表一致又不會算錯。</p>
+<h2>西元轉民國的基本邏輯</h2>
+<p>西元年減 1911 就是民國年，例如西元 2024 年減 1911 等於民國 113 年。如果你的儲存格本來就是標準日期，可以用 YEAR 函數先取出西元年，再減 1911，例如 =YEAR(A1)-1911，就能得到民國年數字。</p>
+<h2>只要民國年的寫法</h2>
+<p>當你只需要民國年數字時，=YEAR(A1)-1911 就夠了。若希望顯示成「113年」這種格式，可以用 =YEAR(A1)-1911&"年" 把文字接上去。要注意這樣產生的是文字，之後不能再拿來做日期計算，所以建議把「給人看的民國欄」和「給電腦算的西元欄」分開放。</p>
+<h2>完整民國日期的寫法</h2>
+<p>如果要輸出「113/05/20」這種完整民國日期，可以用 TEXT 搭配字串組合：先用 YEAR(A1)-1911 取民國年，再用 TEXT(A1,"MM/dd") 取月日，組合成 =YEAR(A1)-1911&"/"&TEXT(A1,"MM/dd")。TEXT 會自動把個位數的月日補零，避免出現 113/5/2 這種不整齊的狀況。</p>
+<h2>整批報表怎麼一次處理</h2>
+<p>公式適合欄位格式一致的情況；但實務上報表常常從不同系統匯出，日期有的是文字、有的是數字，公式就容易出錯。這時用<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">離線的 Excel 整理工具</a>把整欄西元先標準化、再統一轉民國，會比逐格修公式穩定。需要單筆快速確認時，也可以用免費的<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/roc-date-converter/">民國西元轉換工具</a>對照。</p>
+<h2>列印與套印的小提醒</h2>
+<p>把日期轉成民國文字後，列印或套印到制式表格時要特別留意對齊與欄寬，文字型日期不會像真正的日期那樣隨格式變動。另外若報表要交給其他單位，先確認對方要的是「民國 113 年」還是「113」純數字，格式講清楚可以省下重做的時間。</p>
+<h2>避免年份算錯的檢查</h2>
+<p>轉換後抽查幾筆，確認民國年合理（例如不會出現負數或超過今年）。最常見的錯誤是原欄位其實是文字而非日期，YEAR 函數抓不到值。先確認來源欄位是真正的日期格式，公式才會穩定運作。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>西元怎麼轉民國？</summary><p>西元年減 1911 就是民國年。標準日期可用 =YEAR(A1)-1911 取得民國年數字。</p></details>
+<details class="faq-item"><summary>要顯示成「113/05/20」怎麼寫？</summary><p>用 =YEAR(A1)-1911&amp;"/"&amp;TEXT(A1,"MM/dd")，TEXT 會自動補零讓月日整齊。</p></details>
+<details class="faq-item"><summary>為什麼 YEAR 函數抓不到我的日期？</summary><p>通常是因為該欄是文字而不是真正的日期格式。先把來源欄轉成日期，函數才會正確運作。</p></details>
+<details class="faq-item"><summary>轉成民國文字後還能計算嗎？</summary><p>不能直接計算，因為它變成文字。建議保留一欄西元日期供計算，另一欄民國文字供顯示。</p></details>
+<details class="faq-item"><summary>報表量大時公式很慢怎麼辦？</summary><p>可改用離線批次工具一次轉整欄並統一格式，減少逐格修公式的時間；公式仍是可行的替代做法。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

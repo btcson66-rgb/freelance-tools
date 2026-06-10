@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>身分證字號驗證 Excel：檢查格式正確性的方法</title>
+<meta name="description" content="身分證字號常因打錯而格式錯誤。本文說明台灣身分證的編碼規則、如何在 Excel 用公式做基本格式檢查，以及批次驗證大量資料的做法，並提醒個資保護。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/taiwan-id-validation-excel/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="身分證字號驗證 Excel：檢查格式正確性的方法">
+<meta property="og:description" content="身分證字號常因打錯而格式錯誤。本文說明台灣身分證的編碼規則、如何在 Excel 用公式做基本格式檢查，以及批次驗證大量資料的做法，並提醒個資保護。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/taiwan-id-validation-excel/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "身分證字號驗證 Excel：檢查格式正確性的方法",
+  "description": "身分證字號常因打錯而格式錯誤。本文說明台灣身分證的編碼規則、如何在 Excel 用公式做基本格式檢查，以及批次驗證大量資料的做法，並提醒個資保護。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/taiwan-id-validation-excel/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Excel 可以驗證身分證字號嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以做格式檢查：確認 10 碼、開頭字母、末碼檢查碼是否符合規則。但格式正確不代表號碼真的存在或屬於某人。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "最簡單的檢查方式是什麼？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先用 LEN 確認長度為 10、確認首碼是字母、後 9 碼是數字，就能過濾掉多數明顯打錯的資料。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "檢查碼怎麼驗算？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "依官方公式把字母轉數字、各位乘權重加總後取餘數比對末碼。公式可在 Excel 組出但很長，資料多時建議用工具。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "處理身分證資料安全嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "身分證是敏感個資，建議在離線環境處理、限制檔案權限。離線工具不會上傳資料，比雲端服務更能降低外洩風險。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "驗出錯誤的資料要直接刪嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不建議。先標記回頭與來源核對，因為多半只是打字錯誤。把驗證當成需人工確認的清單，避免誤刪正確資料。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>在 Excel 檢查身分證字號格式</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>整理會員或客戶名單時，身分證字號最容易出現打錯一碼、少一碼的狀況。雖然 Excel 沒辦法確認某個號碼真的存在，但可以先把「格式明顯錯誤」的揪出來。</p>
+<h2>先了解身分證的格式規則</h2>
+<p>台灣身分證字號是 1 個英文字母加上 9 個數字，第一個數字代表性別（1 為男、2 為女），最後一碼是依公式算出的檢查碼。檢查碼的存在，就是為了讓「隨便打錯一碼」能被驗算出來。要提醒的是，格式正確只代表「符合編碼規則」，不代表這個號碼真的對應到某個人，這是兩件事。</p>
+<h2>基本的格式檢查</h2>
+<p>最簡單的第一關，是先檢查長度和組成：是不是剛好 10 碼、第一碼是不是英文字母、後 9 碼是不是數字。用 LEN 確認長度、用簡單判斷確認開頭是字母，就能先過濾掉一大批明顯打錯的資料，例如少打一碼或多了空白。這一步雖然陽春，卻能抓出最常見的登錄錯誤。</p>
+<h2>檢查碼的驗算</h2>
+<p>更嚴謹的做法是依官方的檢查碼公式驗算最後一碼：把開頭字母換成對應數字、各位數乘上權重後加總，再用特定方式取餘數比對末碼。這套公式在 Excel 裡可以用多層函數組出來，但公式會很長、不好維護，資料一多就容易出錯，對非工程背景的行政人員不太友善。</p>
+<h2>大量資料用批次工具</h2>
+<p>如果要驗證的是整份上千筆的名單，與其維護一條超長公式，不如用<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">離線的 Excel 整理工具</a>內建的身分證格式驗證，一次標出格式不符的列，再人工回頭核對。重點是它在你自己的電腦上跑，身分證這種高度敏感的個資不會被上傳到任何雲端。它只是其中一種選擇，但處理個資時離線是比較安心的方向。</p>
+<h2>處理個資的注意事項</h2>
+<p>身分證字號屬於高度敏感的個人資料，蒐集、處理與利用都受個人資料保護法規範。整理這類資料時，盡量在離線環境作業、限制檔案存取權限、用完即依規定處理。本文僅為一般資訊整理，不構成法律意見，實際的個資合規做法請依貴公司政策或諮詢專業人員。</p>
+<h2>驗證之後該怎麼處理錯誤</h2>
+<p>驗出格式錯誤的資料後，不要直接刪除，而是標記出來回頭和原始來源核對，因為錯誤往往只是打字時少一碼或英數混淆。把驗證當成「找出需要人工確認的清單」，而不是「自動判生死」，才不會把其實正確、只是格式被誤判的資料弄丟。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>Excel 可以驗證身分證字號嗎？</summary><p>可以做格式檢查：確認 10 碼、開頭字母、末碼檢查碼是否符合規則。但格式正確不代表號碼真的存在或屬於某人。</p></details>
+<details class="faq-item"><summary>最簡單的檢查方式是什麼？</summary><p>先用 LEN 確認長度為 10、確認首碼是字母、後 9 碼是數字，就能過濾掉多數明顯打錯的資料。</p></details>
+<details class="faq-item"><summary>檢查碼怎麼驗算？</summary><p>依官方公式把字母轉數字、各位乘權重加總後取餘數比對末碼。公式可在 Excel 組出但很長，資料多時建議用工具。</p></details>
+<details class="faq-item"><summary>處理身分證資料安全嗎？</summary><p>身分證是敏感個資，建議在離線環境處理、限制檔案權限。離線工具不會上傳資料，比雲端服務更能降低外洩風險。</p></details>
+<details class="faq-item"><summary>驗出錯誤的資料要直接刪嗎？</summary><p>不建議。先標記回頭與來源核對，因為多半只是打字錯誤。把驗證當成需人工確認的清單，避免誤刪正確資料。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

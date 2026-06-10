@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel 民國日期轉西元：3 種做法完整教學</title>
+<meta name="description" content="在 Excel 把民國日期轉成西元，最常見的就是 71、108 這種年份要不要加 1911。本文整理公式、分欄與工具三種做法，並提醒批次處理常見的格式陷阱。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/roc-date-to-ad-excel/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Excel 民國日期轉西元：3 種做法完整教學">
+<meta property="og:description" content="在 Excel 把民國日期轉成西元，最常見的就是 71、108 這種年份要不要加 1911。本文整理公式、分欄與工具三種做法，並提醒批次處理常見的格式陷阱。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/roc-date-to-ad-excel/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Excel 民國日期轉西元：3 種做法完整教學",
+  "description": "在 Excel 把民國日期轉成西元，最常見的就是 71、108 這種年份要不要加 1911。本文整理公式、分欄與工具三種做法，並提醒批次處理常見的格式陷阱。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/roc-date-to-ad-excel/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "民國年要怎麼換算成西元？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "民國年加 1911 就是西元年。例如民國 71 年加 1911 等於西元 1982 年。若儲存格是文字格式，要先拆出年月日再換算。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "為什麼我加 1911 之後日期還是錯？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "通常是因為原欄位是文字而非數字，或夾雜全形斜線、空白。先確認格式一致，必要時用資料剖析拆欄後再加 1911。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "資料量很大時有沒有更快的做法？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以用離線批次工具一次轉整欄並統一格式，省去逐欄寫公式。但工具只是其中一種選擇，公式同樣能完成。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "轉換會不會把我的資料上傳到網路？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "離線工具在你自己的電腦上處理，資料不會上傳；用公式則完全在本機 Excel 內完成，都不需連網。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "轉成西元後要再做什麼？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "把整欄設成正式的日期格式，排序與計算才正確，並順手檢查有沒有異常年份或空白列。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>在 Excel 把民國日期正確轉成西元</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>台灣的報表常常民國、西元混在一起，一個欄位裡 71/03/05 和 1982-03-05 並存，排序和計算就會亂掉。把民國統一轉成西元，是整理資料的第一步。</p>
+<h2>先搞懂民國與西元差幾年</h2>
+<p>民國年加上 1911 就是西元年，例如民國 71 年是西元 1982 年，民國 108 年是西元 2019 年。問題在於 Excel 不會自動知道「71」是民國，它可能把 71 當成西元 1971，也可能當成純數字，所以轉換前一定要先確認這個欄位裡的「71」到底代表什麼。</p>
+<h2>做法一：用公式加 1911</h2>
+<p>如果民國年是單純的數字（例如儲存格裡就是 71、108），最簡單的方式是另開一欄，輸入類似 =A1+1911 把年份補回西元。若資料是「71/03/05」這種文字格式，就要先用 LEFT、MID 把年、月、日拆出來，年的部分加 1911，再用 DATE 組回真正的日期。公式雖然可行，但欄位格式只要一不統一，整欄就會錯。</p>
+<h2>做法二：分欄後再組合</h2>
+<p>另一種思路是用「資料剖析」把 71/03/05 依斜線拆成三欄，年加 1911 後再用 DATE 函數組回標準日期。這種做法看得到每一步，適合資料量不大、格式還算一致的情況。但只要中間夾雜全形斜線、多一個空白，或月份寫成個位數，拆出來就會對不齊，得逐筆檢查。</p>
+<h2>做法三：用工具批次處理</h2>
+<p>當你手上是上千筆、而且格式不一致的名單時，逐欄寫公式會很痛苦。<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> 這類離線工具的做法，是把整欄民國日期一次轉成西元，連同混雜的格式一起標準化，省去反覆除錯。想先試水溫，也可以用免費的<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/roc-date-converter/">民國西元轉換工具</a>單筆換算確認邏輯。它不是唯一的方法，只是當資料量大時比較省事。</p>
+<h2>批次轉換最常踩的雷</h2>
+<p>最常見的錯誤有三個：把民國 71 誤當成西元 1971、月份和日期個位數沒補零造成排序錯亂、以及全形與半形斜線混用讓拆解失敗。批次處理前，先抽幾筆人工核對，確認轉出來的西元年份合理，再套用到整份檔案，可以避免一錯錯一整欄。</p>
+<h2>轉完之後記得做的事</h2>
+<p>轉成西元後，建議把整欄設定為正式的「日期」格式，這樣排序、篩選和計算才會正確，而不是還停留在文字狀態。轉換完也順手檢查有沒有空白列或異常年份（例如民國 0 年、超過今年的年份），這些往往是原始資料登錄錯誤，趁整理時一起揪出來比較省事。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>民國年要怎麼換算成西元？</summary><p>民國年加 1911 就是西元年。例如民國 71 年加 1911 等於西元 1982 年。若儲存格是文字格式，要先拆出年月日再換算。</p></details>
+<details class="faq-item"><summary>為什麼我加 1911 之後日期還是錯？</summary><p>通常是因為原欄位是文字而非數字，或夾雜全形斜線、空白。先確認格式一致，必要時用資料剖析拆欄後再加 1911。</p></details>
+<details class="faq-item"><summary>資料量很大時有沒有更快的做法？</summary><p>可以用離線批次工具一次轉整欄並統一格式，省去逐欄寫公式。但工具只是其中一種選擇，公式同樣能完成。</p></details>
+<details class="faq-item"><summary>轉換會不會把我的資料上傳到網路？</summary><p>離線工具在你自己的電腦上處理，資料不會上傳；用公式則完全在本機 Excel 內完成，都不需連網。</p></details>
+<details class="faq-item"><summary>轉成西元後要再做什麼？</summary><p>把整欄設成正式的日期格式，排序與計算才正確，並順手檢查有沒有異常年份或空白列。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

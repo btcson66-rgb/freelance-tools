@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中小企業 Excel 客戶資料管理：實用做法整理</title>
+<meta name="description" content="很多中小企業仍用 Excel 管理客戶資料。本文整理欄位設計、版本控管、定期清理與權限保護的實用做法，讓 Excel 客戶資料庫穩定又安全。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/sme-excel-customer-data/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中小企業 Excel 客戶資料管理：實用做法整理">
+<meta property="og:description" content="很多中小企業仍用 Excel 管理客戶資料。本文整理欄位設計、版本控管、定期清理與權限保護的實用做法，讓 Excel 客戶資料庫穩定又安全。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/sme-excel-customer-data/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "中小企業 Excel 客戶資料管理：實用做法整理",
+  "description": "很多中小企業仍用 Excel 管理客戶資料。本文整理欄位設計、版本控管、定期清理與權限保護的實用做法，讓 Excel 客戶資料庫穩定又安全。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/sme-excel-customer-data/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "中小企業一定要用 CRM 嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不一定。客戶量不大時，設計良好的 Excel 就很夠用，重點是欄位清楚、定期清理、做好備份與權限控管。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "客戶分類要分成多個檔案嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "建議用單一檔案加一個狀態欄區分，再用篩選查看各類客戶，比多檔案更好維護，也避免版本混亂。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "客戶 Excel 要多久清理一次？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "建議固定週期如每季清理一次：清空白、統一格式、找重複。資料量大時用離線批次工具會比手動快。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "怎麼避免檔案被改壞？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "建立版本規則：固定主檔、定期備份、檔名帶日期、重要操作前先存副本，一次誤刪才不會損失大量資料。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "用 Excel 管客戶要注意個資嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "要。需符合個資法的目的、範圍與安全措施。建議離線保存並控管存取權限；合規細節請依公司政策或諮詢專業人員。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>用 Excel 管理客戶資料的實用做法</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>不是每家公司都需要昂貴的 CRM，很多中小企業用 Excel 管客戶就很夠用。重點是用對方法，讓這份檔案不會越用越亂、越用越不安全。</p>
+<h2>先把欄位結構設計好</h2>
+<p>一份好用的客戶 Excel，從欄位設計開始。常用欄位包括客戶名稱、聯絡人、電話、email、往來狀態、最近聯絡日、備註等。原則是「一格一個資訊」，不要把電話和地址擠在同一格，這樣日後才方便篩選、排序和統計。欄位定義清楚，整份資料的價值就會高很多。</p>
+<h2>用狀態欄取代多個檔案</h2>
+<p>很多公司會把「潛在客戶」「成交客戶」「已流失」分成好幾個檔案，結果版本到處飛、資料對不起來。比較好的做法是用一個檔案、加一個「狀態」欄來區分，需要時用篩選就能看各類客戶。單一來源的資料，遠比散落多檔好維護，也不容易出現哪份才是最新的疑問。</p>
+<h2>定期清理維持品質</h2>
+<p>客戶資料會隨時間變髒：重複、過時、格式不一。建議固定週期（例如每季）做一次清理，清空白、統一電話和日期格式、找出重複。資料量大時，用<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">離線的 Excel 整理工具</a>批次清理會比手動快，而且整份客戶資料都留在公司自己的電腦上，不經過外部伺服器。乾淨的資料，行銷和業務用起來才有效。</p>
+<h2>做好版本與備份</h2>
+<p>Excel 最大的風險是「改壞了救不回來」或「同事各改各的」。建議建立簡單的版本規則：固定一份主檔、定期備份、檔名帶日期。重要操作前先存一份副本。中小企業不必上複雜系統，但「定期備份、版本清楚」這兩件事一定要做，否則一次誤刪可能就是幾年的客戶資料。</p>
+<h2>控管存取權限</h2>
+<p>客戶資料是公司重要資產也是個資，不該人人都能自由複製帶走。把檔案放在有權限控管的位置、限制能存取的人員、必要時設定密碼保護。離線保存搭配權限控管，比放在開放的共用資料夾安全得多。誰能看、誰能改，要事先想清楚。</p>
+<h2>合規與個資保護</h2>
+<p>用 Excel 管客戶資料同樣要遵守個人資料保護法：蒐集要有正當目的、利用不能超出當初說明的範圍、保存要有適當安全措施。本文是一般管理做法的整理，不構成法律意見，實際的合規要求請依公司政策或諮詢專業人員。把資料管好，既是效率問題，也是責任問題。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>中小企業一定要用 CRM 嗎？</summary><p>不一定。客戶量不大時，設計良好的 Excel 就很夠用，重點是欄位清楚、定期清理、做好備份與權限控管。</p></details>
+<details class="faq-item"><summary>客戶分類要分成多個檔案嗎？</summary><p>建議用單一檔案加一個狀態欄區分，再用篩選查看各類客戶，比多檔案更好維護，也避免版本混亂。</p></details>
+<details class="faq-item"><summary>客戶 Excel 要多久清理一次？</summary><p>建議固定週期如每季清理一次：清空白、統一格式、找重複。資料量大時用離線批次工具會比手動快。</p></details>
+<details class="faq-item"><summary>怎麼避免檔案被改壞？</summary><p>建立版本規則：固定主檔、定期備份、檔名帶日期、重要操作前先存副本，一次誤刪才不會損失大量資料。</p></details>
+<details class="faq-item"><summary>用 Excel 管客戶要注意個資嗎？</summary><p>要。需符合個資法的目的、範圍與安全措施。建議離線保存並控管存取權限；合規細節請依公司政策或諮詢專業人員。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

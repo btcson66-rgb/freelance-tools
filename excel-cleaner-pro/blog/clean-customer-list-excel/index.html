@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>整理客戶名單 Excel 教學：從雜亂到可用的步驟</title>
+<meta name="description" content="客戶名單常是多來源拼湊、格式混亂。本文用一套清楚步驟教你整理 Excel 客戶名單：清空白、統一格式、去重複、補欄位，並提醒個資保護與離線處理。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/clean-customer-list-excel/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="整理客戶名單 Excel 教學：從雜亂到可用的步驟">
+<meta property="og:description" content="客戶名單常是多來源拼湊、格式混亂。本文用一套清楚步驟教你整理 Excel 客戶名單：清空白、統一格式、去重複、補欄位，並提醒個資保護與離線處理。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/clean-customer-list-excel/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "整理客戶名單 Excel 教學：從雜亂到可用的步驟",
+  "description": "客戶名單常是多來源拼湊、格式混亂。本文用一套清楚步驟教你整理 Excel 客戶名單：清空白、統一格式、去重複、補欄位，並提醒個資保護與離線處理。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/clean-customer-list-excel/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "整理客戶名單的第一步是什麼？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先備份原始檔，並在副本上作業。清理會大量修改與刪除，保留原始檔才能在出錯時回溯。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "為什麼要先統一欄位結構？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "多來源名單欄位常對不齊，先整理成統一結構（姓名、電話、email 等），後續清理與比對才有共同基礎。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "清空白和去重複的順序有差嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "有。要先清空白再去重複，否則「王小明 」和「王小明」會因空白被當成兩人而漏抓。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "關鍵欄位有缺漏怎麼辦？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "標記出來回頭補，不要填假資料。誠實標記缺漏的名單，比看起來完整卻夾雜錯誤的名單更可靠。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "整理客戶名單要注意個資嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "要。名單含個人資料受個資法規範，建議離線作業、控管存取權限。本文為一般資訊，合規細節請依公司政策或諮詢專業人員。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>一步步把雜亂的客戶名單整理乾淨</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>客戶名單往往是從報名表、訂單、名片東拼西湊來的，欄位亂、格式雜、還有一堆重複。與其每次臨時硬整，不如照一套固定步驟，把它變成乾淨可用的資料。</p>
+<h2>第一步：先備份再動手</h2>
+<p>整理名單的第一個動作永遠是備份。把原始檔另存一份再開始，因為清理過程會大量修改、刪除，一旦發現弄錯才有得救。建議養成「原始檔不動、清理在副本上做」的習慣，這是處理任何重要資料的基本保險。</p>
+<h2>第二步：統一欄位結構</h2>
+<p>多來源的名單常常欄位對不齊：有的把姓名分姓和名、有的合在一起；電話、email 欄位名稱也不一。先把所有資料整理成統一的欄位結構（例如姓名、電話、email、公司、備註），後面的清理和比對才有共同基礎。這一步看似瑣碎，卻決定了整份名單好不好用。</p>
+<h2>第三步：清掉空白與雜訊</h2>
+<p>接著處理看不見的雜訊。用 TRIM、CLEAN 清掉前後空白和換行，必要時用 SUBSTITUTE 處理全形空白。這一步要在「去重複」之前做，因為「王小明 」和「王小明」若沒先清空白，去重複時會被當成兩個人而漏掉。先清格式、再去重複，順序很重要。</p>
+<h2>第四步：統一格式與去重複</h2>
+<p>把電話、日期、email 等欄位統一格式後，再來處理重複。先用 COUNTIF 標記重複、人工確認，再刪除，避免誤刪。資料量大又雜時，可以用<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">離線的 Excel 整理工具</a>把清空白、統一格式、去重複一次做完，省去反覆操作，而且整份客戶資料都在自己電腦上處理，不會外流。</p>
+<h2>第五步：補齊與標記缺漏</h2>
+<p>清乾淨後，檢查關鍵欄位（如聯絡方式）有沒有缺漏，把不完整的資料標記出來回頭補。不要為了好看就隨意填入假資料，缺就標記成缺，反而比填錯更有價值。一份誠實標記缺漏的名單，比一份看起來完整但夾雜錯誤的名單可靠得多。</p>
+<h2>別忘了個資保護</h2>
+<p>客戶名單含有姓名、電話、email 等個人資料，蒐集與利用受個人資料保護法規範，且要符合當初向客戶說明的使用目的。整理時盡量離線作業、控管檔案存取權限。本文為一般操作整理，不構成法律意見，實際合規做法請依公司政策或諮詢專業人員。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>整理客戶名單的第一步是什麼？</summary><p>先備份原始檔，並在副本上作業。清理會大量修改與刪除，保留原始檔才能在出錯時回溯。</p></details>
+<details class="faq-item"><summary>為什麼要先統一欄位結構？</summary><p>多來源名單欄位常對不齊，先整理成統一結構（姓名、電話、email 等），後續清理與比對才有共同基礎。</p></details>
+<details class="faq-item"><summary>清空白和去重複的順序有差嗎？</summary><p>有。要先清空白再去重複，否則「王小明 」和「王小明」會因空白被當成兩人而漏抓。</p></details>
+<details class="faq-item"><summary>關鍵欄位有缺漏怎麼辦？</summary><p>標記出來回頭補，不要填假資料。誠實標記缺漏的名單，比看起來完整卻夾雜錯誤的名單更可靠。</p></details>
+<details class="faq-item"><summary>整理客戶名單要注意個資嗎？</summary><p>要。名單含個人資料受個資法規範，建議離線作業、控管存取權限。本文為一般資訊，合規細節請依公司政策或諮詢專業人員。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>

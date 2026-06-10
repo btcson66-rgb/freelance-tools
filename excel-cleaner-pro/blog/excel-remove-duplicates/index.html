@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel 批次清理重複資料：找出並刪除重複的正確做法</title>
+<meta name="description" content="客戶名單、訂單檔常有重複資料。本文說明用內建移除重複、COUNTIF 標記，以及批次工具處理大量重複的做法，並提醒刪除前一定要先備份與確認判斷欄位。">
+<link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-remove-duplicates/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Excel 批次清理重複資料：找出並刪除重複的正確做法">
+<meta property="og:description" content="客戶名單、訂單檔常有重複資料。本文說明用內建移除重複、COUNTIF 標記，以及批次工具處理大量重複的做法，並提醒刪除前一定要先備份與確認判斷欄位。">
+<meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-remove-duplicates/">
+<meta property="og:image" content="https://btcson66-rgb.github.io/freelance-tools/og/excelcleaner.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Excel 批次清理重複資料：找出並刪除重複的正確做法",
+  "description": "客戶名單、訂單檔常有重複資料。本文說明用內建移除重複、COUNTIF 標記，以及批次工具處理大量重複的做法，並提醒刪除前一定要先備份與確認判斷欄位。",
+  "author": {
+    "@type": "Person",
+    "name": "bitsonic1"
+  },
+  "datePublished": "2026-06-09",
+  "url": "https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/excel-remove-duplicates/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Excel 怎麼快速刪除重複資料？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用「資料」分頁的「移除重複項」，勾選比對欄位即可。但它會直接刪除無法預覽，使用前請先備份。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "怎麼先看到哪些是重複再決定？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用 =COUNTIF(A:A,A2)，結果大於 1 的就是重複值。先標記、篩選、確認後再刪，比較安全。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "為什麼有些重複抓不出來？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "通常是前後有空白、半形全形或大小寫不同。先把欄位格式統一，再比對重複，才不會漏掉隱形重複。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "資料量很大時怎麼處理比較好？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可用離線批次工具先正規化格式再去重複，揪出看起來不同其實一樣的資料；內建功能仍適用於單純情況。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "刪除重複前要注意什麼？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先確定以哪些欄位判斷重複，並務必備份原始檔，因為刪除無法復原。建議保留原始、標記與清理後三個版本。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e6eaf0;--bg:#f8fafc;--brand:#16a34a;--brand-dark:#15803d;--accent:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:48px 20px 24px;border-bottom:1px solid var(--line)}
+header h1{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.4;margin-bottom:8px}
+header .meta{color:var(--muted);font-size:.85rem}
+article{padding:32px 20px}
+article h2{font-size:1.25rem;margin:28px 0 12px;color:var(--ink)}
+article h3{font-size:1.05rem;margin:20px 0 8px}
+article p{margin-bottom:14px}
+article ul,article ol{margin:8px 0 14px 24px}
+article li{margin-bottom:6px}
+article table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+article th,article td{padding:10px 12px;border:1px solid var(--line);text-align:left}
+article th{background:#f1f5f9;font-weight:600}
+article strong{color:var(--ink)}
+.cta-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:24px;margin:28px 0;text-align:center}
+.cta-box a{display:inline-block;background:var(--brand);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700}
+.cta-box a:hover{background:var(--brand-dark);text-decoration:none}
+.faq-section{margin:28px 0;border-top:1px solid var(--line);padding-top:24px}
+.faq-section h2{margin-top:0}
+.faq-item{border-bottom:1px solid var(--line);padding:12px 0}
+.faq-item summary{font-weight:600;cursor:pointer;font-size:.95rem}
+.faq-item p{margin-top:8px;color:var(--muted);font-size:.9rem}
+footer{padding:24px 20px;text-align:center;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>正確找出並清理 Excel 重複資料</h1>
+  <p class="meta">Excel Cleaner Pro 部落格 · 2026-06-09</p>
+</header>
+<article class="wrap">
+<p>名單一旦重複，寄信會重複寄、統計會灌水、對帳會兜不攏。清掉重複資料看似簡單，但「怎麼算重複」其實要先想清楚，否則可能誤刪該留的資料。</p>
+<h2>先定義什麼叫重複</h2>
+<p>清重複前最重要的問題是：以哪幾欄判斷重複？同名同姓不一定是同一人，email 相同才比較可靠；有時要兩三個欄位都相同才算重複。先把判斷標準想清楚，再動手刪除，否則很可能把其實不同的兩筆資料合併掉，這比留著重複更麻煩。</p>
+<h2>做法一：內建的移除重複</h2>
+<p>Excel 的「資料」分頁有「移除重複項」功能，勾選要比對的欄位後就會把完全相同的列刪掉。它快又直接，適合判斷欄位單純的情況。缺點是它會直接刪除，無法事先預覽刪了哪些，所以使用前一定要先複製一份原始檔備份。</p>
+<h2>做法二：用 COUNTIF 先標記再處理</h2>
+<p>如果你想先看到哪些是重複、再決定怎麼處理，可以用 COUNTIF。例如另開一欄輸入 =COUNTIF(A:A,A2)，數字大於 1 的就是重複出現的值。先標記、篩選、人工確認後再刪，比直接移除安全，特別適合重要的客戶或財務資料。</p>
+<h2>做法三：大量資料用批次工具</h2>
+<p>當資料來自多個來源、格式又不一致時（有的有空白、有的大小寫不同），內建功能可能判斷不出其實相同的兩筆。<a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> 這類離線工具會先把空白、格式正規化再比對重複，揪出「看起來不同、其實一樣」的資料。它不是唯一解法，但面對髒資料時可以少踩很多坑。</p>
+<h2>容易被忽略的隱形重複</h2>
+<p>很多重複之所以沒被抓到，是因為前後有多餘空白、半形全形不同、或大小寫差異，讓「王小明 」和「王小明」被當成兩個人。處理重複前，先把欄位的空白和格式統一，再比對，才不會漏掉這些隱形重複。先清格式、再去重複，順序很重要。</p>
+<h2>刪除前的必要備份</h2>
+<p>不論用哪種方法，刪除是不可逆的，動手前務必另存一份原始檔。建議保留「原始檔」「標記重複的版本」「清理後的版本」三份，萬一發現刪錯，還能回溯。資料整理的原則是寧可多留一份備份，也不要事後才發現少了重要資料。</p>
+<div class="cta-box">
+  <p style="margin-bottom:12px;font-size:1rem">免費試用 Excel Cleaner Pro：200 列內先清一次，再決定是否升級</p>
+  <a href="https://bitsonic1.gumroad.com/l/excelcleaner">免費下載試用 →</a>
+</div>
+<section class="faq-section">
+<h2>常見問題</h2>
+<details class="faq-item"><summary>Excel 怎麼快速刪除重複資料？</summary><p>用「資料」分頁的「移除重複項」，勾選比對欄位即可。但它會直接刪除無法預覽，使用前請先備份。</p></details>
+<details class="faq-item"><summary>怎麼先看到哪些是重複再決定？</summary><p>用 =COUNTIF(A:A,A2)，結果大於 1 的就是重複值。先標記、篩選、確認後再刪，比較安全。</p></details>
+<details class="faq-item"><summary>為什麼有些重複抓不出來？</summary><p>通常是前後有空白、半形全形或大小寫不同。先把欄位格式統一，再比對重複，才不會漏掉隱形重複。</p></details>
+<details class="faq-item"><summary>資料量很大時怎麼處理比較好？</summary><p>可用離線批次工具先正規化格式再去重複，揪出看起來不同其實一樣的資料；內建功能仍適用於單純情況。</p></details>
+<details class="faq-item"><summary>刪除重複前要注意什麼？</summary><p>先確定以哪些欄位判斷重複，並務必備份原始檔，因為刪除無法復原。建議保留原始、標記與清理後三個版本。</p></details>
+</section>
+</article>
+<footer>
+  <p><a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/blog/">← 所有文章</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/excel-cleaner-pro/">Excel Cleaner Pro</a> · <a href="https://btcson66-rgb.github.io/freelance-tools/">首頁</a></p>
+</footer>
+</body>
+</html>
