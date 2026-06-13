@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Etsy Margin Planner Lite</title>
+  <style>
+    :root{--amber:#f59e0b;--brown:#92400e;--cream:#fef3c7;--green:#065f46;--red:#dc2626;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--white:#fff;--shadow:0 16px 40px rgba(31,41,55,.1)}
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#fff7e6 0,#f9fafb 360px);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:16px;line-height:1.45}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .top{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+    .top-inner{max-width:1180px;margin:0 auto;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .mark{width:44px;height:44px;border-radius:8px;background:var(--amber);display:grid;place-items:center;color:#3b2600;font-weight:900;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+    h1{font-size:1.35rem;margin:0}
+    .tag{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+    .actions{display:flex;flex-wrap:wrap;gap:10px}
+    .btn{border:1px solid transparent;border-radius:8px;padding:10px 14px;background:#fff;color:var(--ink);font-weight:800;min-height:42px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .btn.primary{background:var(--brown);color:#fff}
+    .btn.accent{background:var(--amber);color:#2f1d00}
+    .btn.ghost{border-color:#d1d5db}
+    .btn.danger{border-color:#fecaca;color:#991b1b}
+    .btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(245,158,11,.45);outline-offset:2px}
+    .wrap{max-width:1180px;margin:0 auto;padding:22px;display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px}
+    .wrap>aside{align-self:start}
+    .card{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow)}
+    .head{padding:17px 17px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .head h2{font-size:1.05rem;margin:0}
+    .sub{color:var(--muted);font-size:.9rem;margin:.2rem 0 0}
+    .body{padding:17px}
+    .grid{display:grid;gap:15px}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    label{display:grid;gap:6px;font-weight:800;font-size:.86rem;color:#374151}
+    input,select,textarea{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 11px;background:#fff;color:var(--ink);min-height:42px}
+    textarea{min-height:82px;resize:vertical}
+    input[type=checkbox]{width:auto;min-height:auto}
+    .check{display:flex;align-items:center;gap:10px}
+    .main{display:grid;gap:18px}
+    .upgrade{background:#f59e0b;color:#2f1d00;border:1px solid #b45309;border-radius:8px;box-shadow:var(--shadow);padding:18px;display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+    .upgrade h2{margin:0 0 4px;font-size:1.25rem}
+    .upgrade p{margin:0;color:#3b2600}
+    .upgrade .btn{justify-self:start}
+    .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .metric{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fffdf8}
+    .metric span{display:block;color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .metric strong{display:block;margin-top:4px;font-size:1.12rem}
+    .metric small{display:block;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .profit{color:var(--green)}
+    .loss{color:var(--red)}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px}
+    table{width:100%;border-collapse:collapse;min-width:560px;background:#fff}
+    th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+    th{background:#fffbeb;color:#4b2f05;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+    tr:last-child td{border-bottom:0}
+    td input{min-width:118px}
+    .row-actions{display:flex;gap:8px;justify-content:flex-end}
+    .icon{width:38px;height:38px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-weight:900;color:#374151}
+    .summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .library{display:grid;gap:8px;max-height:390px;overflow:auto}
+    .sku{border:1px solid var(--line);background:#fff;border-radius:8px;padding:11px;text-align:left;width:100%}
+    .sku.active{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+    .sku strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sku span{display:block;color:var(--muted);font-size:.86rem;margin-top:2px}
+    .empty{border:1px dashed #d1d5db;border-radius:8px;padding:16px;color:var(--muted);text-align:center;background:#fff}
+    .notice{border-left:4px solid var(--amber);background:#fffbeb;padding:12px 14px;border-radius:8px;color:#4b2f05}
+    .kv{display:grid;gap:8px}
+    .kv div{display:flex;justify-content:space-between;gap:12px;border-top:1px dashed #e5e7eb;padding-top:8px}
+    .kv div:first-child{border-top:0;padding-top:0}
+    .kv span{color:var(--muted)}
+    .toast{position:fixed;right:20px;bottom:20px;max-width:340px;background:#111827;color:#fff;border-radius:8px;padding:12px 14px;box-shadow:0 12px 30px rgba(0,0,0,.25);opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s;z-index:30}
+    .toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:980px){.wrap{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.upgrade{grid-template-columns:1fr}.actions{justify-content:flex-start}}
+    @media(max-width:680px){.top-inner,.wrap{padding-left:14px;padding-right:14px}.top-inner{align-items:flex-start;flex-direction:column}.two,.three,.metrics,.summary{grid-template-columns:1fr}.actions .btn{width:auto}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">EM</div>
+        <div>
+          <h1>Etsy Margin Planner Lite</h1>
+          <p class="tag">Free offline product profit calculator for handmade sellers.</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="newBtn" type="button">New</button>
+        <button class="btn primary" id="saveBtn" type="button">Save</button>
+        <button class="btn danger" id="deleteBtn" type="button">Delete</button>
+        <a class="btn accent" href="https://gumroad.com/l/etsy-margin-planner" target="_blank" rel="noopener">Get Pro - $15</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <aside class="grid" aria-label="Saved products and dashboard">
+      <section class="upgrade">
+        <div>
+          <h2>Get Pro</h2>
+          <p>Unlock unlimited saved products, batch mode, scenario comparison, CSV import/export, and printable costing sheets.</p>
+        </div>
+        <a class="btn primary" href="https://gumroad.com/l/etsy-margin-planner" target="_blank" rel="noopener">Upgrade</a>
+      </section>
+
+      <section class="card">
+        <div class="head"><div><h2>Dashboard</h2><p class="sub">Lite saves up to 3 products</p></div></div>
+        <div class="body">
+          <div class="metrics">
+            <div class="metric"><span>Total</span><strong id="dashCount">0 / 3</strong></div>
+            <div class="metric"><span>Avg margin</span><strong id="dashAvg">0%</strong></div>
+            <div class="metric"><span>Lowest margin</span><strong id="dashLow">-</strong><small id="dashLowName">No products</small></div>
+            <div class="metric"><span>Top price</span><strong id="dashHigh">-</strong><small id="dashHighName">No products</small></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="head"><div><h2>Saved Products</h2><p class="sub">Stored locally in this browser</p></div></div>
+        <div class="body grid">
+          <label>Search
+            <input id="searchBox" type="search" placeholder="Name, SKU, or note">
+          </label>
+          <div class="library" id="library"></div>
+        </div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <section class="summary" aria-label="Current result summary">
+        <div class="metric"><span>Unit cost</span><strong id="sumCost">$0.00</strong><small>Materials, labor, packaging, shipping</small></div>
+        <div class="metric"><span>Fees</span><strong id="sumFees">$0.00</strong><small id="feeNote">Current preset</small></div>
+        <div class="metric"><span>Profit</span><strong id="sumProfit">$0.00</strong><small>After fees</small></div>
+        <div class="metric"><span>Margin</span><strong id="sumMargin">0%</strong><small>Profit divided by revenue</small></div>
+      </section>
+
+      <section class="card">
+        <div class="head"><div><h2>Product Cost Builder</h2><p class="sub">Lite calculates one product at one retail price.</p></div></div>
+        <div class="body grid">
+          <div class="grid three">
+            <label>Product name
+              <input data-field="name" placeholder="Linen scrunchie">
+            </label>
+            <label>SKU
+              <input data-field="sku" placeholder="SCR-001">
+            </label>
+            <label>Currency symbol
+              <input data-field="currency" maxlength="6" placeholder="$">
+            </label>
+          </div>
+          <div class="grid three">
+            <label>Retail price
+              <input data-field="price" data-type="number" type="number" min="0" step="0.01">
+            </label>
+            <label>Labor minutes
+              <input data-field="laborMinutes" data-type="number" type="number" min="0" step="1">
+            </label>
+            <label>Hourly rate
+              <input data-field="hourlyRate" data-type="number" type="number" min="0" step="0.01">
+            </label>
+          </div>
+
+          <div>
+            <div class="actions" style="justify-content:space-between;margin-bottom:10px">
+              <h2 style="font-size:1rem;margin:0">Materials</h2>
+              <button class="btn ghost" id="addMaterial" type="button">Add Material</button>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Materials">
+                <thead><tr><th>Material</th><th>Unit cost</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+                <tbody id="materials"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <label>Packaging cost
+              <input data-field="packagingCost" data-type="number" type="number" min="0" step="0.01">
+            </label>
+            <label>Shipping cost
+              <input data-field="shippingCost" data-type="number" type="number" min="0" step="0.01">
+            </label>
+          </div>
+
+          <label>Notes
+            <textarea data-field="notes" placeholder="Supplier, production assumptions, seasonal notes"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="head"><div><h2>Fee Presets</h2><p class="sub">Editable marketplace assumptions.</p></div></div>
+        <div class="body grid">
+          <div class="grid three">
+            <label>Preset
+              <select id="preset" data-field="fees.preset">
+                <option>Etsy</option>
+                <option>Shopify</option>
+                <option>Amazon Handmade</option>
+                <option>Generic Marketplace</option>
+              </select>
+            </label>
+            <label>Transaction %
+              <input data-field="fees.transactionPct" data-type="number" type="number" min="0" step="0.01">
+            </label>
+            <label>Payment %
+              <input data-field="fees.paymentPct" data-type="number" type="number" min="0" step="0.01">
+            </label>
+          </div>
+          <div class="grid three">
+            <label>Fixed/listing fee
+              <input data-field="fees.listingFee" data-type="number" type="number" min="0" step="0.01">
+            </label>
+            <label>Offsite ads %
+              <input data-field="fees.offsitePct" data-type="number" type="number" min="0" step="0.01">
+            </label>
+            <label class="check"><input data-field="fees.offsiteEnabled" type="checkbox"> Include optional offsite ads</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="head"><div><h2>Break-even</h2><p class="sub">Lite estimates whether one sale covers variable cost and fees.</p></div></div>
+        <div class="body grid">
+          <div class="grid two">
+            <label>Target price
+              <input data-field="breakEvenPrice" data-type="number" type="number" min="0" step="0.01">
+            </label>
+            <div class="metric"><span>Contribution per unit</span><strong id="beContribution">$0.00</strong><small id="beStatus">Planning estimate</small></div>
+          </div>
+          <div class="notice">Lite does not include batch setup costs or scenario comparison. This is for planning and education only, not financial, tax, legal, or accounting advice.</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="head"><div><h2>Retail Result</h2><p class="sub">Single-product profit summary.</p></div></div>
+        <div class="body">
+          <div class="kv" id="resultBox"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORE='etsy_margin_lite_v1';
+    const LIMIT=3;
+    const PRESETS={
+      'Etsy':{preset:'Etsy',transactionPct:6.5,paymentPct:3,listingFee:.20,offsitePct:15,offsiteEnabled:false},
+      'Shopify':{preset:'Shopify',transactionPct:0,paymentPct:2.9,listingFee:.30,offsitePct:0,offsiteEnabled:false},
+      'Amazon Handmade':{preset:'Amazon Handmade',transactionPct:15,paymentPct:0,listingFee:0,offsitePct:0,offsiteEnabled:false},
+      'Generic Marketplace':{preset:'Generic Marketplace',transactionPct:10,paymentPct:3,listingFee:0,offsitePct:0,offsiteEnabled:false}
+    };
+    const $=id=>document.getElementById(id);
+    const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:0};
+    const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+    const clone=o=>JSON.parse(JSON.stringify(o));
+    let products=load();
+    let current=fresh();
+    let selectedId=null;
+    let timer=null;
+
+    function fresh(){
+      return {id:null,name:'',sku:'',currency:'$',price:24,materials:[{name:'Material',unitCost:4,qty:1}],laborMinutes:20,hourlyRate:22,packagingCost:1.25,shippingCost:4.5,fees:clone(PRESETS.Etsy),notes:'',breakEvenPrice:24,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+    }
+    function load(){try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch(e){return[]}}
+    function persist(){localStorage.setItem(STORE,JSON.stringify(products))}
+    function getPath(o,path){return path.split('.').reduce((a,k)=>a?a[k]:undefined,o)}
+    function setPath(o,path,val){const p=path.split('.');let t=o;p.slice(0,-1).forEach(k=>{t[k]=t[k]??{};t=t[k]});t[p[p.length-1]]=val}
+    function money(v,p=current){const sign=v<0?'-':'';return sign+(p.currency||'$')+Math.abs(num(v)).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+    function pct(v){return Number.isFinite(v)?v.toFixed(1)+'%':'-'}
+    function materialTotal(p){return (p.materials||[]).reduce((s,m)=>s+num(m.unitCost)*num(m.qty),0)}
+    function laborCost(p){return num(p.laborMinutes)/60*num(p.hourlyRate)}
+    function feeAt(p,price){const f=p.fees;return price*num(f.transactionPct)/100+price*num(f.paymentPct)/100+num(f.listingFee)+(f.offsiteEnabled?price*num(f.offsitePct)/100:0)}
+    function calc(p){
+      const materials=materialTotal(p),labor=laborCost(p),cost=materials+labor+num(p.packagingCost)+num(p.shippingCost),price=num(p.price),fees=feeAt(p,price),profit=price-cost-fees,margin=price>0?profit/price*100:-Infinity;
+      const target=num(p.breakEvenPrice)||price,contribution=target-cost-feeAt(p,target);
+      return {materials,labor,cost,price,fees,profit,margin,target,contribution};
+    }
+    function renderForm(){
+      document.querySelectorAll('[data-field]').forEach(el=>{const v=getPath(current,el.dataset.field);if(el.type==='checkbox')el.checked=!!v;else if(document.activeElement!==el)el.value=v??''});
+      renderMaterials();render();
+    }
+    function renderMaterials(){
+      $('materials').innerHTML=(current.materials||[]).map((m,i)=>`<tr>
+        <td><input data-mat-index="${i}" data-mat-field="name" value="${esc(m.name)}" aria-label="Material name"></td>
+        <td><input data-mat-index="${i}" data-mat-field="unitCost" type="number" min="0" step="0.01" value="${num(m.unitCost)}" aria-label="Unit cost"></td>
+        <td><input data-mat-index="${i}" data-mat-field="qty" type="number" min="0" step="0.01" value="${num(m.qty)}" aria-label="Quantity"></td>
+        <td data-line="${i}">${money(num(m.unitCost)*num(m.qty))}</td>
+        <td class="row-actions"><button class="icon" data-remove="${i}" type="button" title="Remove material" aria-label="Remove material">-</button></td>
+      </tr>`).join('')||'<tr><td colspan="5" class="empty">No materials yet.</td></tr>';
+    }
+    function render(){
+      const c=calc(current);
+      $('sumCost').textContent=money(c.cost);
+      $('sumFees').textContent=money(c.fees);
+      $('feeNote').textContent=(current.fees.preset||'Custom')+(current.fees.offsiteEnabled?' + ads':'');
+      $('sumProfit').textContent=money(c.profit);$('sumProfit').className=c.profit>=0?'profit':'loss';
+      $('sumMargin').textContent=pct(c.margin);$('sumMargin').className=c.margin>=0?'profit':'loss';
+      $('beContribution').textContent=money(c.contribution);$('beContribution').className=c.contribution>=0?'profit':'loss';
+      $('beStatus').textContent=c.contribution>=0?'At least one sale covers variable costs.':'Target price does not cover cost and fees.';
+      $('resultBox').innerHTML=[
+        ['Revenue',c.price],['Materials',c.materials],['Labor',c.labor],['Packaging',num(current.packagingCost)],['Shipping',num(current.shippingCost)],['Fees',c.fees],['Profit',c.profit]
+      ].map(([k,v])=>`<div><span>${k}</span><strong>${money(v)}</strong></div>`).join('')+`<div><span>Margin</span><strong class="${c.margin>=0?'profit':'loss'}">${pct(c.margin)}</strong></div>`;
+      renderDashboard();renderLibrary();
+    }
+    function renderLibrary(){
+      const q=($('searchBox').value||'').toLowerCase().trim();
+      const list=products.filter(p=>[p.name,p.sku,p.notes].join(' ').toLowerCase().includes(q));
+      $('library').innerHTML=list.length?list.map(p=>{const c=calc(p);return `<button class="sku ${p.id===selectedId?'active':''}" data-load="${p.id}" type="button"><strong>${esc(p.name||'Untitled product')}</strong><span>${esc(p.sku||'No SKU')} | ${money(c.profit,p)} profit | ${pct(c.margin)}</span></button>`}).join(''):'<div class="empty">No saved products found.</div>';
+    }
+    function renderDashboard(){
+      $('dashCount').textContent=products.length+' / '+LIMIT;
+      if(!products.length){$('dashAvg').textContent='0%';$('dashLow').textContent='-';$('dashLowName').textContent='No products';$('dashHigh').textContent='-';$('dashHighName').textContent='No products';return}
+      const rows=products.map(p=>({p,c:calc(p)}));
+      const avg=rows.reduce((s,r)=>s+(Number.isFinite(r.c.margin)?r.c.margin:0),0)/rows.length;
+      const low=rows.reduce((a,b)=>a.c.margin<=b.c.margin?a:b);
+      const high=rows.reduce((a,b)=>a.c.price>=b.c.price?a:b);
+      $('dashAvg').textContent=pct(avg);
+      $('dashLow').textContent=pct(low.c.margin);$('dashLowName').textContent=low.p.name||'Untitled product';
+      $('dashHigh').textContent=money(high.c.price,high.p);$('dashHighName').textContent=high.p.name||'Untitled product';
+    }
+    function save(){
+      if(!current.id&&products.length>=LIMIT){toast('Lite saves up to 3 products. Upgrade to Pro for unlimited SKUs.');return}
+      current.updatedAt=new Date().toISOString();if(!current.id)current.id=uid();
+      const item=clone(current),i=products.findIndex(p=>p.id===item.id);
+      if(i>=0)products[i]=item;else products.unshift(item);
+      selectedId=item.id;persist();render();toast('Saved locally.');
+    }
+    function del(){
+      if(!selectedId){toast('Load a saved product before deleting.');return}
+      const p=products.find(x=>x.id===selectedId);
+      if(!p||!confirm(`Delete "${p.name||'Untitled product'}"?`))return;
+      products=products.filter(x=>x.id!==selectedId);persist();current=fresh();selectedId=null;renderForm();toast('Deleted product.');
+    }
+    function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>t.classList.remove('show'),2400)}
+
+    document.addEventListener('input',e=>{
+      const el=e.target;
+      if(el.matches('[data-field]')){setPath(current,el.dataset.field,el.type==='checkbox'?el.checked:(el.dataset.type==='number'?num(el.value):el.value));render()}
+      if(el.matches('[data-mat-field]')){const i=+el.dataset.matIndex,f=el.dataset.matField;current.materials[i][f]=f==='name'?el.value:num(el.value);const line=document.querySelector(`[data-line="${i}"]`);if(line)line.textContent=money(num(current.materials[i].unitCost)*num(current.materials[i].qty));render()}
+    });
+    document.addEventListener('change',e=>{if(e.target.id==='preset'){current.fees=clone(PRESETS[e.target.value]||PRESETS.Etsy);renderForm()}});
+    document.addEventListener('click',e=>{
+      const rem=e.target.closest('[data-remove]'),load=e.target.closest('[data-load]');
+      if(rem){current.materials.splice(+rem.dataset.remove,1);renderMaterials();render()}
+      if(load){const p=products.find(x=>x.id===load.dataset.load);if(p){current=clone(p);selectedId=p.id;renderForm();toast('Loaded product.')}}
+    });
+    $('addMaterial').addEventListener('click',()=>{current.materials.push({name:'',unitCost:0,qty:1});renderMaterials();render()});
+    $('saveBtn').addEventListener('click',save);
+    $('deleteBtn').addEventListener('click',del);
+    $('newBtn').addEventListener('click',()=>{current=fresh();selectedId=null;renderForm();toast('Started a new product.')});
+    $('searchBox').addEventListener('input',renderLibrary);
+    renderForm();
+  </script>
+</body>
+</html>

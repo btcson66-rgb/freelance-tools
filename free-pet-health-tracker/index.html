@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Pet Health Tracker + Vaccine Due Date Calculator | PetLog</title>
+<meta name="description" content="Use a free pet health tracker tool to select a breed, view a standard vaccine schedule, and calculate the next due date for common dog and cat vaccines.">
+<style>
+:root{--brand:#E8976D;--cream:#F5E6D3;--coffee:#8B6F4E;--green:#4A9B7F;--ink:#34251e;--muted:#715b4d;--paper:#fffaf4;--line:#ead8c6;--focus:#193b7a}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--cream),#fffaf4 38%,#fff);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:18px;line-height:1.55}
+a{color:#5f402f;font-weight:800}
+button,input,select{font:inherit}
+button,a,input,select{outline-color:var(--focus)}
+.wrap{max-width:1120px;margin:0 auto;padding:18px}
+.hero{min-height:58vh;display:grid;align-items:center;padding:30px 0 16px}
+.hero-inner{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
+.mock{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:0 16px 42px #8b6f4e25}
+.bar{height:12px;background:linear-gradient(90deg,var(--brand),#f2bc91);border-radius:999px;margin-bottom:14px}
+.petrow{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:12px;margin:10px 0;background:#fffaf4}
+.face{width:58px;height:58px;border-radius:8px;background:var(--cream);display:grid;place-items:center;font-size:30px}
+.mini-chart{height:92px;border:1px solid var(--line);border-radius:8px;background:linear-gradient(160deg,#fff,#fff6ef);position:relative;overflow:hidden}
+.mini-chart svg{width:100%;height:100%}
+h1{font-size:clamp(2.2rem,5vw,4.6rem);line-height:1.02;margin:0 0 14px;letter-spacing:0}
+h2{font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:10px}
+.lead{font-size:1.18rem;color:#4f3b31;max-width:760px}
+.badge{display:inline-flex;gap:8px;align-items:center;border-radius:999px;background:#fff3e8;border:1px solid #ddbfa7;padding:7px 12px;font-weight:900;color:#4c3328}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{border:0;border-radius:8px;padding:12px 15px;background:var(--coffee);color:#fff;font-weight:900;text-decoration:none;min-height:46px;display:inline-flex;align-items:center;gap:8px}
+.btn.secondary{background:#fff;color:#3e2d24;border:1.5px solid #c9ad95}
+.tool{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:0 14px 34px #8b6f4e18;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.col-12{grid-column:span 12}.col-8{grid-column:span 8}.col-6{grid-column:span 6}.col-4{grid-column:span 4}
+label{display:grid;gap:6px;font-weight:800;color:#4a352b}
+select,input{border:1.5px solid #c9ad95;border-radius:8px;background:#fff;padding:11px 12px;min-height:46px;color:var(--ink)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden}
+th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#fff1e5}
+.pill{display:inline-flex;border-radius:999px;background:#e8f5ee;color:#1e513b;padding:4px 9px;font-weight:900;font-size:.9rem}
+.note{border-left:4px solid var(--brand);background:#fff9f1;padding:10px 12px;border-radius:0 8px 8px 0;color:#5c493d}
+.result{background:#fff8ef;border:1.5px solid #dfc4ad;border-radius:8px;padding:14px;font-size:1.05rem}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px}
+footer{padding:24px 0;color:var(--muted);font-size:.94rem}
+@media(max-width:820px){.hero-inner,.grid,.cards{display:block}.grid>*{margin-bottom:14px}.col-12,.col-8,.col-6,.col-4{grid-column:auto}.mock{margin-top:16px}.hero{min-height:auto}}
+</style>
+  <link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/free-pet-health-tracker/">
+  <meta property="og:title" content="Free Pet Health Tracker + Vaccine Due Date Calculator | PetLog">
+  <meta property="og:description" content="Free pet vaccine schedule and due date calculator. Select breed, view standard dog and cat vaccine schedules, estimate next due date. No account needed.">
+  <meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/free-pet-health-tracker/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"PetLog Pet Health Tracker","applicationCategory":"HealthApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"12.00","priceCurrency":"USD","url":"https://bitsonic1.gumroad.com/l/petlog"},"url":"https://btcson66-rgb.github.io/freelance-tools/free-pet-health-tracker/","description":"Offline pet health and care tracker. Free vaccine calculator included. Pro adds unlimited pets, weight chart, medication log, vet visit records, emergency card, and cost overview.","featureList":["Vaccine due date calculator","Dog and cat breed schedules","AAHA/AAFP guideline references","Weight chart tracking","Medication log","No account required"]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the pet vaccine calculator free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The vaccine schedule and due date calculator on this page is completely free with no account."}},{"@type":"Question","name":"Is this medical advice?","acceptedAnswer":{"@type":"Answer","text":"No. This tool is for personal planning only. Your veterinarian should set the final schedule based on your pet's age, health history, region, and local rabies laws."}},{"@type":"Question","name":"What breeds does the tool cover?","acceptedAnswer":{"@type":"Answer","text":"It includes major dog breeds (Labrador, Golden Retriever, French Bulldog, German Shepherd, Poodle, Beagle) and cat breeds (Domestic Shorthair/Longhair, Siamese, Maine Coon, Persian, Ragdoll)."}},{"@type":"Question","name":"What is PetLog Pro?","acceptedAnswer":{"@type":"Answer","text":"Pro adds unlimited pets, weight chart with Canvas 2D graph, medication log, vet visit records, emergency card export, and cost overview. One-time $12 purchase."}},{"@type":"Question","name":"Where is my pet data stored?","acceptedAnswer":{"@type":"Answer","text":"All data stays on your device in the browser's localStorage. Nothing is uploaded to any server."}}]}
+  </script>
+
+</head>
+<body>
+<main class="wrap">
+<section class="hero">
+ <div class="hero-inner">
+  <div>
+   <span class="badge">🐾 Free pet health tracker tool</span>
+   <h1>Pet health records that stay close.</h1>
+   <p class="lead">Select your pet's breed, review a standard dog or cat vaccine schedule, and estimate the next due date. Built for pet parents who want organized care without creating an account.</p>
+   <div class="cta"><a class="btn" href="#tool">Use the free tool</a><a class="btn secondary" href="https://bitsonic1.gumroad.com/l/petlog" target="_blank" rel="noopener">Get Pro ($12)</a><a class="btn secondary" href="tool.html">Open PetLog Lite</a></div>
+  </div>
+  <div class="mock" aria-label="PetLog dashboard preview">
+   <div class="bar"></div>
+   <div class="petrow"><div class="face">🐶</div><div><strong>Maple</strong><br><span>DHPP due soon · Weight stable</span></div></div>
+   <div class="petrow"><div class="face">🐱</div><div><strong>Juniper</strong><br><span>FVRCP recorded · Appetite normal</span></div></div>
+   <div class="mini-chart" aria-hidden="true"><svg viewBox="0 0 420 100"><polyline points="18,72 86,65 146,67 214,54 282,50 356,42 402,36" fill="none" stroke="#E8976D" stroke-width="6" stroke-linecap="round"/><line x1="18" y1="84" x2="402" y2="84" stroke="#d7bfaa"/><line x1="18" y1="12" x2="18" y2="84" stroke="#d7bfaa"/></svg></div>
+  </div>
+ </div>
+</section>
+
+<section id="tool" class="tool">
+ <h2>Free vaccine schedule and due date calculator</h2>
+ <p class="note">This tool is for personal planning only. It is not medical advice. Your veterinarian should set the final schedule based on age, history, lifestyle, region, product label, and local rabies law.</p>
+ <div class="grid">
+  <label class="col-4">Breed
+   <select id="breed" onchange="renderTool()"></select>
+  </label>
+  <label class="col-4">Birthday or adoption date
+   <input id="birth" type="date" onchange="renderTool()">
+  </label>
+  <label class="col-4">Last vaccine date
+   <input id="last" type="date" onchange="renderTool()">
+  </label>
+  <label class="col-6">Vaccine
+   <select id="vaccine" onchange="renderTool()"></select>
+  </label>
+  <label class="col-6">Rabies estimate
+   <select id="rabies" onchange="renderTool()"><option value="12">1-year label/law</option><option value="36">3-year label/law</option></select>
+  </label>
+  <div class="col-12 result" id="result" role="status"></div>
+ </div>
+ <h3>Standard schedule for selected breed</h3>
+ <div id="schedule"></div>
+</section>
+
+<section class="cards" aria-label="PetLog benefits">
+ <div class="card"><h2>Offline by design</h2><p>No account. No cloud. No subscription. PetLog stores records in your browser and lets you export a JSON backup.</p></div>
+ <div class="card"><h2>Vet-ready records</h2><p>Keep vaccine dates, medications, feeding changes, daily symptoms, and vet notes together so appointments feel less frantic.</p></div>
+ <div class="card"><h2>Built with care</h2><p>PetLog feels like a warm pet journal, not a hospital database. It is made for people who remember that the record belongs to someone loved.</p></div>
+</section>
+
+<section>
+ <h2>Sources used for the general schedule</h2>
+ <p>Dog guidance references the <a href="https://www.aaha.org/resources/2022-aaha-canine-vaccination-guidelines/">AAHA Canine Vaccination Guidelines</a>, including AAHA's 2024 leptospirosis core update. Cat guidance references the <a href="https://www.aaha.org/resources/2020-aahaaafp-feline-vaccination-guidelines/core-vaccines-for-pet-cats/">2020 AAHA/AAFP feline vaccination guidance</a>.</p>
+</section>
+</main>
+<footer class="wrap">PetLog is a personal recordkeeping product, not veterinary care. Always consult your veterinarian.</footer>
+<script>
+const BREEDS=[
+ ["Mixed breed dog","Dog"],["Labrador Retriever","Dog"],["Golden Retriever","Dog"],["French Bulldog","Dog"],["German Shepherd Dog","Dog"],["Poodle","Dog"],["Beagle","Dog"],["Domestic Shorthair","Cat"],["Domestic Longhair","Cat"],["Siamese","Cat"],["Maine Coon","Cat"],["Persian","Cat"],["Ragdoll","Cat"]
+];
+const SCHEDULE={
+ Dog:[
+  {name:"DHPP",kind:"Core",start:"Puppy series usually begins 6-8 weeks and repeats every 2-4 weeks until at least 16 weeks.",adult:"Booster within 1 year after puppy series, then typically every 3 years.",months:36,startWeeks:6},
+  {name:"Rabies",kind:"Core",start:"Usually first given at or after 12 weeks where required.",adult:"Follow local law and the vaccine product label.",months:"rabies",startWeeks:12},
+  {name:"Leptospirosis",kind:"Core",start:"Initial 2-dose series, commonly starting around 12 weeks.",adult:"Booster within 1 year, then typically annual.",months:12,startWeeks:12},
+  {name:"Bordetella",kind:"Lifestyle",start:"Risk-based for boarding, daycare, grooming, training, or exposure.",adult:"Often annual when indicated.",months:12,startWeeks:8},
+  {name:"Lyme",kind:"Lifestyle",start:"Risk-based in endemic areas; initial 2-dose series.",adult:"Often annual when indicated.",months:12,startWeeks:9},
+  {name:"Canine Influenza",kind:"Lifestyle",start:"Risk-based; initial 2-dose series.",adult:"Often annual when indicated.",months:12,startWeeks:6}
+ ],
+ Cat:[
+  {name:"FVRCP",kind:"Core",start:"Kitten series begins no earlier than 6 weeks and repeats every 3-4 weeks until 16-20 weeks.",adult:"Revaccination commonly every 3 years after the initial booster for many adult cats.",months:36,startWeeks:6},
+  {name:"Rabies",kind:"Core",start:"Often first given at or after 12 weeks where required.",adult:"Follow local law and the vaccine product label.",months:"rabies",startWeeks:12},
+  {name:"FeLV",kind:"Core for kittens",start:"Two doses 3-4 weeks apart beginning as early as 8 weeks.",adult:"Risk-based for adult cats after the first year.",months:12,startWeeks:8}
+ ]
+};
+function addMonths(date,months){let d=new Date(date+"T00:00:00");d.setMonth(d.getMonth()+Number(months));return d.toISOString().slice(0,10)}
+function addWeeks(date,weeks){let d=new Date(date+"T00:00:00");d.setDate(d.getDate()+Number(weeks)*7);return d.toISOString().slice(0,10)}
+function renderTool(){
+ const breed=document.getElementById("breed"), vaccine=document.getElementById("vaccine"), selected=BREEDS[breed.selectedIndex]||BREEDS[0], species=selected[1], list=SCHEDULE[species];
+ const previous=vaccine.value;
+ vaccine.innerHTML=list.map(v=>`<option ${v.name===previous?"selected":""}>${v.name}</option>`).join("");
+ const item=list.find(v=>v.name===vaccine.value)||list[0], last=document.getElementById("last").value, birth=document.getElementById("birth").value;
+ document.getElementById("schedule").innerHTML=`<table><thead><tr><th>Vaccine</th><th>Type</th><th>Starter schedule</th><th>Adult notes</th></tr></thead><tbody>${list.map(v=>`<tr><td>${v.name}</td><td><span class="pill">${v.kind}</span></td><td>${v.start}</td><td>${v.adult}</td></tr>`).join("")}</tbody></table>`;
+ let due="Choose a birthday/adoption date or last vaccine date to estimate timing.";
+ if(last){
+  let months=item.months==="rabies"?document.getElementById("rabies").value:item.months;
+  due=`Estimated next ${item.name} due date: <strong>${addMonths(last,months)}</strong>. Confirm with your vet.`;
+ }else if(birth){
+  due=`Earliest common starter window for ${item.name}: <strong>around ${addWeeks(birth,item.startWeeks)}</strong>. Many young pets need a series, not just one date.`;
+ }
+ document.getElementById("result").innerHTML=`<strong>${selected[0]} (${species})</strong><br>${due}`;
+}
+document.getElementById("breed").innerHTML=BREEDS.map(b=>`<option>${b[0]}</option>`).join("");
+renderTool();
+</script>
+</body>
+</html>

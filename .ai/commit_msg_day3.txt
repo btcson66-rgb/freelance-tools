@@ -1,0 +1,6 @@
+﻿Day 3: freelance-slow-season + kashoo-alternative
+
+- blog: freelance-slow-season-cash-flow-plan (CashFlow)
+- compare: kashoo-alternative (CashFlow)
+- sitemap: 1032 lines / +2 URLs
+- 210 HTML / 312 JSON-LD / 0 invalid

@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free ADHD Daily Planner + ADHD Time Estimator | FocusFlow</title>
+  <meta name="description" content="A free ADHD daily planner page with an embedded ADHD time estimator. Estimate a task, multiply by 1.5, and turn it into a visual time block suggestion.">
+  <style>
+    :root {
+      color-scheme: light;
+      --primary: #9B8EC4;
+      --primary-strong: #6F6196;
+      --accent: #8BC9B8;
+      --sand: #E8D8B8;
+      --pink: #E9B8C8;
+      --sky: #8BB7D9;
+      --ink: #282539;
+      --muted: #676175;
+      --line: #DDD7EA;
+      --bg: #F8F5FC;
+      --surface: #FFFEFC;
+      --surface-2: #F7F3FF;
+      --focus: #302454;
+      --shadow: 0 18px 45px rgba(67, 53, 94, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, var(--bg), #fff 76%);
+      line-height: 1.68;
+      letter-spacing: 0;
+    }
+    a { color: var(--primary-strong); font-weight: 800; }
+    button, input { font: inherit; color: inherit; }
+    input {
+      width: 100%;
+      min-height: 50px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      padding: 13px 15px;
+    }
+    button {
+      min-height: 50px;
+      border: 0;
+      border-radius: 18px;
+      cursor: pointer;
+      padding: 12px 16px;
+      font-weight: 850;
+      background: var(--primary-strong);
+      color: #fff;
+    }
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+      scroll-margin: 90px;
+    }
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -80px;
+      background: var(--focus);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      z-index: 20;
+    }
+    .skip-link:focus { top: 12px; }
+    .wrap {
+      width: min(1080px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 60px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 34px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      background: linear-gradient(145deg, var(--primary), var(--accent));
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+    nav {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 5.7rem);
+      line-height: .98;
+      max-width: 900px;
+      margin-bottom: 18px;
+    }
+    h2 {
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      line-height: 1.06;
+      margin-bottom: 12px;
+    }
+    h3 {
+      font-size: 1.25rem;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .lead {
+      font-size: clamp(1.15rem, 2vw, 1.45rem);
+      color: var(--muted);
+      max-width: 760px;
+      margin-bottom: 22px;
+    }
+    .hero {
+      padding: clamp(24px, 5vw, 60px) 0 30px;
+    }
+    .cta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      border-radius: 18px;
+      padding: 12px 16px;
+      text-decoration: none;
+      background: var(--primary-strong);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+    .btn.secondary {
+      background: #fff;
+      color: var(--focus);
+      border-color: var(--line);
+    }
+    .band {
+      margin-top: 26px;
+      padding: clamp(22px, 3vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: rgba(255,255,255,.88);
+      box-shadow: var(--shadow);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .tile {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+    }
+    .soft { color: var(--muted); }
+    .tool {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    label span {
+      display: block;
+      font-weight: 850;
+      margin-bottom: 6px;
+    }
+    .result {
+      min-height: 190px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(155,142,196,.18), rgba(139,201,184,.18));
+      border: 1px solid rgba(155,142,196,.26);
+      padding: 22px;
+    }
+    .time-block {
+      margin-top: 14px;
+      border-radius: 18px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: #211A30;
+      padding: 16px;
+      font-weight: 900;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .step {
+      min-height: 72px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 10px;
+      font-weight: 850;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+    li + li { margin-top: 8px; }
+    details {
+      border-top: 1px solid var(--line);
+      padding: 16px 0;
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--focus);
+    }
+    footer {
+      margin-top: 30px;
+      color: var(--muted);
+    }
+    @media (max-width: 860px) {
+      header, .tool { grid-template-columns: 1fr; display: grid; }
+      .grid, .steps, .form-grid { grid-template-columns: 1fr; }
+      nav { justify-content: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+  <link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/adhd-daily-planner/">
+  <meta property="og:title" content="Free ADHD Daily Planner + Time Estimator | FocusFlow">
+  <meta property="og:description" content="A free ADHD-friendly daily planner with a kinder time estimator. No account, no streaks, no guilt. Upgrade to Pro for visual time blocks, routines, and 50 ADHD-aware quotes.">
+  <meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/adhd-daily-planner/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"FocusFlow ADHD Planner","applicationCategory":"ProductivityApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"15.00","priceCurrency":"USD","url":"https://bitsonic1.gumroad.com/l/focusflow-adhd-planner"},"url":"https://btcson66-rgb.github.io/freelance-tools/adhd-daily-planner/","description":"Offline ADHD-friendly daily planner. Free Lite version included; Pro adds visual time blocks, routines manager, brain dump, 5 color themes, and 50 ADHD-aware quotes.","featureList":["ADHD time estimator (1.5x multiplier)","Visual time blocks","Brain dump with category sorting","No streaks or guilt loops","No account required","Offline, no subscription"]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the ADHD daily planner free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The time estimator and Lite planner on this page are free with no account and no subscription."}},{"@type":"Question","name":"What makes this an ADHD-friendly planner?","acceptedAnswer":{"@type":"Answer","text":"It has no streaks, no guilt messages, soft defaults, a 1.5x time estimator for time blindness, and visual time blocks instead of a plain list."}},{"@type":"Question","name":"What is FocusFlow Pro?","acceptedAnswer":{"@type":"Answer","text":"Pro adds visual time blocks, routines manager, brain dump with categories, 5 color themes, and 50 ADHD-aware quotes. One-time $15 purchase."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account required. FocusFlow is fully offline and stores your data locally in the browser."}},{"@type":"Question","name":"Can I use FocusFlow without internet?","acceptedAnswer":{"@type":"Answer","text":"Yes. After the page loads, it works completely offline. Your data stays on your device."}}]}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="#top" aria-label="FocusFlow home">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16h24M12 24h15M12 32h20"></path>
+            <path d="M34 22l4 4 7-9"></path>
+          </svg>
+        </span>
+        <span><strong>FocusFlow</strong><br><span class="soft">ADHD daily planner</span></span>
+      </a>
+      <nav aria-label="Page links">
+        <a href="#adhd-time-estimator">Time estimator</a>
+        <a href="#planner">Planner</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <h1>Free ADHD daily planner with a kinder time estimator</h1>
+        <p class="lead">FocusFlow helps make time visible, reduce task paralysis, and support executive dysfunction with soft defaults, color blocks, and no pressure loops.</p>
+        <div class="cta-row">
+          <a class="btn" href="tool.html">Open FocusFlow Lite</a>
+          <a class="btn secondary" href="https://bitsonic1.gumroad.com/l/focusflow-adhd-planner" target="_blank" rel="noopener">View Pro</a>
+        </div>
+      </section>
+
+      <section class="band" id="adhd-time-estimator" aria-labelledby="estimatorTitle">
+        <div class="tool">
+          <div>
+            <h2 id="estimatorTitle">ADHD Time Estimator</h2>
+            <p class="soft">People with ADHD often underestimate task time because starting, switching, and transitions are real work. This tool multiplies your guess by 1.5 and suggests a gentle time block.</p>
+            <div class="form-grid">
+              <label>
+                <span>Task</span>
+                <input id="taskName" placeholder="Example: clean desk" autocomplete="off">
+              </label>
+              <label>
+                <span>My guess, minutes</span>
+                <input id="taskMinutes" type="number" min="5" step="5" value="30">
+              </label>
+            </div>
+            <button type="button" id="estimateBtn">Estimate time</button>
+          </div>
+          <aside class="result" aria-live="polite" aria-labelledby="resultTitle">
+            <h3 id="resultTitle">Suggested block</h3>
+            <p id="resultCopy">Enter a task and your best guess. The estimator will add room for time blindness and transitions.</p>
+            <div class="time-block" id="timeBlock">30 min guess becomes 45 min</div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="band" id="planner" aria-labelledby="plannerTitle">
+        <h2 id="plannerTitle">A planner that does not start with a blank page</h2>
+        <p class="soft">The free Lite planner includes enough structure to get started without forcing a full system on a hard day.</p>
+        <div class="grid">
+          <article class="tile">
+            <h3>Today Dashboard</h3>
+            <p class="soft">Large date, energy check-in, warm ADHD-aware quotes, and five daily task spots.</p>
+          </article>
+          <article class="tile">
+            <h3>Brain Dump</h3>
+            <p class="soft">Capture thoughts, get category suggestions, and sort gently without a priority matrix.</p>
+          </article>
+          <article class="tile">
+            <h3>Visual Time Blocks</h3>
+            <p class="soft">Use color blocks, templates, and transition buffers to make the day easier to see.</p>
+          </article>
+        </div>
+        <div class="steps" aria-label="How FocusFlow supports ADHD planning">
+          <div class="step">Defaults first</div>
+          <div class="step">One screen</div>
+          <div class="step">Soft feedback</div>
+          <div class="step">Offline privacy</div>
+        </div>
+      </section>
+
+      <section class="band" aria-labelledby="whyTitle">
+        <h2 id="whyTitle">No streaks. No guilt. No login.</h2>
+        <p>FocusFlow is built around ADHD-friendly planning principles: less blank-page pressure, fewer choices at once, visual time support, and forgiving controls for skipping, postponing, and restarting.</p>
+        <ul>
+          <li><strong>Executive dysfunction:</strong> tasks can start smaller, with gentle defaults already in place.</li>
+          <li><strong>Task paralysis:</strong> brain dump sorting reduces the number of decisions on screen.</li>
+          <li><strong>Time blindness:</strong> color blocks and the 1.5 estimator make time more visible.</li>
+          <li><strong>Body doubling:</strong> the language and structure are designed to feel like quiet support beside you.</li>
+        </ul>
+      </section>
+
+      <section class="band" id="faq" aria-labelledby="faqTitle">
+        <h2 id="faqTitle">FAQ</h2>
+        <details>
+          <summary>Is FocusFlow free?</summary>
+          <p>FocusFlow Lite is free. FocusFlow Pro is $15 and adds routines, week/month views, custom themes, custom quotes, and fuller planning controls.</p>
+        </details>
+        <details>
+          <summary>Does it work offline?</summary>
+          <p>Yes. The planner is a single HTML file with inline CSS and JavaScript. It stores data in your browser using localStorage.</p>
+        </details>
+        <details>
+          <summary>Why multiply time by 1.5?</summary>
+          <p>It adds cushion for starting, switching, transitions, and the common ADHD pattern of underestimating how long a task will take.</p>
+        </details>
+        <details>
+          <summary>Does FocusFlow use streaks?</summary>
+          <p>No. The planner avoids streak mechanics because broken streaks can create shame and make restarting harder.</p>
+        </details>
+      </section>
+    </main>
+
+    <footer>
+      <p>FocusFlow is a self-contained offline planner. It is not medical advice and does not diagnose ADHD.</p>
+    </footer>
+  </div>
+
+  <script>
+    const taskName = document.getElementById("taskName");
+    const taskMinutes = document.getElementById("taskMinutes");
+    const resultCopy = document.getElementById("resultCopy");
+    const timeBlock = document.getElementById("timeBlock");
+    const estimateBtn = document.getElementById("estimateBtn");
+
+    function estimate() {
+      const name = taskName.value.trim() || "This task";
+      const guess = Math.max(5, Number(taskMinutes.value || 30));
+      const adjusted = Math.max(5, Math.round((guess * 1.5) / 5) * 5);
+      const transition = adjusted <= 30 ? 5 : adjusted <= 75 ? 10 : 15;
+      resultCopy.textContent = `${name} may fit best as a ${adjusted} minute block plus a ${transition} minute transition buffer.`;
+      timeBlock.textContent = `${guess} min guess becomes ${adjusted} min + ${transition} min buffer`;
+    }
+
+    estimateBtn.addEventListener("click", estimate);
+    taskName.addEventListener("input", estimate);
+    taskMinutes.addEventListener("input", estimate);
+    estimate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Etsy Profit Calculator | Etsy Margin Planner</title>
+  <meta name="description" content="Use this free Etsy profit calculator to estimate product cost, Etsy fees, profit, and margin for one handmade product. Upgrade to Etsy Margin Planner Pro for saved SKUs, batch mode, scenarios, CSV, and print-to-PDF.">
+  <style>
+    :root{--amber:#f59e0b;--brown:#92400e;--cream:#fef3c7;--green:#065f46;--red:#dc2626;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--white:#fff;--shadow:0 16px 40px rgba(31,41,55,.1)}
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#fff7e6 0,#f9fafb 420px);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:16px;line-height:1.45}
+    input,button{font:inherit}
+    a{color:inherit}
+    .nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+    .nav-inner{max-width:1160px;margin:0 auto;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900}
+    .mark{width:38px;height:38px;border-radius:8px;background:var(--amber);display:grid;place-items:center;color:#3b2600;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+    .btn{border:1px solid transparent;border-radius:8px;padding:10px 14px;background:#fff;color:var(--ink);font-weight:900;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:42px;cursor:pointer}
+    .btn.primary{background:var(--brown);color:#fff}
+    .btn.accent{background:var(--amber);color:#2f1d00}
+    .btn.ghost{border-color:#d1d5db}
+    .btn:focus-visible,input:focus-visible{outline:3px solid rgba(245,158,11,.45);outline-offset:2px}
+    .hero{max-width:1160px;margin:0 auto;padding:34px 22px 24px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;align-items:start}
+    h1{font-size:2.35rem;line-height:1.05;margin:0 0 12px;letter-spacing:0;color:#111827}
+    .lead{font-size:1.08rem;color:#4b5563;margin:0 0 18px;max-width:720px}
+    .calc,.panel,.content-card{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow)}
+    .calc-head,.panel-head{padding:18px 18px 0}
+    .calc-head h2,.panel-head h2{font-size:1.12rem;margin:0}
+    .sub{color:var(--muted);font-size:.9rem;margin:.25rem 0 0}
+    .calc-body,.panel-body{padding:18px;display:grid;gap:15px}
+    .grid{display:grid;gap:14px}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    label{display:grid;gap:6px;font-weight:800;font-size:.86rem;color:#374151}
+    input{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 11px;min-height:42px;color:var(--ink)}
+    .summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+    .metric{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fffdf8}
+    .metric span{display:block;color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .metric strong{display:block;margin-top:4px;font-size:1.16rem}
+    .profit{color:var(--green)}
+    .loss{color:var(--red)}
+    .mini-ui{border:1px solid #f1d48c;border-radius:8px;background:#fff;padding:16px;display:grid;gap:12px}
+    .mini-row{height:12px;border-radius:999px;background:#fde68a}
+    .mini-row:nth-child(2){width:84%;background:#fcd34d}
+    .mini-row:nth-child(3){width:65%;background:#d1fae5}
+    .mini-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .mini-card{height:74px;border:1px solid var(--line);border-radius:8px;background:#fffbeb;padding:10px}
+    .mini-card b{display:block;width:70%;height:10px;border-radius:999px;background:#92400e;margin-bottom:12px}
+    .mini-card i{display:block;width:44%;height:22px;border-radius:6px;background:#065f46}
+    .panel{position:sticky;top:86px}
+    .panel .price{font-size:2rem;font-weight:900;color:#111827}
+    .feature-list{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+    .feature-list li{display:flex;gap:10px;align-items:flex-start}
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--amber);margin-top:7px;flex:0 0 auto}
+    .sections{max-width:1160px;margin:0 auto;padding:10px 22px 46px;display:grid;gap:18px}
+    .content-card{padding:22px}
+    .content-card h2{margin:0 0 8px;font-size:1.35rem}
+    .content-card p{margin:0 0 12px;color:#4b5563}
+    .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .small-card{border:1px solid var(--line);border-radius:8px;padding:14px;background:#fff}
+    .small-card h3{margin:0 0 6px;font-size:1rem}
+    .fine{font-size:.86rem;color:var(--muted)}
+    @media(max-width:960px){.hero{grid-template-columns:1fr}.panel{position:static}.summary,.cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.nav-inner,.hero,.sections{padding-left:14px;padding-right:14px}.nav-inner{align-items:flex-start;flex-direction:column}h1{font-size:1.8rem}.two,.three,.summary,.cols{grid-template-columns:1fr}.btn{width:100%}}
+  </style>
+  <link rel="canonical" href="https://btcson66-rgb.github.io/freelance-tools/etsy-profit-calculator/">
+  <meta property="og:title" content="Free Etsy Profit Calculator | Etsy Margin Planner">
+  <meta property="og:description" content="Calculate product cost, Etsy fees, profit, and margin for free. No account. Upgrade to Pro for saved SKUs, batch mode, CSV, and print-to-PDF.">
+  <meta property="og:url" content="https://btcson66-rgb.github.io/freelance-tools/etsy-profit-calculator/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Etsy Margin Planner","applicationCategory":"BusinessApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"15.00","priceCurrency":"USD","url":"https://bitsonic1.gumroad.com/l/etsy-margin-planner"},"url":"https://btcson66-rgb.github.io/freelance-tools/etsy-profit-calculator/","description":"Offline Etsy profit and margin calculator. Free to use in the browser; Pro adds saved SKUs, batch mode, scenario comparison, CSV import/export, and print-to-PDF.","featureList":["Etsy fee calculator","Profit and margin view","Batch SKU mode","CSV import/export","No account required","Offline, no subscription"]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the Etsy profit calculator free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The calculator on this page is free to use with no account and no subscription."}},{"@type":"Question","name":"What Etsy fees does the calculator include?","acceptedAnswer":{"@type":"Answer","text":"It includes the Etsy listing fee (</head>.20), transaction fee (6.5%), and payment processing fee. You can edit any fee in the inputs."}},{"@type":"Question","name":"What is Etsy Margin Planner Pro?","acceptedAnswer":{"@type":"Answer","text":"Pro adds saved SKU library, batch mode for multiple products, scenario comparison, CSV import/export, and print-to-PDF. One-time $15."}},{"@type":"Question","name":"Does it work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes. After the page loads, no internet connection is needed. Your data stays in your browser."}},{"@type":"Question","name":"What is a good Etsy profit margin?","acceptedAnswer":{"@type":"Answer","text":"Most Etsy sellers aim for 30-50% margin after materials, fees, and packaging. Below 20% leaves little room for shipping surprises or price adjustments."}}]}
+  </script>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand"><div class="mark" aria-hidden="true">EM</div><span>Etsy Margin Planner</span></div>
+      <a class="btn accent" href="https://bitsonic1.gumroad.com/l/etsy-margin-planner" target="_blank" rel="noopener">Buy Pro - $15</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Free Etsy Profit Calculator</h1>
+        <p class="lead">Estimate product cost, Etsy-style fees, profit, and margin for one handmade item. No signup, no spreadsheet, no internet connection required after the page loads.</p>
+
+        <section class="calc" aria-label="Free Etsy profit calculator">
+          <div class="calc-head">
+            <h2>Calculate One Product</h2>
+            <p class="sub">For saved SKUs, batch setup costs, scenarios, CSV, and print-to-PDF, use the Pro version.</p>
+          </div>
+          <div class="calc-body">
+            <div class="grid three">
+              <label>Currency symbol
+                <input id="currency" value="$" maxlength="6">
+              </label>
+              <label>Retail price
+                <input id="price" type="number" min="0" step="0.01" value="35">
+              </label>
+              <label>Materials cost
+                <input id="materials" type="number" min="0" step="0.01" value="6.50">
+              </label>
+            </div>
+            <div class="grid three">
+              <label>Labor minutes
+                <input id="minutes" type="number" min="0" step="1" value="30">
+              </label>
+              <label>Hourly rate
+                <input id="rate" type="number" min="0" step="0.01" value="24">
+              </label>
+              <label>Packaging cost
+                <input id="packaging" type="number" min="0" step="0.01" value="1.50">
+              </label>
+            </div>
+            <div class="grid three">
+              <label>Shipping cost
+                <input id="shipping" type="number" min="0" step="0.01" value="5">
+              </label>
+              <label>Transaction fee %
+                <input id="transaction" type="number" min="0" step="0.01" value="6.5">
+              </label>
+              <label>Payment fee %
+                <input id="payment" type="number" min="0" step="0.01" value="3">
+              </label>
+            </div>
+            <div class="grid two">
+              <label>Listing / fixed fee
+                <input id="fixed" type="number" min="0" step="0.01" value="0.20">
+              </label>
+              <label>Optional offsite ads %
+                <input id="ads" type="number" min="0" step="0.01" value="0">
+              </label>
+            </div>
+            <div class="summary">
+              <div class="metric"><span>Total cost</span><strong id="cost">$0.00</strong></div>
+              <div class="metric"><span>Fees</span><strong id="fees">$0.00</strong></div>
+              <div class="metric"><span>Profit</span><strong id="profit">$0.00</strong></div>
+              <div class="metric"><span>Margin</span><strong id="margin">0%</strong></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="panel" aria-label="Pro upgrade">
+        <div class="panel-head">
+          <h2>Etsy Margin Planner Pro</h2>
+          <p class="sub">Offline pricing toolkit for serious sellers.</p>
+        </div>
+        <div class="panel-body">
+          <div class="mini-ui" aria-hidden="true">
+            <div class="mini-row"></div>
+            <div class="mini-row"></div>
+            <div class="mini-row"></div>
+            <div class="mini-cards"><div class="mini-card"><b></b><i></i></div><div class="mini-card"><b></b><i></i></div></div>
+          </div>
+          <div class="price">$15</div>
+          <ul class="feature-list">
+            <li><span class="dot"></span><span>Save and search unlimited SKUs locally</span></li>
+            <li><span class="dot"></span><span>Spread photography, mold, and setup costs across batches</span></li>
+            <li><span class="dot"></span><span>Compare retail, sale, wholesale, and bundle pricing</span></li>
+            <li><span class="dot"></span><span>Import/export CSV and print product costing sheets</span></li>
+          </ul>
+          <a class="btn primary" href="https://bitsonic1.gumroad.com/l/etsy-margin-planner" target="_blank" rel="noopener">Get Pro</a>
+          <p class="fine">Planning estimates only. Not financial, tax, legal, or accounting advice.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="sections">
+      <div class="content-card">
+        <h2>Why Etsy sellers need margin math</h2>
+        <p>Small cost changes can erase profit when marketplace fees, packaging, shipping, and labor are left out. This calculator gives a quick one-product estimate so you can see whether a listing price is healthy before you publish or discount it.</p>
+        <div class="cols">
+          <div class="small-card"><h3>Know true unit cost</h3><p class="fine">Include materials, labor time, packaging, and shipping in one place.</p></div>
+          <div class="small-card"><h3>Estimate Etsy-style fees</h3><p class="fine">Start with transaction, payment, listing, and optional ads assumptions.</p></div>
+          <div class="small-card"><h3>Upgrade when ready</h3><p class="fine">Use Pro when you need saved products, batch costs, scenarios, CSV, and printable sheets.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ids=['currency','price','materials','minutes','rate','packaging','shipping','transaction','payment','fixed','ads'];
+    const $=id=>document.getElementById(id);
+    const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:0};
+    function money(v){const s=$('currency').value||'$';const sign=v<0?'-':'';return sign+s.replace(/[^$€£¥A-Za-z]/g,'').slice(0,6)+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+    function calc(){
+      const price=num($('price').value);
+      const labor=num($('minutes').value)/60*num($('rate').value);
+      const cost=num($('materials').value)+labor+num($('packaging').value)+num($('shipping').value);
+      const fees=price*num($('transaction').value)/100+price*num($('payment').value)/100+num($('fixed').value)+price*num($('ads').value)/100;
+      const profit=price-cost-fees;
+      const margin=price>0?profit/price*100:0;
+      $('cost').textContent=money(cost);
+      $('fees').textContent=money(fees);
+      $('profit').textContent=money(profit);$('profit').className=profit>=0?'profit':'loss';
+      $('margin').textContent=margin.toFixed(1)+'%';$('margin').className=margin>=0?'profit':'loss';
+    }
+    ids.forEach(id=>$(id).addEventListener('input',calc));
+    calc();
+  </script>
+</body>
+</html>
