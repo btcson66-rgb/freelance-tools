@@ -1,0 +1,9 @@
+﻿New products: Etsy / FocusFlow / PetLog SEO pages live
+
+- etsy-profit-calculator/ (SoftwareApplication + FAQPage JSON-LD,  Pro)
+- adhd-daily-planner/ (FocusFlow,  Pro)
+- free-pet-health-tracker/ (PetLog vaccine calc,  Pro)
+- Each has index.html (SEO+embedded tool) + tool.html (Lite)
+- Homepage "More free tools" row updated with 3 new links
+- sitemap: +8 URLs (3 index + 3 tool + Day3 blog/compare already counted)
+- 216 HTML / 318 JSON-LD / 0 invalid

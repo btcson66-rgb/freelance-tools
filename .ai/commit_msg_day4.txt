@@ -1,0 +1,6 @@
+Day 4 autopush + Payhip buttons for 3 new products
+
+- Blog: june-freelance-financial-review (mid-year finance review, CashFlow)
+- Compare: akaunting-alternative
+- Payhip buy buttons wired on etsy-profit-calculator, adhd-daily-planner, free-pet-health-tracker
+- Sitemap: 213 URLs
