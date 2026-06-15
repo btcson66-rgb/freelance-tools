@@ -1,0 +1,7 @@
+Day 5: freelance-crm-practical-guide + tave-alternative
+
+- Blog: freelance-crm-practical-guide (do freelancers need a CRM, LeadTrack)
+- Compare: tave-alternative (LeadTrack vs Tave)
+- Fix: 19 broken tryLabel strings in gen_compare.js (pre-existing issue)
+- Sitemap: 215 URLs
+- 220 HTML / 324 JSON-LD / 0 invalid
